@@ -16,6 +16,7 @@
     "cesium": "^1.63.1",
     "compression": "^1.6.2",
     "express": "^4.15",
+    "mqtt": "^3.0.0",
     "request": "^2.79.0",
     "yargs": "^15.0.2"
   },

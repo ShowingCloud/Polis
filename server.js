@@ -53,6 +53,7 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(__dirname));
 app.use('/Cesium', express.static(__dirname + '/node_modules/cesium/Build/Cesium/'));
+app.use('/MQTT', express.static(__dirname + '/node_modules/mqtt/dist/'));
 
 function getRemoteUrlFromParam(req) {
     var remoteUrl = req.params[0];
