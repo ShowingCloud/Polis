@@ -1,26 +1,51 @@
 {
-  "name": "Polis",
-  "version": "0.0.1",
-  "description": "Polis is a real-time 3D viewer based on Cesium, that displays the buildings in and objects of interest near some base, with necessary metrics.",
-  "homepage": "https://www.showingcloud.com",
-  "license": "Apache-2.0",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ShowingCloud/Polis"
-  },
-  "dependencies": {
-    "cesium": "^1.63.1",
-    "compression": "^1.6.2",
-    "express": "^4.15",
-    "mqtt": "^3.0.0",
-    "request": "^2.79.0",
-    "yargs": "^15.0.2"
-  },
-  "engines": {
-    "node": "0.10.x"
-  }
+    "name": "Polis",
+    "version": "0.0.1",
+    "description": "Polis is a real-time 3D viewer based on Cesium, that displays the buildings in and objects of interest near some base, with necessary metrics.",
+    "homepage": "https://www.showingcloud.com",
+    "license": "Apache-2.0",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ShowingCloud/Polis"
+    },
+    "dependencies": {
+        "cesium": "^1.63.1",
+        "compression": "^1.6.2",
+        "express": "^4.15",
+        "mqtt": "^3.0.0",
+        "request": "^2.79.0",
+        "yargs": "^15.0.2"
+    },
+    "engines": {
+        "node": "0.10.x"
+    },
+    "devDependencies": {
+        "eslint": "^6.1.0",
+        "eslint-config-airbnb": "^18.0.1",
+        "eslint-plugin-import": "^2.19.1",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-react": "^7.17.0",
+        "eslint-plugin-react-hooks": "^1.7.0"
+    },
+    "eslintConfig": {
+        "env": {
+            "es6": true,
+            "mongo": true,
+            "node": true
+        },
+        "extends": "airbnb",
+        "globals": {
+            "Atomics": "readonly",
+            "SharedArrayBuffer": "readonly"
+        },
+        "parserOptions": {
+            "ecmaVersion": 2019,
+            "sourceType": "module"
+        },
+        "rules": {}
+    }
 }
