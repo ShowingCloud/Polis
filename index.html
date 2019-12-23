@@ -19,23 +19,53 @@
     </head>
     <body>
         <div id="cesiumContainer"></div>
+        <div id='loadingbar' class="spinner">
+            <div class="spinner-container container1">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container2">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container3">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+        </div>
+        <div id="bubble" class="bubble" style="bottom: 0; left: 82%; display: none; width: 400px" >
+            <div id="tools" style="text-align: right">
+                <span style="color: rgb(95, 74, 121); padding: 5px; position: absolute; left: 10px; top: 4px">对象属性</span>
+                <span class="fui-export" id="bubblePosition" style="color: darkgrey; padding: 5px" title="停靠"></span>
+                <span class="fui-cross" title="关闭" id="close" style="color: darkgrey; padding: 5px"></span>
+            </div>
+            <div style="overflow-y: scroll; height: 190px" id="tableContainer"><table id="tab"></table></div>
+        </div>
 
         <!-- Some input elements for our app. -->
         <div class="backdrop" id="menu">
             <h2>昌江核电站</h2>
-            <span><strong>Camera Mode</strong></span>
+            <span><strong>设置观察点</strong></span>
             <div class="nowrap">
-                <input id="freeMode" name="source" type="radio" checked/>
-                <label for="freeMode">Free</label>
+                <button id="freeMode" type="button" class="btn btn-primary button black" data-toggle="button" aria-pressed="false" autocomplete="off">自由观察</button>
             </div>
             <div class="nowrap">
-                <input id="droneMode" name="source" type="radio"/>
-                <label for="droneMode">Drone View</label>
+                <button id="droneMode" type="button" class="btn btn-primary button black" data-toggle="button" aria-pressed="false" autocomplete="off">跟踪无人机</button>
+            </div>
+            <span><strong>绘制示意图形</strong></span>
+            <div class="nowrap">
+                <button id="defenceArea" type="button" class="btn btn-primary button black" data-toggle="button" aria-pressed="false" autocomplete="off">绘制防区</button>
+            </div>
+            <div class="nowrap">
+                <button id="radarArea" type="button" class="btn btn-primary button black" data-toggle="button" aria-pressed="false" autocomplete="off">绘制雷达探测区域</button>
             </div>
             <br>
-        </div>
-        <div id="loadingIndicator" class="cover">
-            <div id="loadingIcon" class="loadingIndicator"></div>
         </div>
 
         <script type="text/javascript" src="Source/Secrets.js"></script>

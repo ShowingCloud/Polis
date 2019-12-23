@@ -7,8 +7,10 @@ var onload = async () => {
 
         baseLayerPicker: false,
         geocoder: false,
+        homeButton: true,
         scene3DOnly: true,
-        selectionIndicator: false
+        selectionIndicator: false,
+        timeline: true
     });
 
 
@@ -16,9 +18,7 @@ var onload = async () => {
     scene.screenSpaceCameraController.enableIndoorColliDetection = true
     viewer.customInfobox = $("#bubble")[0]
 
-    // Enable depth testing so things behind the terrain disappear.
     scene.globe.depthTestAgainstTerrain = true;
-
     scene.globe.enableLighting = true;
 
 
@@ -44,10 +44,10 @@ var onload = async () => {
     homeCameraView.pitchAdjustHeight = 2000;
     homeCameraView.endTransform = Cesium.Matrix4.IDENTITY;
     // Override the default home button
-    //viewer.homeButton.viewModel.command.beforeExecute.addEventListener((e) => {
-    //    e.cancel = true;
-    //    scene.camera.flyTo(homeCameraView);
-    //});
+    viewer.homeButton.viewModel.command.beforeExecute.addEventListener((e) => {
+        e.cancel = true;
+        scene.camera.flyTo(homeCameraView);
+    });
 
 
     const start = Cesium.JulianDate.now()
@@ -59,11 +59,11 @@ var onload = async () => {
     viewer.clock.shouldAnimate = true; // default
     viewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
     viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; // loop at the end
-    //viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
+    viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
 
 
     $("#loadingbar").remove()
-    $("#toolbar").show()
+    $("#menu").show()
 
 
     const greenCircle = viewer.entities.add({
@@ -113,24 +113,42 @@ var onload = async () => {
     })
 
 
-    const viewshed3D = new Cesium.ViewShed3D(scene)
-    viewshed3D.direction = 0
-    viewshed3D.hiddenAreaColor = Cesium.Color.GRAY.withAlpha(0.5)
-    viewshed3D.horizontalFov = 179
-    viewshed3D.pitch = 0
-    viewshed3D.verticalFov = 90
-    viewshed3D.viewPosition = POSITION_ROOF_PLANT
-    viewshed3D.visibleAreaColor = Cesium.Color.LAWNGREEN.withAlpha(0.5)
+    const viewshed3D = [];
+    [0, 1].forEach((i) => {
+        viewshed3D[i] = new Cesium.ViewShed3D(scene)
+        viewshed3D[i].hiddenAreaColor = Cesium.Color.GRAY.withAlpha(0.5)
+        viewshed3D[i].horizontalFov = 179
+        viewshed3D[i].pitch = 0
+        viewshed3D[i].verticalFov = 90
+        viewshed3D[i].viewPosition = POSITION_ROOF_PLANT
+        viewshed3D[i].visibleAreaColor = Cesium.Color.LAWNGREEN.withAlpha(0.5)
+    })
+    viewshed3D[0].direction = 0
+    viewshed3D[1].direction = 180
 
     $("#radarArea").click(() => {
         if ($("#radarArea").attr('aria-pressed') == "false") { /* Before toggled */
-            viewshed3D.distance = 1000
-        } else if (viewshed3D) {
-            viewshed3D.distance = 0.1
+            [0, 1].forEach((i) => {
+                viewshed3D[i].distance = 1000
+                viewshed3D[i].build()
+            })
+        } else {
+            [0, 1].forEach((i) => {
+                viewshed3D[i].distance = 0.1
+                viewshed3D[i].build()
+            })
         }
-
-        viewshed3D.build()
     })
+
+
+    $("#freeMode").click(() => {
+        viewer.trackedEntity = undefined;
+        scene.camera.flyTo(homeCameraView);
+    });
+
+    $("#droneMode").click(() => {
+        viewer.trackedEntity = drone;
+    });
 
 
     const positions = new Cesium.SampledPositionProperty()
@@ -177,29 +195,6 @@ var onload = async () => {
                 ).surfaceDistance + ' m', false)
         }
     })
-
-
-    const freeModeElement = $('#freeMode')[0];
-    const droneModeElement = $('#droneMode')[0];
-
-    const setViewMode = () => {
-        if (droneModeElement.checked) {
-            viewer.trackedEntity = drone;
-        } else {
-            viewer.trackedEntity = undefined;
-            scene.camera.flyTo(homeCameraView);
-        }
-    }
-
-    freeModeElement.addEventListener('change', setViewMode);
-    droneModeElement.addEventListener('change', setViewMode);
-
-    viewer.trackedEntityChanged.addEventListener(() => {
-        if (viewer.trackedEntity === drone) {
-            freeModeElement.checked = false;
-            droneModeElement.checked = true;
-        }
-    });
 
 
     const indicator = viewer.entities.add({
