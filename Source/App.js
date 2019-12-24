@@ -1,4 +1,4 @@
-var onload = async () => {
+const onload = async () => {
   const viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider: await Cesium.createTileMapServiceImageryProvider({
       url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII'),
@@ -15,7 +15,7 @@ var onload = async () => {
 
   const { scene } = viewer;
   scene.screenSpaceCameraController.enableIndoorColliDetection = true;
-  viewer.customInfobox = $('#bubble')[0];
+  [viewer.customInfobox] = $('#bubble');
 
   scene.globe.depthTestAgainstTerrain = true;
   scene.globe.enableLighting = true;
@@ -33,7 +33,9 @@ var onload = async () => {
 
   const homeCameraView = {
     destination: Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA),
-    orientation: Cesium.HeadingPitchRoll.fromDegrees(7.1077496389876024807, -31.987223091598949054, 0.025883251314954971306),
+    orientation: Cesium.HeadingPitchRoll.fromDegrees(
+      7.1077496389876024807, -31.987223091598949054, 0.025883251314954971306,
+    ),
   };
   scene.camera.setView(homeCameraView);
 
@@ -101,13 +103,19 @@ var onload = async () => {
     },
   });
 
-  greenCircle.show = yellowCircle.show = redCircle.show = false;
+  greenCircle.show = false;
+  yellowCircle.show = false;
+  redCircle.show = false;
 
   $('#defenceArea').click(() => {
     if ($('#defenceArea').attr('aria-pressed') === 'false') { /* Before toggled */
-      greenCircle.show = yellowCircle.show = redCircle.show = true;
+      greenCircle.show = true;
+      yellowCircle.show = true;
+      redCircle.show = true;
     } else {
-      greenCircle.show = yellowCircle.show = redCircle.show = false;
+      greenCircle.show = false;
+      yellowCircle.show = false;
+      redCircle.show = false;
     }
   });
 
@@ -117,8 +125,8 @@ var onload = async () => {
     viewshed3D[i] = new Cesium.ViewShed3D(scene);
     viewshed3D[i].hiddenAreaColor = Cesium.Color.GRAY.withAlpha(0.5);
     viewshed3D[i].horizontalFov = 179;
-    viewshed3D[i].pitch = 0;
-    viewshed3D[i].verticalFov = 90;
+    viewshed3D[i].pitch = 30;
+    viewshed3D[i].verticalFov = 120;
     viewshed3D[i].viewPosition = POSITION_ROOF_PLANT;
     viewshed3D[i].visibleAreaColor = Cesium.Color.LAWNGREEN.withAlpha(0.5);
   });
@@ -128,7 +136,7 @@ var onload = async () => {
   $('#radarArea').click(() => {
     if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
       [0, 1].forEach((i) => {
-        viewshed3D[i].distance = 1000;
+        viewshed3D[i].distance = 2000;
         viewshed3D[i].build();
       });
     } else {
@@ -144,7 +152,7 @@ var onload = async () => {
 
   positions.setInterpolationOptions({
     interpolationDegree: 5,
-    interpolationAlgorithm: Cesium.LagrangePolynomialApproximation,
+    interpolationAlgorithm: Cesium.LinearApproximation, // Cesium.LagrangePolynomialApproximation,
   });
 
   positions.backwardExtrapolationType = Cesium.ExtrapolationType.HOLD;
@@ -198,7 +206,8 @@ var onload = async () => {
   const indicator = viewer.entities.add({
     name: 'Indicator from Infrared to Drone',
     polyline: {
-      positions: new Cesium.CallbackProperty((time) => [Cesium.Cartesian3.fromDegrees(...POSITION_ROOF_PLANT),
+      positions: new Cesium.CallbackProperty((time) => [
+        Cesium.Cartesian3.fromDegrees(...POSITION_ROOF_PLANT),
         positions.getValue(time),
       ], false),
       width: 1,
@@ -213,7 +222,6 @@ var onload = async () => {
     try {
       const now = Cesium.JulianDate.now();
       // const previousPosition = positions.getValue(now);
-      // positions.addSample(Cesium.JulianDate.addSeconds(now, -5, new Cesium.JulianDate()), previousPosition)
       // positions.addSample(now, previousPosition)
 
       const {
@@ -223,8 +231,9 @@ var onload = async () => {
       const hei = height < 0 ? 0 : height;
       const newPosition = Cesium.Cartesian3.fromDegrees(lon, lat, hei);
 
-      positions.addSample(Cesium.JulianDate.addSeconds(now, 5, new Cesium.JulianDate()), newPosition);
-      // positions.addSample(Cesium.JulianDate.addSeconds(now, 5.1, new Cesium.JulianDate()), newPosition)
+      positions.addSample(Cesium.JulianDate.addSeconds(
+        now, 5, new Cesium.JulianDate(),
+      ), newPosition);
 
       console.log([lon, lat, hei]);
     } catch (error) {
