@@ -1,4 +1,4 @@
-const onload = async () => {
+const documentReady = async () => {
   const viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider: await Cesium.createTileMapServiceImageryProvider({
       url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII'),
@@ -15,7 +15,6 @@ const onload = async () => {
 
   const { scene } = viewer;
   scene.screenSpaceCameraController.enableIndoorColliDetection = true;
-  [viewer.customInfobox] = $('#bubble');
 
   scene.globe.depthTestAgainstTerrain = true;
   scene.globe.enableLighting = true;
@@ -56,10 +55,9 @@ const onload = async () => {
   viewer.clock.startTime = start.clone();
   viewer.clock.stopTime = stop.clone();
   viewer.clock.currentTime = start.clone();
-  // viewer.clock.clockRange = Cesium.ClockRange.CLAMPED
+  viewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
   viewer.clock.shouldAnimate = true; // default
   viewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
-  viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; // loop at the end
   viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
 
 
@@ -71,11 +69,13 @@ const onload = async () => {
     name: 'Green circle within 2000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
-      semiMinorAxis: 2000.0,
-      semiMajorAxis: 2000.0,
+      fill: false,
       height: 70.0,
-      material: Cesium.Color.LAWNGREEN.withAlpha(0.5),
       outline: true,
+      outlineColor: Cesium.Color.LAWNGREEN,
+      outlineWidth: 100.0,
+      semiMajorAxis: 5000.0,
+      semiMinorAxis: 5000.0,
     },
   });
 
@@ -83,11 +83,13 @@ const onload = async () => {
     name: 'Yellow circle within 1000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
-      semiMinorAxis: 1000.0,
-      semiMajorAxis: 1000.0,
+      fill: false,
       height: 70.0,
-      material: Cesium.Color.YELLOW.withAlpha(0.5),
       outline: true,
+      outlineColor: Cesium.Color.YELLOW,
+      outlineWidth: 100.0,
+      semiMajorAxis: 3000.0,
+      semiMinorAxis: 3000.0,
     },
   });
 
@@ -95,11 +97,13 @@ const onload = async () => {
     name: 'Red circle within 500 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
-      semiMinorAxis: 500.0,
-      semiMajorAxis: 500.0,
+      fill: false,
       height: 70.0,
-      material: Cesium.Color.RED.withAlpha(0.5),
       outline: true,
+      outlineColor: Cesium.Color.RED,
+      outlineWidth: 100.0,
+      semiMajorAxis: 1000.0,
+      semiMinorAxis: 1000.0,
     },
   });
 
@@ -222,7 +226,7 @@ const onload = async () => {
     try {
       const now = Cesium.JulianDate.now();
       // const previousPosition = positions.getValue(now);
-      // positions.addSample(now, previousPosition)
+      // positions.addSample(now.clone(), previousPosition);
 
       const {
         longitude, latitude, height, ...others
@@ -230,10 +234,13 @@ const onload = async () => {
       const [lon, lat] = [longitude, latitude].map((n) => Cesium.Math.toDegrees(n));
       const hei = height < 0 ? 0 : height;
       const newPosition = Cesium.Cartesian3.fromDegrees(lon, lat, hei);
-
-      positions.addSample(Cesium.JulianDate.addSeconds(
+      const newTime = Cesium.JulianDate.addSeconds(
         now, 5, new Cesium.JulianDate(),
-      ), newPosition);
+      );
+
+      viewer.clock.stopTime = newTime;
+      positions.addSample(newTime, newPosition);
+      viewer.selectedEntity = drone;
 
       console.log([lon, lat, hei]);
     } catch (error) {

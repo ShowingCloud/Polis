@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=Edge">
         <meta name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+              content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
         <title>昌江核电站</title>
         <link href="Cesium/Widgets/widgets.css" rel="stylesheet">
         <link href="css/font-awesome.min.css" rel="stylesheet">
@@ -14,10 +14,11 @@
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
-        <script type="text/javascript" src="js/require.min.js" data-main="js/main"></script>
+        <script type="text/javascript" src="js/require.min.js" data-main="Source/App"></script>
+        <script type="text/javascript" src="Source/Secrets.js"></script>
         <script type="text/javascript" src="Cesium/Cesium.js"></script>
     </head>
-    <body onload="onload()">
+    <body onload="documentReady()">
         <div id="cesiumContainer"></div>
         <div id='loadingbar' class="spinner">
             <div class="spinner-container container1">
@@ -39,17 +40,7 @@
                 <div class="circle4"></div>
             </div>
         </div>
-        <div id="bubble" class="bubble" style="bottom: 0; left: 82%; display: none; width: 400px" >
-            <div id="tools" style="text-align: right">
-                <span style="color: rgb(95, 74, 121); padding: 5px; position: absolute; left: 10px; top: 4px">对象属性</span>
-                <span class="fui-export" id="bubblePosition" style="color: darkgrey; padding: 5px" title="停靠"></span>
-                <span class="fui-cross" title="关闭" id="close" style="color: darkgrey; padding: 5px"></span>
-            </div>
-            <div style="overflow-y: scroll; height: 190px" id="tableContainer"><table id="tab"></table></div>
-        </div>
-
-        <!-- Some input elements for our app. -->
-        <div class="backdrop" id="menu">
+        <div class="backdrop" id="menu" style="display: none">
             <h2>昌江核电站</h2>
             <span><strong>设置观察点</strong></span>
             <div class="nowrap">
@@ -67,9 +58,5 @@
             </div>
             <br>
         </div>
-
-        <script type="text/javascript" src="Source/Secrets.js"></script>
-        <script type="text/javascript" src="Source/App.js"></script>
-
     </body>
 </html>
