@@ -189,10 +189,15 @@ const documentReady = async () => {
       width: 10,
     },
     label: {
+      fillColor: Cesium.Color.WHITE,
+      font: '15px Helvetica',
+      outlineColor: Cesium.Color.RED,
+      pixelOffset: new Cesium.Cartesian2(0.0, -20),
+      showBackground: true,
       text: new Cesium.CallbackProperty((time) => `${new Cesium.EllipsoidGeodesic(
         Cesium.Cartographic.fromDegrees(...POSITION_ROOF_PLANT),
         Cesium.Cartographic.fromCartesian(positions.getValue(time)),
-      ).surfaceDistance} m`, false),
+      ).surfaceDistance.toFixed(2)} m`, false),
     },
   });
 
@@ -240,7 +245,6 @@ const documentReady = async () => {
 
       viewer.clock.stopTime = newTime;
       positions.addSample(newTime, newPosition);
-      viewer.selectedEntity = drone;
 
       console.log([lon, lat, hei]);
     } catch (error) {
