@@ -145,11 +145,11 @@ ul {
 }
 
 .drawCur{
-    cursor: url(../images/cur/draw.cur), auto;
+    cursor: url(../Images/cur/draw.cur), auto;
 }
 
 .measureCur{
-    cursor: url(../images/cur/measure.cur), auto;
+    cursor: url(../Images/cur/measure.cur), auto;
 }
 
 .handCursor{
