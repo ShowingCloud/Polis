@@ -1,4 +1,25 @@
-const documentReady = async () => {
+const $ = require('jquery');
+
+window.jQuery = $;
+window.$ = $;
+
+require('bootstrap');
+require('bootstrap/dist/css/bootstrap.min.css');
+require('bootstrap-select/js/bootstrap-select');
+require('bootstrap-select/dist/css/bootstrap-select.min.css');
+require('font-awesome/css/font-awesome.min.css');
+require('requirejs');
+
+const Cesium = require('Cesium/Cesium');
+const { POSITION_CAMERA, POSITION_CENTER_REACTOR, POSITION_ROOF_PLANT } = require('./Secrets.js');
+
+require('./css/pretty.css');
+require('./index.css');
+
+require('Cesium/Widgets/widgets.css');
+
+
+$(async () => {
   const viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider: await Cesium.createTileMapServiceImageryProvider({
       url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII'),
@@ -251,4 +272,4 @@ const documentReady = async () => {
       console.log(error);
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-};
+});
