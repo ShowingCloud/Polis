@@ -1,5 +1,5 @@
 const documentReady = async () => {
-  const viewer = new Cesium.Viewer('cesiumContainer', {
+  const mainViewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider: await Cesium.createTileMapServiceImageryProvider({
       url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII'),
     }),
@@ -13,14 +13,14 @@ const documentReady = async () => {
   });
 
 
-  const { scene } = viewer;
-  scene.screenSpaceCameraController.enableIndoorColliDetection = true;
+  const mainScene = mainViewer.scene;
+  mainScene.screenSpaceCameraController.enableIndoorColliDetection = true;
 
-  scene.globe.depthTestAgainstTerrain = true;
-  scene.globe.enableLighting = true;
+  mainScene.globe.depthTestAgainstTerrain = true;
+  mainScene.globe.enableLighting = true;
 
 
-  const layer = await scene.addS3MTilesLayerByScp('s3mdata/Config.scp', {
+  const layer = await mainScene.addS3MTilesLayerByScp('s3mdata/Config.scp', {
     name: 'plant',
   });
 
@@ -32,11 +32,9 @@ const documentReady = async () => {
 
   const homeCameraView = {
     destination: Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA),
-    orientation: Cesium.HeadingPitchRoll.fromDegrees(
-      7.1077496389876024807, -31.987223091598949054, 0.025883251314954971306,
-    ),
+    orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, -90.0, 0.0),
   };
-  scene.camera.setView(homeCameraView);
+  mainScene.camera.setView(homeCameraView);
 
   // Add some camera flight animation options
   homeCameraView.duration = 2.0;
@@ -44,28 +42,45 @@ const documentReady = async () => {
   homeCameraView.pitchAdjustHeight = 2000;
   homeCameraView.endTransform = Cesium.Matrix4.IDENTITY;
   // Override the default home button
-  viewer.homeButton.viewModel.command.beforeExecute.addEventListener((e) => {
+  mainViewer.homeButton.viewModel.command.beforeExecute.addEventListener((e) => {
     e.cancel = true;
-    scene.camera.flyTo(homeCameraView);
+    mainScene.camera.flyTo(homeCameraView);
   });
 
 
   const start = Cesium.JulianDate.now();
   const stop = Cesium.JulianDate.addSeconds(start, 3600, new Cesium.JulianDate());
-  viewer.clock.startTime = start.clone();
-  viewer.clock.stopTime = stop.clone();
-  viewer.clock.currentTime = start.clone();
-  viewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
-  viewer.clock.shouldAnimate = true; // default
-  viewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
-  viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
+  mainViewer.clock.startTime = start.clone();
+  mainViewer.clock.stopTime = stop.clone();
+  mainViewer.clock.currentTime = start.clone();
+  mainViewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
+  mainViewer.clock.shouldAnimate = true; // default
+  mainViewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
+  mainViewer.timeline.zoomTo(mainViewer.clock.startTime, mainViewer.clock.stopTime); // set visible range
 
 
   $('#loadingbar').remove();
   $('#menu').show();
+  $('#radarChart').show();
 
 
-  const greenCircle = viewer.entities.add({
+  const radarViewer = new Cesium.Viewer('radarChart', {
+    sceneMode: Cesium.SceneMode.SCENE2D,
+  });
+
+  radarViewer.scene.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA.slice(0, 2), 15000),
+    orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, 0.0, 0.0),
+  });
+
+  const radarScene = radarViewer.scene;
+  radarScene.screenSpaceCameraController.enableInputs = false;
+
+  $('.cesium-widget-credits').hide();
+  $('#radarChart .cesium-viewer-navigationContainer').hide();
+
+
+  const greenCircle = mainViewer.entities.add({
     name: 'Green circle within 2000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
@@ -79,7 +94,7 @@ const documentReady = async () => {
     },
   });
 
-  const yellowCircle = viewer.entities.add({
+  const yellowCircle = mainViewer.entities.add({
     name: 'Yellow circle within 1000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
@@ -93,7 +108,7 @@ const documentReady = async () => {
     },
   });
 
-  const redCircle = viewer.entities.add({
+  const redCircle = mainViewer.entities.add({
     name: 'Red circle within 500 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
@@ -126,7 +141,7 @@ const documentReady = async () => {
 
   const viewshed3D = [];
   [0, 1].forEach((i) => {
-    viewshed3D[i] = new Cesium.ViewShed3D(scene);
+    viewshed3D[i] = new Cesium.ViewShed3D(mainScene);
     viewshed3D[i].hiddenAreaColor = Cesium.Color.GRAY.withAlpha(0.5);
     viewshed3D[i].horizontalFov = 179;
     viewshed3D[i].pitch = 30;
@@ -165,7 +180,7 @@ const documentReady = async () => {
   positions.addSample(start, Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR));
 
 
-  const drone = viewer.entities.add({
+  const drone = mainViewer.entities.add({
     name: 'Drone',
     availability: new Cesium.TimeIntervalCollection([
       new Cesium.TimeInterval({
@@ -201,18 +216,20 @@ const documentReady = async () => {
     },
   });
 
+  radarViewer.entities.add(drone);
+
 
   $('#freeMode').click(() => {
-    viewer.trackedEntity = undefined;
-    scene.camera.flyTo(homeCameraView);
+    mainViewer.trackedEntity = undefined;
+    mainScene.camera.flyTo(homeCameraView);
   });
 
   $('#droneMode').click(() => {
-    viewer.trackedEntity = drone;
+    mainViewer.trackedEntity = drone;
   });
 
 
-  const indicator = viewer.entities.add({
+  const indicator = mainViewer.entities.add({
     name: 'Indicator from Infrared to Drone',
     polyline: {
       positions: new Cesium.CallbackProperty((time) => [
@@ -225,8 +242,7 @@ const documentReady = async () => {
   });
 
 
-  const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-
+  const handler = new Cesium.ScreenSpaceEventHandler(mainScene.canvas);
   handler.setInputAction((e) => {
     try {
       const now = Cesium.JulianDate.now();
@@ -235,7 +251,7 @@ const documentReady = async () => {
 
       const {
         longitude, latitude, height, ...others
-      } = Cesium.Cartographic.fromCartesian(scene.pickPosition(e.position));
+      } = Cesium.Cartographic.fromCartesian(mainScene.pickPosition(e.position));
       const [lon, lat] = [longitude, latitude].map((n) => Cesium.Math.toDegrees(n));
       const hei = height < 0 ? 0 : height;
       const newPosition = Cesium.Cartesian3.fromDegrees(lon, lat, hei);
@@ -243,9 +259,10 @@ const documentReady = async () => {
         now, 5, new Cesium.JulianDate(),
       );
 
-      viewer.clock.stopTime = newTime;
+      mainViewer.clock.stopTime = newTime;
       positions.addSample(newTime, newPosition);
 
+      console.log(new Cesium.Camera(mainScene));
       console.log([lon, lat, hei]);
     } catch (error) {
       console.log(error);

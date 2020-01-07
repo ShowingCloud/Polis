@@ -66,3 +66,12 @@ button.cesium-infoBox-camera {
 #3DTiles {
     padding-top: 10px;
 }
+
+#radarChart{
+    width: 400px;
+    height: 350px;
+    position: absolute;
+    top: 8px;
+    left: 200px;
+    background-color: rgba(60,136,185,0.8);
+}
