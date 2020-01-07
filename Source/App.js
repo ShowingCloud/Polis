@@ -7,6 +7,7 @@ const documentReady = async () => {
     baseLayerPicker: false,
     geocoder: false,
     homeButton: true,
+    infobox: false,
     scene3DOnly: true,
     selectionIndicator: false,
     timeline: true,
@@ -65,6 +66,7 @@ const documentReady = async () => {
 
 
   const radarViewer = new Cesium.Viewer('radarChart', {
+    infoBox: false,
     sceneMode: Cesium.SceneMode.SCENE2D,
   });
 
@@ -78,6 +80,16 @@ const documentReady = async () => {
 
   $('.cesium-widget-credits').hide();
   $('#radarChart .cesium-viewer-navigationContainer').hide();
+
+  const radarHandler = new Cesium.ScreenSpaceEventHandler(radarScene.canvas);
+  radarHandler.setInputAction(async (e) => {
+    const pickedObject = radarScene.pick(e.position);
+    console.log(pickedObject);
+    if (drone && Cesium.defined(pickedObject) && pickedObject.id === drone) {
+      await mainViewer.flyTo(drone);
+      mainViewer.trackedEntity = drone;
+    }
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
 
   const greenCircle = mainViewer.entities.add({
@@ -220,11 +232,12 @@ const documentReady = async () => {
 
 
   $('#freeMode').click(() => {
-    mainViewer.trackedEntity = undefined;
     mainScene.camera.flyTo(homeCameraView);
+    mainViewer.trackedEntity = undefined;
   });
 
-  $('#droneMode').click(() => {
+  $('#droneMode').click(async () => {
+    await mainViewer.flyTo(drone);
     mainViewer.trackedEntity = drone;
   });
 
