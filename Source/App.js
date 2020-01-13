@@ -57,7 +57,8 @@ const documentReady = async () => {
   mainViewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
   mainViewer.clock.shouldAnimate = true; // default
   mainViewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
-  mainViewer.timeline.zoomTo(mainViewer.clock.startTime, mainViewer.clock.stopTime); // set visible range
+  mainViewer.timeline.zoomTo(mainViewer.clock.startTime,
+    mainViewer.clock.stopTime); // set visible range
 
 
   $('#loadingbar').remove();
@@ -78,22 +79,19 @@ const documentReady = async () => {
   const radarScene = radarViewer.scene;
   radarScene.screenSpaceCameraController.enableInputs = false;
 
+  radarViewer.clock.startTime = start.clone();
+  radarViewer.clock.stopTime = stop.clone();
+  radarViewer.clock.currentTime = start.clone();
+  radarViewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
+  radarViewer.clock.shouldAnimate = true; // default
+  radarViewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
+
   $('.cesium-widget-credits').hide();
   $('#radarChart .cesium-viewer-navigationContainer').hide();
 
-  const radarHandler = new Cesium.ScreenSpaceEventHandler(radarScene.canvas);
-  radarHandler.setInputAction(async (e) => {
-    const pickedObject = radarScene.pick(e.position);
-    console.log(pickedObject);
-    if (drone && Cesium.defined(pickedObject) && pickedObject.id === drone) {
-      await mainViewer.flyTo(drone);
-      mainViewer.trackedEntity = drone;
-    }
-  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-
-  const greenCircle = mainViewer.entities.add({
-    name: 'Green circle within 2000 km',
+  const mainGreenCircle = mainViewer.entities.add({
+    name: 'Green circle within 5000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
       fill: false,
@@ -106,8 +104,22 @@ const documentReady = async () => {
     },
   });
 
-  const yellowCircle = mainViewer.entities.add({
-    name: 'Yellow circle within 1000 km',
+  const radarGreenCircle = radarViewer.entities.add({
+    name: 'Radar white circle within 5000 km',
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
+    ellipse: {
+      fill: false,
+      height: 70.0,
+      outline: true,
+      outlineColor: Cesium.Color.WHITE,
+      outlineWidth: 100.0,
+      semiMajorAxis: 5000.0,
+      semiMinorAxis: 5000.0,
+    },
+  });
+
+  const mainYellowCircle = mainViewer.entities.add({
+    name: 'Yellow circle within 3000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
       fill: false,
@@ -120,8 +132,22 @@ const documentReady = async () => {
     },
   });
 
-  const redCircle = mainViewer.entities.add({
-    name: 'Red circle within 500 km',
+  const radarYellowCircle = radarViewer.entities.add({
+    name: 'Radar white circle within 3000 km',
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
+    ellipse: {
+      fill: false,
+      height: 70.0,
+      outline: true,
+      outlineColor: Cesium.Color.WHITE,
+      outlineWidth: 100.0,
+      semiMajorAxis: 3000.0,
+      semiMinorAxis: 3000.0,
+    },
+  });
+
+  const mainRedCircle = mainViewer.entities.add({
+    name: 'Red circle within 1000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
     ellipse: {
       fill: false,
@@ -134,19 +160,33 @@ const documentReady = async () => {
     },
   });
 
-  greenCircle.show = false;
-  yellowCircle.show = false;
-  redCircle.show = false;
+  const radarRedCircle = radarViewer.entities.add({
+    name: 'Radar white circle within 1000 km',
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
+    ellipse: {
+      fill: false,
+      height: 70.0,
+      outline: true,
+      outlineColor: Cesium.Color.WHITE,
+      outlineWidth: 100.0,
+      semiMajorAxis: 1000.0,
+      semiMinorAxis: 1000.0,
+    },
+  });
+
+  mainGreenCircle.show = false;
+  mainYellowCircle.show = false;
+  mainRedCircle.show = false;
 
   $('#defenceArea').click(() => {
     if ($('#defenceArea').attr('aria-pressed') === 'false') { /* Before toggled */
-      greenCircle.show = true;
-      yellowCircle.show = true;
-      redCircle.show = true;
+      mainGreenCircle.show = true;
+      mainYellowCircle.show = true;
+      mainRedCircle.show = true;
     } else {
-      greenCircle.show = false;
-      yellowCircle.show = false;
-      redCircle.show = false;
+      mainGreenCircle.show = false;
+      mainYellowCircle.show = false;
+      mainRedCircle.show = false;
     }
   });
 
@@ -179,56 +219,73 @@ const documentReady = async () => {
   });
 
 
-  const positions = new Cesium.SampledPositionProperty();
+  const positions = [];
+  const drone = [];
+  [0, 1, 2, 3].forEach((i) => {
+    positions[i] = new Cesium.SampledPositionProperty();
 
-  positions.setInterpolationOptions({
-    interpolationDegree: 5,
-    interpolationAlgorithm: Cesium.LinearApproximation, // Cesium.LagrangePolynomialApproximation,
+    positions[i].setInterpolationOptions({
+      interpolationDegree: 2,
+      interpolationAlgorithm: Cesium.LinearApproximation, // Cesium.HermitePolynomialApproximation,
+    });
+
+    positions[i].backwardExtrapolationType = Cesium.ExtrapolationType.HOLD;
+    positions[i].forwardExtrapolationType = Cesium.ExtrapolationType.HOLD;
+
+    positions[i].addSample(start, Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR));
+
+
+    drone[i] = mainViewer.entities.add({
+      name: `Drone ${i}`,
+      availability: new Cesium.TimeIntervalCollection([
+        new Cesium.TimeInterval({
+          start,
+          stop,
+        }),
+      ]),
+      model: {
+        uri: 'Models/CesiumDrone.gltf',
+        minimumPixelSize: 16,
+      },
+      position: positions[i],
+      orientation: new Cesium.VelocityOrientationProperty(positions[i]),
+      path: {
+        resolution: 1,
+        material: new Cesium.PolylineGlowMaterialProperty({
+          glowPower: 0.1,
+          color: Cesium.Color.YELLOW,
+        }),
+        trailTime: 60,
+        width: 10,
+      },
+      label: {
+        fillColor: Cesium.Color.WHITE,
+        font: '15px Helvetica',
+        outlineColor: Cesium.Color.RED,
+        pixelOffset: new Cesium.Cartesian2(0.0, -20),
+        showBackground: true,
+        text: new Cesium.CallbackProperty((time) => `${new Cesium.EllipsoidGeodesic(
+          Cesium.Cartographic.fromDegrees(...POSITION_ROOF_PLANT),
+          Cesium.Cartographic.fromCartesian(positions[i].getValue(time)),
+        ).surfaceDistance.toFixed(2)} m`, false),
+      },
+    });
+
+    radarViewer.entities.add(drone[i]);
+
+
+    mainViewer.entities.add({
+      name: 'Indicator from Infrared to Drone',
+      polyline: {
+        positions: new Cesium.CallbackProperty((time) => [
+          Cesium.Cartesian3.fromDegrees(...POSITION_ROOF_PLANT),
+          positions[i].getValue(time),
+        ], false),
+        width: 1,
+        material: Cesium.Color.RED,
+      },
+    });
   });
-
-  positions.backwardExtrapolationType = Cesium.ExtrapolationType.HOLD;
-  positions.forwardExtrapolationType = Cesium.ExtrapolationType.HOLD;
-
-  positions.addSample(start, Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR));
-
-
-  const drone = mainViewer.entities.add({
-    name: 'Drone',
-    availability: new Cesium.TimeIntervalCollection([
-      new Cesium.TimeInterval({
-        start,
-        stop,
-      }),
-    ]),
-    model: {
-      uri: 'Models/CesiumDrone.gltf',
-      minimumPixelSize: 16,
-    },
-    position: positions,
-    orientation: new Cesium.VelocityOrientationProperty(positions),
-    path: {
-      resolution: 1,
-      material: new Cesium.PolylineGlowMaterialProperty({
-        glowPower: 0.1,
-        color: Cesium.Color.YELLOW,
-      }),
-      trailTime: 60,
-      width: 10,
-    },
-    label: {
-      fillColor: Cesium.Color.WHITE,
-      font: '15px Helvetica',
-      outlineColor: Cesium.Color.RED,
-      pixelOffset: new Cesium.Cartesian2(0.0, -20),
-      showBackground: true,
-      text: new Cesium.CallbackProperty((time) => `${new Cesium.EllipsoidGeodesic(
-        Cesium.Cartographic.fromDegrees(...POSITION_ROOF_PLANT),
-        Cesium.Cartographic.fromCartesian(positions.getValue(time)),
-      ).surfaceDistance.toFixed(2)} m`, false),
-    },
-  });
-
-  radarViewer.entities.add(drone);
 
 
   $('#freeMode').click(() => {
@@ -237,48 +294,47 @@ const documentReady = async () => {
   });
 
   $('#droneMode').click(async () => {
-    await mainViewer.flyTo(drone);
-    mainViewer.trackedEntity = drone;
+    await mainViewer.flyTo(drone[0]);
+    mainViewer.trackedEntity = drone[0];
   });
 
 
-  const indicator = mainViewer.entities.add({
-    name: 'Indicator from Infrared to Drone',
-    polyline: {
-      positions: new Cesium.CallbackProperty((time) => [
-        Cesium.Cartesian3.fromDegrees(...POSITION_ROOF_PLANT),
-        positions.getValue(time),
-      ], false),
-      width: 1,
-      material: Cesium.Color.RED,
-    },
+  const mqttClient = mqtt.connect('mqtt://www.51kongkong.com:61623', {
+    username: 'admin',
+    password: 'password',
   });
 
+  mqttClient.on('connect', () => {
+    mqttClient.subscribe('/CC/MsgForAntiUAV/Radar/+', (err) => {
+      if (err) alert(`Error: ${err}`);
+    });
+  });
 
-  const handler = new Cesium.ScreenSpaceEventHandler(mainScene.canvas);
-  handler.setInputAction((e) => {
-    try {
+  mqttClient.on('message', (topic, message) => {
+    if (topic === 'CC/MsgForAntiUAV/Radar/1'
+      || topic === 'CC/MsgForAntiUAV/Radar/2') {
       const now = Cesium.JulianDate.now();
-      // const previousPosition = positions.getValue(now);
-      // positions.addSample(now.clone(), previousPosition);
 
-      const {
-        longitude, latitude, height, ...others
-      } = Cesium.Cartographic.fromCartesian(mainScene.pickPosition(e.position));
-      const [lon, lat] = [longitude, latitude].map((n) => Cesium.Math.toDegrees(n));
-      const hei = height < 0 ? 0 : height;
-      const newPosition = Cesium.Cartesian3.fromDegrees(lon, lat, hei);
+      const { TargetId, X, Y, Z, ...others } = JSON.parse(message);
+      const newPosition = Cesium.Cartesian3.fromDegrees(X, Y, Z);
       const newTime = Cesium.JulianDate.addSeconds(
-        now, 5, new Cesium.JulianDate(),
+        now, 1, new Cesium.JulianDate(),
       );
 
-      mainViewer.clock.stopTime = newTime;
-      positions.addSample(newTime, newPosition);
+      if (Cesium.JulianDate.compare(mainViewer.clock.stopTime, newTime) < 0) {
+        mainViewer.clock.stopTime = newTime;
+        radarViewer.clock.stopTime = newTime;
+      }
+      positions[TargetId].addSample(newTime, newPosition);
+    }
+  });
 
-      console.log(new Cesium.Camera(mainScene));
-      console.log([lon, lat, hei]);
-    } catch (error) {
-      console.log(error);
+  const radarHandler = new Cesium.ScreenSpaceEventHandler(radarScene.canvas);
+  radarHandler.setInputAction(async (e) => {
+    const pickedObject = radarScene.pick(e.position);
+    if (Cesium.defined(pickedObject)) {
+      await mainViewer.flyTo(pickedObject.id);
+      mainViewer.trackedEntity = pickedObject.id;
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 };
