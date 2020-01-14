@@ -34,14 +34,14 @@ const documentReady = async () => {
   const homeCameraView = {
     destination: Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA),
     orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, -90.0, 0.0),
+
+    duration: 2.0,
+    endTransform: Cesium.Matrix4.IDENTITY,
+    maximumHeight: 2000,
+    pitchAdjustHeight: 2000,
   };
   mainScene.camera.setView(homeCameraView);
 
-  // Add some camera flight animation options
-  homeCameraView.duration = 2.0;
-  homeCameraView.maximumHeight = 2000;
-  homeCameraView.pitchAdjustHeight = 2000;
-  homeCameraView.endTransform = Cesium.Matrix4.IDENTITY;
   // Override the default home button
   mainViewer.homeButton.viewModel.command.beforeExecute.addEventListener((e) => {
     e.cancel = true;
@@ -51,12 +51,14 @@ const documentReady = async () => {
 
   const start = Cesium.JulianDate.now();
   const stop = Cesium.JulianDate.addSeconds(start, 3600, new Cesium.JulianDate());
-  mainViewer.clock.startTime = start.clone();
-  mainViewer.clock.stopTime = stop.clone();
-  mainViewer.clock.currentTime = start.clone();
-  mainViewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
-  mainViewer.clock.shouldAnimate = true; // default
-  mainViewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
+  mainViewer.clock = {
+    clockRange: Cesium.ClockRange.CLAMPED,
+    clockStep: Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER, // tick computation mode
+    currentTime: start.clone(),
+    shouldAnimate: true, // default
+    startTime: start.clone(),
+    stopTime: stop.clone(),
+  };
   mainViewer.timeline.zoomTo(mainViewer.clock.startTime,
     mainViewer.clock.stopTime); // set visible range
 
@@ -79,12 +81,7 @@ const documentReady = async () => {
   const radarScene = radarViewer.scene;
   radarScene.screenSpaceCameraController.enableInputs = false;
 
-  radarViewer.clock.startTime = start.clone();
-  radarViewer.clock.stopTime = stop.clone();
-  radarViewer.clock.currentTime = start.clone();
-  radarViewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
-  radarViewer.clock.shouldAnimate = true; // default
-  radarViewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
+  radarViewer.clock = mainViewer.clock;
 
   $('.cesium-widget-credits').hide();
   $('#radarChart .cesium-viewer-navigationContainer').hide();
@@ -194,12 +191,14 @@ const documentReady = async () => {
   const viewshed3D = [];
   [0, 1].forEach((i) => {
     viewshed3D[i] = new Cesium.ViewShed3D(mainScene);
-    viewshed3D[i].hiddenAreaColor = Cesium.Color.GRAY.withAlpha(0.5);
-    viewshed3D[i].horizontalFov = 179;
-    viewshed3D[i].pitch = 30;
-    viewshed3D[i].verticalFov = 120;
-    viewshed3D[i].viewPosition = POSITION_ROOF_PLANT;
-    viewshed3D[i].visibleAreaColor = Cesium.Color.LAWNGREEN.withAlpha(0.5);
+    Object.assign(viewshed3D[i], {
+      hiddenAreaColor: Cesium.Color.GRAY.withAlpha(0.5),
+      horizontalFov: 179,
+      pitch: 30,
+      verticalFov: 120,
+      viewPosition: POSITION_ROOF_PLANT,
+      visibleAreaColor: Cesium.Color.LAWNGREEN.withAlpha(0.5),
+    });
   });
   viewshed3D[0].direction = 0;
   viewshed3D[1].direction = 180;
@@ -250,11 +249,12 @@ const documentReady = async () => {
       position: positions[i],
       orientation: new Cesium.VelocityOrientationProperty(positions[i]),
       path: {
-        resolution: 1,
+        leadTime: 0,
         material: new Cesium.PolylineGlowMaterialProperty({
           glowPower: 0.1,
           color: Cesium.Color.YELLOW,
         }),
+        resolution: 1,
         trailTime: 60,
         width: 10,
       },
@@ -277,12 +277,12 @@ const documentReady = async () => {
     mainViewer.entities.add({
       name: 'Indicator from Infrared to Drone',
       polyline: {
+        material: Cesium.Color.RED,
         positions: new Cesium.CallbackProperty((time) => [
           Cesium.Cartesian3.fromDegrees(...POSITION_ROOF_PLANT),
           positions[i].getValue(time),
         ], false),
         width: 1,
-        material: Cesium.Color.RED,
       },
     });
   });
@@ -295,7 +295,7 @@ const documentReady = async () => {
 
   $('#droneMode').click(async () => {
     await mainViewer.flyTo(drone[0]);
-    mainViewer.trackedEntity = drone[0];
+    [mainViewer.trackedEntity] = drone;
   });
 
 
