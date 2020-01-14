@@ -299,11 +299,7 @@ const documentReady = async () => {
   });
 
 
-  const mqttClient = mqtt.connect('mqtt://www.51kongkong.com:61623', {
-    username: 'admin',
-    password: 'password',
-  });
-
+  const mqttClient = mqtt.connect(MQTT_SERVER, MQTT_CREDENTIAL);
   mqttClient.on('connect', () => {
     mqttClient.subscribe('/CC/MsgForAntiUAV/Radar/+', (err) => {
       if (err) alert(`Error: ${err}`);
@@ -315,7 +311,9 @@ const documentReady = async () => {
       || topic === 'CC/MsgForAntiUAV/Radar/2') {
       const now = Cesium.JulianDate.now();
 
-      const { TargetId, X, Y, Z, ...others } = JSON.parse(message);
+      const {
+        TargetId, X, Y, Z, ...others
+      } = JSON.parse(message);
       const newPosition = Cesium.Cartesian3.fromDegrees(X, Y, Z);
       const newTime = Cesium.JulianDate.addSeconds(
         now, 1, new Cesium.JulianDate(),
