@@ -33,7 +33,7 @@ const documentReady = async () => {
 
   const homeCameraView = {
     destination: Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA),
-    orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, -90.0, 0.0),
+    orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, -60.0, 0.0),
 
     duration: 2.0,
     endTransform: Cesium.Matrix4.IDENTITY,
@@ -242,22 +242,6 @@ const documentReady = async () => {
           stop,
         }),
       ]),
-      model: {
-        uri: 'Models/CesiumDrone.gltf',
-        minimumPixelSize: 16,
-      },
-      position: positions[i],
-      orientation: new Cesium.VelocityOrientationProperty(positions[i]),
-      path: {
-        leadTime: 0,
-        material: new Cesium.PolylineGlowMaterialProperty({
-          glowPower: 0.1,
-          color: Cesium.Color.YELLOW,
-        }),
-        resolution: 1,
-        trailTime: 60,
-        width: 10,
-      },
       label: {
         fillColor: Cesium.Color.WHITE,
         font: '15px Helvetica',
@@ -269,6 +253,23 @@ const documentReady = async () => {
           Cesium.Cartographic.fromCartesian(positions[i].getValue(time)),
         ).surfaceDistance.toFixed(2)} m`, false),
       },
+      model: {
+        uri: 'Models/CesiumDrone.gltf',
+        minimumPixelSize: 16,
+      },
+      orientation: new Cesium.VelocityOrientationProperty(positions[i]),
+      path: {
+        leadTime: 0,
+        material: new Cesium.PolylineGlowMaterialProperty({
+          glowPower: 0.1,
+          color: Cesium.Color.YELLOW,
+        }),
+        resolution: 1,
+        trailTime: 60,
+        width: 10,
+      },
+      position: positions[i],
+      viewFrom: new Cesium.Cartesian3(0.0, -100.0 * Math.cos(0.5), 100.0 * Math.sin(0.5)),
     });
 
     radarViewer.entities.add(drone[i]);
@@ -294,7 +295,9 @@ const documentReady = async () => {
   });
 
   $('#droneMode').click(async () => {
-    await mainViewer.flyTo(drone[0]);
+    await mainViewer.flyTo(drone[0], {
+      offset: new Cesium.HeadingPitchRange(0.0, -0.5, 100.0),
+    });
     [mainViewer.trackedEntity] = drone;
   });
 
@@ -322,7 +325,7 @@ const documentReady = async () => {
         mainViewer.clock.stopTime = newTime;
         radarViewer.clock.stopTime = newTime;
       }
-      positions[TargetId].addSample(newTime, newPosition);
+      positions[TargetId - 1].addSample(newTime, newPosition);
     }
   });
 
@@ -330,7 +333,9 @@ const documentReady = async () => {
   radarHandler.setInputAction(async (e) => {
     const pickedObject = radarScene.pick(e.position);
     if (Cesium.defined(pickedObject)) {
-      await mainViewer.flyTo(pickedObject.id);
+      await mainViewer.flyTo(pickedObject.id, {
+        offset: new Cesium.HeadingPitchRange(0.0, -0.5, 100.0),
+      });
       mainViewer.trackedEntity = pickedObject.id;
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
