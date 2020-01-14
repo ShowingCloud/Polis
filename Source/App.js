@@ -307,8 +307,7 @@ const documentReady = async () => {
   });
 
   mqttClient.on('message', (topic, message) => {
-    if (topic === 'CC/MsgForAntiUAV/Radar/1'
-      || topic === 'CC/MsgForAntiUAV/Radar/2') {
+    if (topic.match(/CC\/MsgForAntiUAV\/Radar\/[0-9]/)) {
       const now = Cesium.JulianDate.now();
 
       const {
