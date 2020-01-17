@@ -52,6 +52,7 @@ app.use('/Cesium', express.static(`${__dirname}/Source/Cesium/`));
 app.use('/MQTT', express.static(`${__dirname}/node_modules/mqtt/dist/`));
 app.use('/js', express.static(`${__dirname}/Source/js/`));
 app.use('/css', express.static(`${__dirname}/Source/css/`));
+app.use('/images', express.static(`${__dirname}/Source/Images/`));
 app.use('/fonts', express.static(`${__dirname}/Source/fonts/`));
 app.use('/Models', express.static(`${__dirname}/Source/Models/`));
 app.use('/s3mdata', express.static(`${__dirname}/Source/s3mdata/`));

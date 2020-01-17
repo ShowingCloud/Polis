@@ -81,6 +81,11 @@ const documentReady = async () => {
   const radarScene = radarViewer.scene;
   radarScene.screenSpaceCameraController.enableInputs = false;
 
+  radarViewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+    url: 'images/leidatu.jpg',
+    rectangle: Cesium.Rectangle.fromDegrees(...POSITION_RADAR_RANGE),
+  }));
+
   radarViewer.clock = mainViewer.clock;
 
   $('.cesium-widget-credits').hide();
@@ -101,20 +106,6 @@ const documentReady = async () => {
     },
   });
 
-  const radarGreenCircle = radarViewer.entities.add({
-    name: 'Radar white circle within 5000 km',
-    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
-    ellipse: {
-      fill: false,
-      height: 70.0,
-      outline: true,
-      outlineColor: Cesium.Color.WHITE,
-      outlineWidth: 100.0,
-      semiMajorAxis: 5000.0,
-      semiMinorAxis: 5000.0,
-    },
-  });
-
   const mainYellowCircle = mainViewer.entities.add({
     name: 'Yellow circle within 3000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
@@ -129,20 +120,6 @@ const documentReady = async () => {
     },
   });
 
-  const radarYellowCircle = radarViewer.entities.add({
-    name: 'Radar white circle within 3000 km',
-    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
-    ellipse: {
-      fill: false,
-      height: 70.0,
-      outline: true,
-      outlineColor: Cesium.Color.WHITE,
-      outlineWidth: 100.0,
-      semiMajorAxis: 3000.0,
-      semiMinorAxis: 3000.0,
-    },
-  });
-
   const mainRedCircle = mainViewer.entities.add({
     name: 'Red circle within 1000 km',
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
@@ -151,20 +128,6 @@ const documentReady = async () => {
       height: 70.0,
       outline: true,
       outlineColor: Cesium.Color.RED,
-      outlineWidth: 100.0,
-      semiMajorAxis: 1000.0,
-      semiMinorAxis: 1000.0,
-    },
-  });
-
-  const radarRedCircle = radarViewer.entities.add({
-    name: 'Radar white circle within 1000 km',
-    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER_REACTOR),
-    ellipse: {
-      fill: false,
-      height: 70.0,
-      outline: true,
-      outlineColor: Cesium.Color.WHITE,
       outlineWidth: 100.0,
       semiMajorAxis: 1000.0,
       semiMinorAxis: 1000.0,
