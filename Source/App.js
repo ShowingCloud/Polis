@@ -32,7 +32,17 @@ const documentReady = async () => {
 
 
   const homeCameraView = {
-    destination: Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA),
+    destination: Cesium.Cartesian3.add(
+      Cesium.Matrix4.multiplyByPointAsVector(
+        Cesium.Transforms.eastNorthUpToFixedFrame(
+          Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA.slice(0, 2))
+        ),
+        new Cesium.Cartesian3(0, -1000 / Math.tan(Math.PI / 3)),
+        new Cesium.Cartesian3()
+      ),
+      Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA.slice(0, 2), 1000),
+      new Cesium.Cartesian3()
+    ),
     orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, -60.0, 0.0),
 
     duration: 2.0,
