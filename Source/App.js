@@ -37,10 +37,11 @@ const documentReady = async () => {
         Cesium.Transforms.eastNorthUpToFixedFrame(
           Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA.slice(0, 2))
         ),
-        new Cesium.Cartesian3(0, -1000 / Math.tan(Math.PI / 3)),
+        // new Cesium.Cartesian3(0, -1000 / Math.tan(Math.PI / 3), 1000),
+        new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(- Math.PI / 2, Math.PI / 6, 1000.0 / Math.sin(Math.PI / 3))),
         new Cesium.Cartesian3()
       ),
-      Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA.slice(0, 2), 1000),
+      Cesium.Cartesian3.fromDegrees(...POSITION_CAMERA.slice(0, 2)),
       new Cesium.Cartesian3()
     ),
     orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, -60.0, 0.0),
