@@ -6,9 +6,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<title>打开三维场景</title>
 		<link href="Source/Cesium/Widgets/widgets.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="Source/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="Source/css/bootstrap.min.css">
 		<link rel="stylesheet" href="Source/css/font-awesome.min.css">
-		<link rel="stylesheet" type="text/css" href="Source/index.css" />
+		<link rel="stylesheet" type="text/css" href="Source/index.css">
 		<style>
 			html,
 			body,
@@ -102,10 +102,10 @@
 					<div class="col-xs-4"></div>
 					<div class="col-xs-4" id="alarmType">
 						<ul>
-							<li class="alarm1"><b class="tt">打击告警</b><b class="shuzi" style="left: 78%;">5</b></li>
-							<li class="alarm2"><b class="tt">处置告警</b><b class="shuzi">12</b></li>
-							<li class="alarm3"><b class="tt">警戒告警</b><b class="shuzi">21</b></li>
-							<li class="alarm4"><b class="tt">阵地告警</b><b class="shuzi">95</b></li>
+							<li class="alarm1"><b class="tt">打击告警</b><b class="shuzi" style="left: 78%;">{{WarnNum.blowNum}}</b></li>
+							<li class="alarm2"><b class="tt">处置告警</b><b class="shuzi">{{WarnNum.disposeNum}}</b></li>
+							<li class="alarm3"><b class="tt">警戒告警</b><b class="shuzi">{{WarnNum.warnNum}}</b></li>
+							<li class="alarm4"><b class="tt">阵地告警</b><b class="shuzi">{{WarnNum.positionNum}}</b></li>
 						</ul>
 					</div>
 					<div class="col-xs-4"></div>

@@ -23,6 +23,11 @@ var vm = new Vue({
     adsbIndex: 0,
     //目标集合
     targetArr:[]
+    //告警数量
+    WarnNum:"",
+    //光电自动跟踪
+    gdAuto:false,
+
   },
   methods: {
     leidaIndexJian: function() {
@@ -139,7 +144,7 @@ function onload(Cesium) {
   
   try {
     //加载在线天地图
-    var imageryLayers = viewer.imageryLayers;
+    /* var imageryLayers = viewer.imageryLayers;
     imageryLayers.addImageryProvider(new Cesium.TiandituImageryProvider({
       credit: new Cesium.Credit('天地图全球影像服务     数据来源：国家地理信息公共服务平台 & 四川省测绘地理信息局'),
       token: '4a00a1dc5387b8ed8adba3374bd87e5e'
@@ -149,7 +154,7 @@ function onload(Cesium) {
       mapStyle: Cesium.TiandituMapsStyle.CIA_C, //天地图全球中文注记服务（经纬度投影）
       token: '4a00a1dc5387b8ed8adba3374bd87e5e'
     });
-    imageryLayers.addImageryProvider(labelImagery);
+    imageryLayers.addImageryProvider(labelImagery); */
     
     //添加S3M图层服务
     //var promise = scene.open(host + partOfUrl);
@@ -345,7 +350,7 @@ function onload(Cesium) {
   
   
   //光电线测试
-  viewer.entities.add({
+  var gdx = viewer.entities.add({
     polyline: {
       //时间回调获取位置
       positions: new Cesium.CallbackProperty(function(time, result) {
@@ -387,22 +392,35 @@ function onload(Cesium) {
   
   connect('www.51kongkong.com', 61623, "admin", "password", "clientTest" + Math.random(100), function(isConnected) {
     if (isConnected) {
+      //subscribe("/#", 0);
       //无人机坐标点消息
       subscribe("/CC/MsgForAntiUAV/Drone/#", 0);
       //雷达信息消息
       subscribe("/CC/MsgForAntiUAV/Radar/#", 0);
       //光电信息
       subscribe("/CC/MsgForAntiUAV/GuangDian/#", 0);
+      //光电目标离开信息
+      subscribe("/CC/MsgForAntiUAV/GuangDianOut/#", 0);
+      //光电控制云台信息
+      subscribe("/CC/MsgForAntiUAV/GuangDianCtrl/#", 0);
+      //光电自动跟踪
+      subscribe("/CC/MsgForAntiUAV/GuangDianAuto/#", 0);
       //电子侦查信息
       subscribe("/CC/MsgForAntiUAV/DianZhen/#", 0);
       //电子侦查信息目标离开
       subscribe("/CC/MsgForAntiUAV/DianZhenOut/#", 0);
       //协议破解信息
       subscribe("/CC/MsgForAntiUAV/Crack/#", 0);
+      //协议破解信息目标离开
+      subscribe("/CC/MsgForAntiUAV/CrackOut/#", 0);
       //ADS-B信息
       subscribe("/CC/MsgForAntiUAV/ADSB/#", 0);
+      //ADS-B目标离开
+      subscribe("/CC/MsgForAntiUAV/ADSBOut/#", 0);
       //雷达通知无人机离开
       subscribe("/CC/MsgForAntiUAV/DroneOut/#", 0);
+      //告警数量
+      subscribe("/CC/MsgForAntiUAV/Warning/#", 0);
     }
     
   }, function(msg) {
@@ -414,6 +432,9 @@ function onload(Cesium) {
         let airId = JSON.parse(msg.payloadString);
         if(airArr.get(airId.id)!=undefined){
           viewer.entities.remove(airArr.get(airId.id));
+          viewer.entities.remove(gzxArr.get(airId.id));
+          viewer.entities.remove(gzxArr2.get(airId.id));
+          viewer.entities.remove(gzxArr3.get(airId.id));
           delete airArr[airId.id];
           
           for(let i=0;i<vm.targetArr.length;i++){
@@ -707,6 +728,28 @@ function onload(Cesium) {
       }
       console.log(vm.leidaArr)
     } else if (msg.topic.indexOf("GuangDian") != -1) {
+      if(msg.topic.indexOf("GuangDianOut") != -1){
+        vm.gdInfo = "";
+        return;
+      }else if(msg.topic.indexOf("GuangDianCtrl") != -1){
+        let info = JSON.parse(msg.payloadString);
+        //if(!vm.gdAuto){
+          fw = info.azimuth;
+          fy = info.overlookAngle;
+          s = info.distance;
+        //}
+        return;
+      }else if(msg.topic.indexOf("GuangDianAuto") != -1){
+        if(msg.payloadString=="on"){
+          vm.gdAuto = true;
+          gdx._show = false;
+        }else if(msg.payloadString=="off"){
+          vm.gdAuto = false;
+          gdx._show = true;
+        }
+        console.log(vm.gdAuto)
+        return;
+      }
       var info = JSON.parse(msg.payloadString);
       //console.log(info)
       vm.gdInfo = info;
@@ -773,6 +816,8 @@ function onload(Cesium) {
       if (flag) {
         vm.adsbArr.push(info);
       }
+    }else if (msg.topic.indexOf("Warning") != -1) {^M
+      vm.WarnNum = JSON.parse(msg.payloadString);^M
     }
   });
   //去除底部logo
