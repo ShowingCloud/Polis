@@ -222,6 +222,8 @@ function onload(Cesium) {
     }
   }
 
+  $('#loadingbar').remove();
+
   // 站1
   const water1 = viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(lon1, lat1, hei1),

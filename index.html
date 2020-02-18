@@ -7,39 +7,9 @@
 		<title>打开三维场景</title>
 		<link href="Source/Cesium/Widgets/widgets.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="Source/css/bootstrap.min.css">
-		<link rel="stylesheet" href="Source/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="Source/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="Source/css/pretty.css">
 		<link rel="stylesheet" type="text/css" href="Source/index.css">
-		<style>
-			html,
-			body,
-			#cesiumContainer {
-				width: 100%;
-				height: 100%;
-				margin: 0;
-				padding: 0;
-				overflow: hidden;
-			}
-
-			#latlng_show{
-				width: 100%;
-				height: 30px;
-				position: absolute;
-				top: 150px;
-				left: -50px;
-				z-index: 1;
-				font-size: 15px;
-				line-height: 20px;
-				text-align: right;
-				display: flex;
-				justify-content: flex-end;
-				color:white;
-				
-			}
-			#latlng_show>div{
-				margin-right: 15px;
-			}
-			
-		</style>
 	</head>
 	<body>
 		<div  style="pointer-events:auto;position: absolute;top: 100px;left: 30px;z-index: 10000;">
@@ -455,6 +425,27 @@
 				<div>海拔：<span id="elevation_show">0</span></div>
 			</div>
 		</div>
+
+        <div id='loadingbar' class="spinner">
+            <div class="spinner-container container1">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container2">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container3">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+        </div>
 
 		<script src="Source/js/jquery.min.js"></script>
 		<script src="Source/js/spectrum.js"></script>

@@ -8,6 +8,25 @@ h1,h2,h3,h4,h5,h6{
     margin: 0!important;
 }
 
+#latlng_show {
+    width: 100%;
+    height: 30px;
+    position: absolute;
+    top: 150px;
+    left: -50px;
+    z-index: 1;
+    font-size: 15px;
+    line-height: 20px;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    color:white;
+}
+
+#latlng_show > div {
+    margin-right: 15px;
+}
+
 ul{
     display: inline-block;
     margin: 0;
