@@ -1,77 +1,566 @@
-.backdrop {
+html,body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+h1,h2,h3,h4,h5,h6{
+    margin: 0!important;
+}
+
+ul{
     display: inline-block;
-    background: rgba(42, 42, 42, 0.7);
-    border-radius: 5px;
-    border: 1px solid #444;
-    padding: 5px 10px;
-    color: #fff;
-    line-height: 150%;
-    font-size: small;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    height: 100%;
 }
 
-#heightSliderLabel, #heightValue {
-    vertical-align: top;
+li{
+    display: inline-block;
+    height: 100%;
 }
 
-.backdrop a:link, .backdrop a:visited, .backdrop a:hover {
-    color: #fff
+a{
+    text-decoration: none;
+    color: inherit!important;
 }
 
-.loadingIndicator {
-    display: none;
+a:link {
+    text-decoration: none;
+    color: inherit!important;
+}
+
+a:hover {
+    text-decoration: none;
+    color: inherit!important;
+}
+
+a:visited {
+    text-decoration: none;
+    color: inherit!important;
+}
+
+a:active {
+    text-decoration: none;
+    color: inherit!important;
+}
+
+.myHide{
+    width: 1%!important;
+}
+
+.myLeft{
+    left: 27%!important;
+}
+
+
+body{
+    background: url("Images/阴影.png") no-repeat,url("Images/背景.png") no-repeat;
+    background-size: cover;
+}
+
+#main{
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    
+}
+div{
+    margin: 0!important;
+    padding: 0!important;
+}
+#top{
+    width: 100%;
+    height: 80px;
+}
+#top_center{
+    background: url("Images/顶部框.png") no-repeat center center;
+    background-size: contain;
+    height: 100%;
+    text-align: center;
+}
+
+#top_center h2{
+    line-height: 80px;
+    color: white;
+    font-weight: 500;
+    font-size: 2.5em;
+}
+#top_left{
+    height: 100%;
+}
+#top_left_top p{
+    color: rgb(125,191,215);
+    font-size: 14px;
+    font-weight: 400;
+    height: 12px;
+}
+#top_left_bottom p{
+    color: rgb(235,179,0);
+    font-size: 15px;
+    font-weight: 500;
+}
+#top_left_bottom p a{
+    color: rgb(235,179,0)!important;
+}
+#top_left ul{
+    padding: 10px 30px;
+    overflow:hidden;
+    width: 110%;
+}
+
+
+#top_left .myButton{
+    background: url("Images/button.png") no-repeat center center;
+    background-size: contain;
+    height: 100%;
+    width: 16%;
+    text-align: center;
+    position: relative;
+    top: -7px;
+    margin-left: 15px;
+}
+#top_left .myButton:hover{
+    width: 18%;
+    height: 100%;
+    filter: brightness(1.3);
+}
+#top_left .myButton a:hover{
+    filter: brightness(1.3);
+}
+#top_left .myButton p{
+    color: rgb(125,191,215)!important;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 60px;
+}
+
+#top_right{
+    height: 100%;
+}
+#top_right ul{
+    width: 49%;
+    float: left;
+}
+.caozuo{
+    float: right;
+}
+#top_right ul li{
+    color: rgb(125,191,215);
+    line-height: 7.5rem;
+    padding-left: 7px;
+}
+#top_right ul .date{
+    font-size: 24px;
+    font-weight: 500;
+    padding-left: 35px;
+}
+#top_right ul .tianqi img{
+    margin-top: -10px;
+}
+#top_right ul .xingqi{
+    font-size: 15px;
+    font-weight: 500;
+}
+#top_right ul .tianqiText{
+    font-size: 15px;
+    font-weight: 500;
+}
+#top_right .caozuo .alarm{
+    position: relative;
+    margin-left: 30%;
+}
+#top_right .caozuo .alarm .alarmNum{
+    text-align: center;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -33px;
-    margin-left: -33px;
-    width: 66px;
-    height: 66px;
-    background: url(Images/ajax-loader.gif) center no-repeat;
+    color: white;
+    background-color: rgb(230,0,18);
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    top: 14px;
+    right: -6px;
+    line-height: 15px;
+    font-weight: 400;
 }
-
-.cover {
-    display: none;
+#top_right .caozuo li{
+    margin-left: 7%;
+}
+#top_right .caozuo li img{
+    margin-top: -10px;
+}
+#top_right .caozuo .user b{
+    font-size: 16px;
+    margin-left: 4px;
+}
+#top_right .caozuo .tuichu{
+    margin-left: 3%;
+}
+#alarm{
+    height: 60px;
+}
+#alarm #alarmType{
+    height: 100%;
+}
+#alarm #alarmType ul{
+    height: 100%;
+    width: 100%;
+    margin-top: 15px;
+}
+#alarm #alarmType ul li{
+    height: 100%;
+    width: 24%;
+    position: relative;
+}
+#alarm #alarmType ul .alarm1{
+    background: url("Images/one.png") no-repeat center center;
+    background-size: contain;
+}
+#alarm #alarmType ul .alarm2{
+    background: url("Images/two.png") no-repeat center center;
+    background-size: contain;
+}
+#alarm #alarmType ul .alarm3{
+    background: url("Images/three.png") no-repeat center center;
+    background-size: contain;
+}
+#alarm #alarmType ul .alarm4{
+    background: url("Images/four.png") no-repeat center center;
+    background-size: contain;
+}
+#alarm #alarmType ul li .tt{
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.75);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 33%;
+    left: 18%;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(125,191,215);
 }
-
-#menu {
+#alarm #alarmType ul li .shuzi{
     position: absolute;
-    left: 10px;
-    top: 10px;
+    top: 16%;
+    left: 73%;
+    color: white;
+    font-size: 22px;
+    
 }
 
-.nowrap {
+#shebei{
+    /*margin-top: 3%!important;*/
+    height: calc(100% - 140px);
+    padding-top: 65px!important;
+}
+#shebei #shebei-left .shebei{
+    margin-bottom: 6.3%!important;
+    position: relative;
+}
+#shebei #shebei-left .shebei img{
+    width: 21%;
+    height: 21%;
+}
+#shebei #shebei-left .shebei img:hover{
+    filter: brightness(1.5)!important;
+}
+#shebei #shebei-left{
+    padding-left: 3%!important;
+}
+#shebei #shebei-left .shebei .shebei_left{
+    float: left;
+    background: url("Images/shebei_zuo.png") no-repeat top left;
+    /* background-size: contain; */
+    width: 100px;
+    height: 95%;
+    position: absolute;
+    top: 5%;
+    left: 25%;
+    opacity:0.9;
+}
+#shebei #shebei-left .shebei .shebei_right{
+    float: left;
+    background: url("Images/shebei_you.png") no-repeat center center;
+    background-size: cover;
+    width: 330px;
+    height: 98%;
+    position: absolute;
+    top: 4.2%;
+    left: 38.5%;
+    padding-top: 1%!important;
+}
+#shebei #shebei-left .shebei .shebei_left .shebei_left_top{
+    position: absolute;
+    top: 6%;
+    left: 9%;
+    width: 55%;
+    height: 42%;
+    background-color: rgb(119,103,217);
+}
+#shebei #shebei-left .shebei .shebei_left .shebei_left_bottom{
+    position: absolute;
+    top: 52%;
+    left: 9%;
+    width: 55%;
+    height: 42%;
+    background-color: rgb(10,171,121);
+}
+#shebei #shebei-left .shebei .shebei_left .shebei_left_top h3,.shebei_left_bottom h3{
+    padding: 2px 3px;
+    text-align: center;
+    font-size: 17px;
+    line-height: 22px;
+    color: white;
+    cursor: pointer;
+}
+.jiantou_zuo{
+    position: absolute;
+    top: 41%;
+    right: 21%;
+    margin-left: 10px!important;
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent white transparent transparent;
+    cursor: pointer;
+}
+.jiantou_you{
+    position: absolute;
+    top: 41%;
+    left: 18%;
+    margin-left: 0px!important;
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent transparent white;
+    cursor: pointer;
+}
+.shebei_right .canshu{
+    width: 45%;
+    float: left;
+    height: 25%;
+    color: rgb(125,191,215);
+    margin-left: 2%!important;
+}
+.shebei_right .canshu h3{
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-top: 17px!important;
+    margin-left: 5px!important;
+    height: 100%;
+}
+
+#mubiao{
+    width: 86%;
+    height:230px;
+    border: 1px solid rgb(125,191,215);
+    background-color: rgba(25,73,113,0.9);
+    margin-left: 12%!important;
+}
+#mubiao h3{
+    line-height: 40px;
+}
+#chuzhi{
+    width: 70%;
+    height:230px;
+    border: 1px solid rgb(125,191,215);
+    background-color: rgba(25,73,113,0.9);
+    margin-top: 20px!important;
+    margin-left: 28%!important;
+}
+
+#sbkz{
+    width: 70%;
+    height:230px;
+    border: 1px solid rgb(125,191,215);
+    background-color: rgba(25,73,113,0.9);
+    margin-top: 20px!important;
+    margin-left: 28%!important;
+}
+
+#mubiao table{
+    white-space: nowrap;
+    color: rgb(125,191,215);
+    background-color: rgb(9,42,78);
+    table-layout : fixed ;
+    width: 100%;
+    min-width: 296px;
+}
+
+#mubiao table tr{
+    
+}
+
+#mubiao table tr th{
+    padding: 5px 2px!important;
+    text-align: center;
+    
+}
+
+#mubiao table td{
+    padding: 5px 3px!important;
+    text-align: center;
     white-space: nowrap;
 }
 
-html, body, #cesiumContainer {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: sans-serif;
-    background: #000;
-}
-
-button.cesium-infoBox-camera {
-    display: none;
-}
-
-#3DTiles {
-    padding-top: 10px;
-}
-
-#radarChart{
+#leidatu{
     width: 400px;
     height: 350px;
     position: absolute;
     top: 8px;
-    left: 200px;
+    right: -380px;
     background-color: rgba(60,136,185,0.8);
+}
+#gdtu{
+    width: 400px;
+    height: 350px;
+    position: absolute;
+    top: 228px;
+    right: -380px;
+    background-color: rgba(60,136,185,0.8);
+}
+#leidatu img{
+    width: 100%!important;
+    height: 90%!important;
+}
+#shebei-left .shebei a .mubiaoNum{
+    text-align: center;
+    position: absolute;
+    color: white;
+    background-color: rgb(230,0,18);
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    top: 0;
+    left: 54px;
+    line-height: 15px;
+    font-weight: 400;
+    z-index: 1000;
+}
+
+#gdtu img{
+    width: 100%!important;
+    height: 90%!important;
+}
+
+.shebei > .shebei_right > .leida_up{
+    position: absolute;
+    top: 1%;
+    right: 8px;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.shebei > .shebei_right > .leida_dowm{
+    position: absolute;
+    top: 82%;
+    right: 8px;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#chuzhi .chuzhiBtn{
+    width: 70px;
+    height: 29px;
+    padding: 3px 3px;
+    border-radius: 3px;
+    background-color: rgb(9,42,78);
+    border: transparent;
+}
+
+#chuzhi .yuanBtn{
+    width: 70px;
+    height: 29px;
+    padding: 3px 3px;
+    border-radius: 3px;
+    background-color: rgb(9,42,78);
+    border: transparent;
+}
+
+#sbkz .ytkzBtn,.gpsBtn,.dxdjBtn{
+    width: 70px;
+    height: 29px;
+    padding: 3px 3px;
+    border-radius: 3px;
+    background-color: rgb(9,42,78);
+    border: transparent;
+}
+
+.xz{
+    background-color: rgb(20,194,141)!important;
+}
+
+.xz2{
+    background-color: rgb(230,175,6)!important;
+    width: 100px!important;
+}
+
+#chuzhi p{
+    color: rgb(20,194,141);
+    margin: 0!important;
+    padding-left: 10px;
+    font-size: 13px;
+}
+
+.jiantouImg{
+    float: left;
+    width: 26%;
+    /*height: ;*/
+    margin-top: 5px!important;
+}
+
+#tiaozheng{
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: rgb(125,191,215);
+}
+
+.tiaozheng img{
+    margin: 7px 10px!important;
+}
+
+#sbkz label{
+    color: rgb(125,191,215);
+    margin-left: 30px;
+}
+
+#sbkz select{
+    width: 40px;
+    border-radius: 3px;
+    background-color: rgb(9,42,78);
+    padding: 2px 5px;
+    margin-left: 3px;
+    color: white;
+    text-align: center;
+}
+
+
+
+.scroll{
+    overflow-y: scroll;
+}
+.scroll::-webkit-scrollbar {
+    width: 0;
+    background-color: #0484f2;
+}
+
+.scroll::-webkit-scrollbar-track {
+    background-color: #0484f2;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    background: #0465c3;
+    border-radius: 0;
+}
+.zwsj{
+    color: rgb(125,191,215);
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 90px;
 }
