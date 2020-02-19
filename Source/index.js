@@ -238,7 +238,6 @@ function onload(Cesium) {
     infoBox: false,
     sceneMode: Cesium.SceneMode.SCENE2D,
   });
-  radarViewer._cesiumWidget._creditContainer.style.display = 'none';
 
   radarViewer.scene.camera.setView({
     destination: Cesium.Cartesian3.fromDegrees(lon, lat, 15000),
@@ -254,6 +253,9 @@ function onload(Cesium) {
   }));
 
   radarViewer.clock = viewer.clock;
+
+  radarViewer._cesiumWidget._creditContainer.style.display = 'none';
+  $('#leidatu .cesium-viewer-navigationContainer').hide();
 
 
   // 站1
