@@ -76,21 +76,8 @@ var vm = new Vue({
   },
 });
 // 地图相关
-const host = 'http://www.51kongkong.com:9070';
 let viewer;
 let scene;
-// 图层中心坐标
-const lon = 108.89854530935382;
-const lat = 19.460560907382778;
-const hei = 60;
-// 站1坐标
-const lon1 = 108.90047618;
-const lat1 = 19.46586216;
-const hei1 = 60;
-// 站2坐标
-const lon2 = 108.90298825;
-const lat2 = 19.45889390;
-const hei2 = 60;
 // 飞机坐标自定义延时
 const delay = 0;
 
@@ -159,13 +146,13 @@ function onload(Cesium) {
     // 添加S3M图层服务
     // var promise = scene.open(host + partOfUrl);
     const promise = scene.addS3MTilesLayerByScp(
-      'http://www.51kongkong.com:9070/iserver/services/3D-hn1108/rest/realspace/datas/Config1/config', {
+      LAYER_S3M_URL, {
         name: 'Config1',
       },
     );
     // 加载二维图层
     const layer = viewer.imageryLayers.addImageryProvider(new Cesium.SuperMapImageryProvider({
-      url: 'http://www.51kongkong.com:9070/iserver/services/3D-hn1108/rest/realspace/datas/basemap@HNNew',
+      url: LAYER_IMAGERY_URL,
     }));
 
     // 相机定位
@@ -174,7 +161,7 @@ function onload(Cesium) {
       layer.refresh();
       // 设置相机位置、视角，便于观察场景
       scene.camera.flyTo({
-        destination: new Cesium.Cartesian3.fromDegrees(lon, lat, 5000),
+        destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
       });
       if (!scene.pickPositionSupported) {
         alert('不支持深度纹理,无法拾取位置！');
@@ -212,7 +199,7 @@ function onload(Cesium) {
       horizontalFov: 179,
       pitch: 30,
       verticalFov: 120,
-      viewPosition: [lon1, lat1, hei1],
+      viewPosition: POSITION_STATION_ONE,
       visibleAreaColor: Cesium.Color.LAWNGREEN.withAlpha(0.5),
     });
   });
@@ -240,7 +227,7 @@ function onload(Cesium) {
   });
 
   radarViewer.scene.camera.setView({
-    destination: Cesium.Cartesian3.fromDegrees(lon, lat, 15000),
+    destination: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 15000),
     orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, 0.0, 0.0),
   });
 
@@ -260,7 +247,7 @@ function onload(Cesium) {
 
   // 站1
   const water1 = viewer.entities.add({
-    position: Cesium.Cartesian3.fromDegrees(lon1, lat1, hei1),
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
     billboard: { // 图标
       image: 'Source/Images/水滴.png',
       width: 16,
@@ -269,7 +256,7 @@ function onload(Cesium) {
   });
   // 站2
   const water2 = viewer.entities.add({
-    position: Cesium.Cartesian3.fromDegrees(lon2, lat2, hei2),
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
     billboard: { // 图标
       image: 'Source/Images/水滴.png',
       width: 16,
@@ -280,7 +267,7 @@ function onload(Cesium) {
 
   // 画圆
   viewer.entities.add({
-    position: Cesium.Cartesian3.fromDegrees(lon, lat),
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
     name: 'Red ellipse on surface with outline',
     ellipse: {
       semiMinorAxis: 2000.0,
@@ -294,7 +281,7 @@ function onload(Cesium) {
     },
   });
   viewer.entities.add({
-    position: Cesium.Cartesian3.fromDegrees(lon, lat),
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
     name: 'YELLOW ellipse on surface with outline',
     ellipse: {
       semiMinorAxis: 4000.0,
@@ -308,7 +295,7 @@ function onload(Cesium) {
     },
   });
   viewer.entities.add({
-    position: Cesium.Cartesian3.fromDegrees(lon, lat),
+    position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
     name: 'GREEN ellipse on surface with outline',
     ellipse: {
       semiMinorAxis: 6000.0,
@@ -393,7 +380,7 @@ function onload(Cesium) {
   });
 
 
-  connect('www.51kongkong.com', 61623, 'admin', 'password', `clientTest${Math.random(100)}`, (isConnected) => {
+  connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, `clientTest${Math.random(100)}`, (isConnected) => {
     if (isConnected) {
       // subscribe("/#", 0);
       // 无人机坐标点消息
@@ -546,11 +533,11 @@ function onload(Cesium) {
         }); */
 
         // 中心点
-        var tarPosition = Cesium.Cartesian3.fromDegrees(lon, lat, hei);
+        var tarPosition = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
         // 站1
-        const tarPosition2 = Cesium.Cartesian3.fromDegrees(lon1, lat1, hei1);
+        const tarPosition2 = Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE);
         // 站2
-        const tarPosition3 = Cesium.Cartesian3.fromDegrees(lon2, lat2, hei2);
+        const tarPosition3 = Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO);
 
         // 添加2km红色射线
         gzxArr.set(airPosition.id, viewer.entities.add({
@@ -660,7 +647,7 @@ function onload(Cesium) {
 
       // 打印距离信息
       // 中心点坐标
-      const sourpos = Cesium.Cartesian3.fromDegrees(lon, lat, hei);
+      const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
       // 飞机坐标
       var tarPosition = position2;
       // msg.label.text = clock.currentTime.toString();
@@ -675,7 +662,7 @@ function onload(Cesium) {
       // 时间变化监听函数,动态显示信息
       viewer.clock.onTick.addEventListener((clock) => {
         // 中心点坐标
-        const sourpos = Cesium.Cartesian3.fromDegrees(lon, lat, hei);
+        const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
         // 飞机坐标
         const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
         // msg.label.text = clock.currentTime.toString();
