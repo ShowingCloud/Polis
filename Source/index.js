@@ -179,36 +179,6 @@ function onload(Cesium) {
       if (!scene.pickPositionSupported) {
         alert('不支持深度纹理,无法拾取位置！');
       }
-      // 可视域分析,创建雷达扫描
-      const viewshed3D = [];
-      [0, 1].forEach((i) => {
-        viewshed3D[i] = new Cesium.ViewShed3D(scene);
-        Object.assign(viewshed3D[i], {
-          hiddenAreaColor: Cesium.Color.GRAY.withAlpha(0.5),
-          horizontalFov: 179,
-          pitch: 30,
-          verticalFov: 120,
-          viewPosition: [lon1, lat1, hei1],
-          visibleAreaColor: Cesium.Color.LAWNGREEN.withAlpha(0.5),
-        });
-      });
-      viewshed3D[0].direction = 0;
-      viewshed3D[1].direction = 180;
-
-      $('#leidaCoverage').click(() => {
-      //  if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
-        [0, 1].forEach((i) => {
-          viewshed3D[i].distance = 2000;
-          viewshed3D[i].build();
-        });
-      //  } else {
-      //    [0, 1].forEach((i) => {
-      //      viewshed3D[i].distance = 0.1;
-      //      viewshed3D[i].build();
-      //    });
-      //  }
-      });
-
     }, (e) => {
       if (widget._showRenderLoopErrors) {
         const title = '加载SCP失败，请检查网络连接状态或者url地址是否正确？';
@@ -233,6 +203,36 @@ function onload(Cesium) {
 
   $('#loadingbar').remove();
 
+  // 可视域分析,创建雷达扫描
+  const viewshed3D = [];
+  [0, 1].forEach((i) => {
+    viewshed3D[i] = new Cesium.ViewShed3D(scene);
+    Object.assign(viewshed3D[i], {
+      hiddenAreaColor: Cesium.Color.GRAY.withAlpha(0.5),
+      horizontalFov: 179,
+      pitch: 30,
+      verticalFov: 120,
+      viewPosition: [lon1, lat1, hei1],
+      visibleAreaColor: Cesium.Color.LAWNGREEN.withAlpha(0.5),
+    });
+  });
+  viewshed3D[0].direction = 0;
+  viewshed3D[1].direction = 180;
+
+  $('#leidaCoverage').click(() => {
+  //  if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
+    [0, 1].forEach((i) => {
+      viewshed3D[i].distance = 2000;
+      viewshed3D[i].build();
+    });
+  //  } else {
+  //    [0, 1].forEach((i) => {
+  //      viewshed3D[i].distance = 0.1;
+  //      viewshed3D[i].build();
+  //    });
+  //  }
+  });
+
   // 站1
   const water1 = viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(lon1, lat1, hei1),
@@ -251,35 +251,6 @@ function onload(Cesium) {
       height: 16,
     },
   });
-
-
-  // 获取鼠标经纬度坐标
-  /* var log_show = document.getElementById("log_show");
-        var lat_show = document.getElementById("lat_show");
-        var alt_show = document.getElementById("alt_show");
-
-        var elevation_show = document.getElementById("elevation_show");
-
-        var ellipsoid = viewer.scene.globe.ellipsoid;
-        var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-        handler.setInputAction(function(move){
-          //苗卡尔 二维平面坐标 转 苗卡尔椭球体的三维坐标 返回球体表面的点
-          var cartesian = viewer.camera.pickEllipsoid(move.endPosition,ellipsoid);
-          if(cartesian){
-            // 苗卡尔椭球体的三维坐标 转 地图坐标（弧度）
-            var cartographic = viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
-            // 地图坐标（弧度） 转 十进制度数 toFixed保留小数点后几位
-            var log_String = Cesium.Math.toDegrees(cartographic.longitude).toFixed(8);//经度
-            var lat_String = Cesium.Math.toDegrees(cartographic.latitude).toFixed(8);//纬度
-            var alt_String = (viewer.camera.positionCartographic.height/1000).toFixed(2);//视角高
-            var elec_String = viewer.scene.globe.getHeight(cartographic).toFixed(4);//海拔
-
-            log_show.innerHTML = log_String;
-            lat_show.innerHTML = lat_String;
-            alt_show.innerHTML = alt_String;
-            elevation_show.innerHTML = elec_String;
-          }
-        },Cesium.ScreenSpaceEventType.MOUSE_MOVE) */
 
 
   // 画圆
