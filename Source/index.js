@@ -180,26 +180,35 @@ function onload(Cesium) {
         alert('不支持深度纹理,无法拾取位置！');
       }
       // 可视域分析,创建雷达扫描
-      viewshed3D = new Cesium.ViewShed3D(scene);
-      // 隐藏域与可视域颜色
-      viewshed3D.hiddenAreaColor = Cesium.Color.GRAY.withAlpha(0.5);
-      viewshed3D.visibleAreaColor = Cesium.Color.LAWNGREEN.withAlpha(0.5);
-      // 水平视角范围[0,π)
-      viewshed3D.horizontalFov = 179;
-      // 相机俯仰角
-      viewshed3D.pitch = 90;
-      // 垂直视角
-      viewshed3D.verticalFov = 180;
-      // 中心点坐标
-      viewshed3D.viewPosition = [layer.lon, layer.lat, layer.height];
-      // 相机的方向与正北方向的夹角
-      viewshed3D.direction = 0;
-      // 可视距离
-      viewshed3D.distance = 1000;
-      // 设置延时,图层加载完毕,创建可视域
-      setTimeout(() => {
-        // viewshed3D.build();
-      }, 10000);
+      const viewshed3D = [];
+      [0, 1].forEach((i) => {
+        viewshed3D[i] = new Cesium.ViewShed3D(scene);
+        Object.assign(viewshed3D[i], {
+          hiddenAreaColor: Cesium.Color.GRAY.withAlpha(0.5),
+          horizontalFov: 179,
+          pitch: 30,
+          verticalFov: 120,
+          viewPosition: [lon1, lat1, hei1],
+          visibleAreaColor: Cesium.Color.LAWNGREEN.withAlpha(0.5),
+        });
+      });
+      viewshed3D[0].direction = 0;
+      viewshed3D[1].direction = 180;
+
+      $('#leidaCoverage').click(() => {
+      //  if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
+        [0, 1].forEach((i) => {
+          viewshed3D[i].distance = 2000;
+          viewshed3D[i].build();
+        });
+      //  } else {
+      //    [0, 1].forEach((i) => {
+      //      viewshed3D[i].distance = 0.1;
+      //      viewshed3D[i].build();
+      //    });
+      //  }
+      });
+
     }, (e) => {
       if (widget._showRenderLoopErrors) {
         const title = '加载SCP失败，请检查网络连接状态或者url地址是否正确？';
