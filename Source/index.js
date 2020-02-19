@@ -233,6 +233,29 @@ function onload(Cesium) {
   //  }
   });
 
+
+  const radarViewer = new Cesium.Viewer('leidatu', {
+    infoBox: false,
+    sceneMode: Cesium.SceneMode.SCENE2D,
+  });
+  radarViewer._cesiumWidget._creditContainer.style.display = 'none';
+
+  radarViewer.scene.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(lon, lat, 15000),
+    orientation: Cesium.HeadingPitchRoll.fromDegrees(0.0, 0.0, 0.0),
+  });
+
+  const radarScene = radarViewer.scene;
+  radarScene.screenSpaceCameraController.enableInputs = false;
+
+  radarViewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+    url: 'images/leidatu.jpg',
+    rectangle: Cesium.Rectangle.fromDegrees(108.83, 19.39, 108.97, 19.53),
+  }));
+
+  radarViewer.clock = viewer.clock;
+
+
   // 站1
   const water1 = viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(lon1, lat1, hei1),
@@ -466,7 +489,7 @@ function onload(Cesium) {
             }),
           ]),
           model: {
-            uri: 'model/CesiumDrone.gltf',
+            uri: 'Source/Models/CesiumDrone.gltf',
             minimumPixelSize: 16,
           },
           // 飞机上标签
@@ -491,6 +514,7 @@ function onload(Cesium) {
           position: positionsArr.get(airPosition.id),
           orientation: new Cesium.VelocityOrientationProperty(positionsArr.get(airPosition.id)),
         });
+        radarViewer.entities.add(sourEntity);
         airArr.set(airPosition.id, sourEntity);
 
 
