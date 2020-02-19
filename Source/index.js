@@ -248,7 +248,7 @@ function onload(Cesium) {
   radarScene.screenSpaceCameraController.enableInputs = false;
 
   radarViewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
-    url: 'images/leidatu.jpg',
+    url: 'Source/Images/leidatu.jpg',
     rectangle: Cesium.Rectangle.fromDegrees(108.83, 19.39, 108.97, 19.53),
   }));
 
