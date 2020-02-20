@@ -380,6 +380,40 @@ function onload(Cesium) {
   });
 
 
+  const ereconTarget = viewer.entities.add({
+    polygon: {
+      hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+        Cesium.Cartesian3.add(
+          Cesium.Matrix4.multiplyByPointAsVector(
+            Cesium.Transforms.eastNorthUpToFixedFrame(
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+            ),
+            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (30 + 2.5), Math.PI / 2, 5000.0)),
+            new Cesium.Cartesian3()
+          ),
+          Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+          new Cesium.Cartesian3()
+        ),
+        Cesium.Cartesian3.add(
+          Cesium.Matrix4.multiplyByPointAsVector(
+            Cesium.Transforms.eastNorthUpToFixedFrame(
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+            ),
+            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (30 - 2.5), Math.PI / 2, 5000.0)),
+            new Cesium.Cartesian3()
+          ),
+          Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+          new Cesium.Cartesian3()
+        ),
+      ],
+      perPositionHeight : true,
+      material : Cesium.Color.CYAN.withAlpha(0.5),
+      outline : true,
+      outlineColor : Cesium.Color.BLACK,
+    },
+  });
+
+
   connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, `clientTest${Math.random(100)}`, (isConnected) => {
     if (isConnected) {
       // subscribe("/#", 0);
