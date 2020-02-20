@@ -388,7 +388,7 @@ function onload(Cesium) {
             Cesium.Transforms.eastNorthUpToFixedFrame(
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
             ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (30 + 2.5), Math.PI / 2, 5000.0)),
+            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 60 + 1.5), Math.PI / 2, 5000.0)),
             new Cesium.Cartesian3()
           ),
           Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -399,7 +399,7 @@ function onload(Cesium) {
             Cesium.Transforms.eastNorthUpToFixedFrame(
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
             ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (30 - 2.5), Math.PI / 2, 5000.0)),
+            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 60 - 1.5), Math.PI / 2, 5000.0)),
             new Cesium.Cartesian3()
           ),
           Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
