@@ -207,17 +207,17 @@ function onload(Cesium) {
   viewshed3D[1].direction = 180;
 
   $('#leidaCoverage').click(() => {
-  //  if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
+    if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
     [0, 1].forEach((i) => {
       viewshed3D[i].distance = 2000;
       viewshed3D[i].build();
     });
-  //  } else {
-  //    [0, 1].forEach((i) => {
-  //      viewshed3D[i].distance = 0.1;
-  //      viewshed3D[i].build();
-  //    });
-  //  }
+    } else {
+      [0, 1].forEach((i) => {
+        viewshed3D[i].distance = 0.1;
+        viewshed3D[i].build();
+      });
+    }
   });
 
 
@@ -380,15 +380,16 @@ function onload(Cesium) {
   });
 
 
+  let ereconAngle = 0
   const ereconTarget = viewer.entities.add({
     polygon: {
-      hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+      hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
         Cesium.Cartesian3.add(
           Cesium.Matrix4.multiplyByPointAsVector(
             Cesium.Transforms.eastNorthUpToFixedFrame(
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
             ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 60 + 1.5), Math.PI / 2, 5000.0)),
+            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle + 1.5), Math.PI / 2, 5000.0)),
             new Cesium.Cartesian3()
           ),
           Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -399,17 +400,18 @@ function onload(Cesium) {
             Cesium.Transforms.eastNorthUpToFixedFrame(
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
             ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 60 - 1.5), Math.PI / 2, 5000.0)),
+            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle - 1.5), Math.PI / 2, 5000.0)),
             new Cesium.Cartesian3()
           ),
           Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
           new Cesium.Cartesian3()
         ),
-      ],
-      perPositionHeight : true,
-      material : Cesium.Color.CYAN.withAlpha(0.5),
-      outline : true,
-      outlineColor : Cesium.Color.BLACK,
+      ], false),
+      material: Cesium.Color.CYAN.withAlpha(0.5),
+      outline: true,
+      outlineColor: Cesium.Color.BLACK,
+      perPositionHeight: true,
+      show: false
     },
   });
 
