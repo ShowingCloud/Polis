@@ -54,6 +54,38 @@ $(() => {
     $('.gd .shebei_left').removeClass('myHide');
     $('.gd .shebei_right').removeClass('myLeft');
   });
+  $('#ereconArrowLeft').click(() => {
+    $('.dzzc .shebei_left .shebei_left_top').toggle();
+    $('.dzzc .shebei_left .shebei_left_bottom').toggle();
+    $('.dzzc .shebei_left .jiantou_you').toggle();
+    $('.dzzc .shebei_left .jiantou_zuo').toggle();
+    $('.dzzc .shebei_left').addClass('myHide');
+    $('.dzzc .shebei_right').addClass('myLeft');
+  });
+  $('#ereconArrowRight').click(() => {
+    $('.dzzc .shebei_left .shebei_left_top').toggle();
+    $('.dzzc .shebei_left .shebei_left_bottom').toggle();
+    $('.dzzc .shebei_left .jiantou_you').toggle();
+    $('.dzzc .shebei_left .jiantou_zuo').toggle();
+    $('.dzzc .shebei_left').removeClass('myHide');
+    $('.dzzc .shebei_right').removeClass('myLeft');
+  });
+  $('#protocolCrackingArrowLeft').click(() => {
+    $('.xypj .shebei_left .shebei_left_top').toggle();
+    $('.xypj .shebei_left .shebei_left_bottom').toggle();
+    $('.xypj .shebei_left .jiantou_you').toggle();
+    $('.xypj .shebei_left .jiantou_zuo').toggle();
+    $('.xypj .shebei_left').addClass('myHide');
+    $('.xypj .shebei_right').addClass('myLeft');
+  });
+  $('#protocolCrackingArrowRight').click(() => {
+    $('.xypj .shebei_left .shebei_left_top').toggle();
+    $('.xypj .shebei_left .shebei_left_bottom').toggle();
+    $('.xypj .shebei_left .jiantou_you').toggle();
+    $('.xypj .shebei_left .jiantou_zuo').toggle();
+    $('.xypj .shebei_left').removeClass('myHide');
+    $('.xypj .shebei_right').removeClass('myLeft');
+  });
 
   $('#leidaButton').click(() => {
     $('#leidatu').toggle();

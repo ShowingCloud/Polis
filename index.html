@@ -187,10 +187,16 @@
 						<div class="shebei dzzc">
 							<a href="#" style="pointer-events:auto;" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"><b
 								 class="mubiaoNum" v-if="dzArr.length>0">{{dzArr.length}}</b><img src="Source/Images/dzzc.png" id="dzzcImg"></a>
-							<div class="shebei_left" style="width: 1%;pointer-events:auto;display: none;">
-
+							<div class="shebei_left myHide" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
+							 ondragstart="return false;" onselectstart="return false;">
+								<div class="shebei_left_bottom" style="display: none;" id="ereconButton">
+									<button type="button" class="btn btn-success button" data-toggle="button" aria-pressed="false">电侦图</button>
+								</div>
+								<div class="jiantou_zuo" style="display: none;" id="ereconArrowLeft"></div>
+								<div class="jiantou_you" id="ereconArrowRight"></div>
 							</div>
-							<div class="shebei_right" style="left: 27%;pointer-events:auto;display: none;">
+							<div class="shebei_right myLeft" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
+							 ondragstart="return false;" onselectstart="return false;">
 								<div class="canshu" v-if="dzArr.length>0">
 									<h3 style="width: 60%;">运行状态：</h3>
 									<h3 style="width: 25%;color: red;margin-left: 0px!important;">{{dzArr[dzIndex].status}}</h3>
@@ -219,10 +225,16 @@
 						<div class="shebei xypj">
 							<a href="#" style="pointer-events:auto;" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"><b
 								 class="mubiaoNum" v-if="xypjArr.length>0">{{xypjArr.length}}</b><img src="Source/Images/xypj.png" id="xypjImg"></a>
-							<div class="shebei_left" style="width: 1%;pointer-events:auto;display: none;">
-
+							<div class="shebei_left myHide" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
+							 ondragstart="return false;" onselectstart="return false;">
+								<div class="shebei_left_bottom" style="display: none;" id="protocolCrackingButton">
+									<button type="button" class="btn btn-success button" data-toggle="button" aria-pressed="false">协议破解图</button>
+								</div>
+								<div class="jiantou_zuo" style="display: none;" id="protocolCrackingArrowLeft"></div>
+								<div class="jiantou_you" id="protocolCrackingArrowRight"></div>
 							</div>
-							<div class="shebei_right" style="left: 27%;pointer-events:auto;display: none;">
+							<div class="shebei_right myLeft" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
+							 ondragstart="return false;" onselectstart="return false;">
 								<div class="canshu" v-if="xypjArr.length>0">
 									<h3 style="width: 60%;">运行状态：</h3>
 									<h3 style="width: 25%;color: rgb(28,235,33);margin-left: 0px!important;">{{xypjArr[xypjIndex].status}}</h3>
