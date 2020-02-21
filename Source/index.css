@@ -68,6 +68,9 @@ a:active {
 .myHide{
     width: 1%!important;
 }
+.cesium-viewer-navigationContainer{
+	display: none;
+}
 
 .myLeft{
     left: 27%!important;
@@ -605,4 +608,102 @@ div{
 	padding-left: 10px;
 	white-space: normal;
 	line-height: normal;
+}
+
+.warnPart{
+	width: 320px;
+	height: calc(100% - 135px);
+	position: fixed;
+	right: 0;
+	bottom: 45px;
+	z-index: 2001;
+	border: 1px solid #18409f;
+	background-color: rgba(5,22,48,0.8);
+}
+.warnPart h4{
+	width: 100%;
+	height: 35px;
+	line-height: 35px;
+	padding: 0 15px;
+	color: #53ffff;
+	font-size: 16px;
+	border-bottom: 1px solid #53ffff;
+}
+.warnPart .closeWarn{
+	float: right;
+	color: #5785fd;
+	cursor: pointer;
+	font-size: 14px;
+}
+.warnPart .select{
+	width: 100%;
+	height: 40px;
+	padding: 5px 10px!important;
+}
+.warnPart .select select{
+	width: 100%;
+	height: 100%;
+	background-color: #18409f;
+	border: none;
+	color: white;
+}
+.warnList{
+	width: 100%;
+	height: calc(100% - 85px);
+	margin-top: 10px!important;
+	padding: 5px 10px!important;
+	box-sizing: border-box;
+}
+.warnList .imgDiv{
+	width: 110px;
+	height: auto;
+	float: left;
+}
+.warnList .imgDiv img{
+	width: 100%;
+	cursor: pointer;
+}
+.warnList span{
+	float: left;
+	width: calc(100% - 110px);
+}
+.warnList span p{
+	width: 100%;
+	padding: 3px 5px;
+	color: white;
+	margin: 0!important;
+}
+.warnList button{
+	padding: 5px 10px;
+	background-color: #143f9e;
+	border: #53ffff;
+	color: #53ffff;
+	/* float: right; */
+	margin: 0 5px;
+}
+.warnList ul{
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll;
+}
+.warnList ul li{
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+	margin: 10px 0;
+}
+.warnLists{
+
+	overflow-y: scroll;
+}
+.warnLists::-webkit-scrollbar {
+    width: 0px;
+    background-color: #0f4fa9;
+}
+.warnLists::-webkit-scrollbar-track {
+    background-color: #0f4fa9;
+}
+.warnLists::-webkit-scrollbar-thumb {
+    background: #0b4090;
+    border-radius: 0px;
 }

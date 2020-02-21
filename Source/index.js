@@ -27,9 +27,17 @@ var vm = new Vue({
     WarnNum: '',
     // 光电自动跟踪
     gdAuto: false,
+	//告警列表显示flag
+	alertFlag:false
 
   },
   methods: {
+	  alertWarn:function(){
+	  	vm.alertFlag = !vm.alertFlag;
+	  },
+	  closeWarn:function(){
+	  	vm.alertFlag = false;
+	  },
     leidaIndexJian() {
       if (vm.leidaIndex > 0) {
         vm.leidaIndex--;
@@ -458,9 +466,13 @@ function onload(Cesium) {
         if (airArr.get(airId.id) != undefined) {
           viewer.entities.remove(airArr.get(airId.id));
           viewer.entities.remove(gzxArr.get(airId.id));
+          gzxArr.delete(airId.id);
           viewer.entities.remove(gzxArr2.get(airId.id));
+          gzxArr2.delete(airId.id);
           viewer.entities.remove(gzxArr3.get(airId.id));
-          delete airArr[airId.id];
+          gzxArr3.delete(airId.id);
+          airPositionArr.delete(airId.id);
+          airArr.delete(airId.id);
 
           for (let i = 0; i < vm.targetArr.length; i++) {
             if (vm.targetArr[i].id == airId.id) {
@@ -488,7 +500,7 @@ function onload(Cesium) {
       position2 = Cesium.Cartesian3.fromDegrees(+airPosition.lon, +airPosition.lat, +airPosition.hei);
 
       // 新目标则创建新的实体类
-      if (!airPositionArr.get(airPosition.id)) {
+      if (!airPositionArr.has(airPosition.id)) {
         positionsArr.set(airPosition.id, new Cesium.SampledPositionProperty());
         // 设置插值算法为线性插值
         positionsArr.get(airPosition.id).setInterpolationOptions({
@@ -697,43 +709,46 @@ function onload(Cesium) {
 
       // 时间变化监听函数,动态显示信息
       viewer.clock.onTick.addEventListener((clock) => {
-        // 中心点坐标
-        const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
-        // 飞机坐标
-        const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
-        // msg.label.text = clock.currentTime.toString();
-        const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
-        // 中心点距离飞机距离
-        const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
-          (sourpos.z - tarPosition.z), 2,
-        ));
-        // console.log(xb);
-        const jl = Math.sqrt(Math.pow((xb - height), 2));
-
-        // 根据无人机距离中心点距离判断是否显示射线
-        if (jl <= 2000) {
-          gzxArr.get(airPosition.id)._show = true;
-          gzxArr2.get(airPosition.id)._show = false;
-          gzxArr3.get(airPosition.id)._show = false;
-        } else if (jl <= 4000) {
-          gzxArr.get(airPosition.id)._show = false;
-          gzxArr2.get(airPosition.id)._show = true;
-          gzxArr3.get(airPosition.id)._show = false;
-        } else if (jl <= 6000) {
-          gzxArr.get(airPosition.id)._show = false;
-          gzxArr2.get(airPosition.id)._show = false;
-          gzxArr3.get(airPosition.id)._show = true;
-        } else {
-          gzxArr.get(airPosition.id)._show = false;
-          gzxArr2.get(airPosition.id)._show = false;
-          gzxArr3.get(airPosition.id)._show = false;
-        }
-
-        if (jl <= 5000) {
-          $(`#mubiao${airPosition.id}`).show();
-        } else {
-          $(`#mubiao${airPosition.id}`).hide();
-        }
+		if(airArr.has(airPosition.id)){
+			// 中心点坐标
+			const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+			// 飞机坐标
+			const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
+			// msg.label.text = clock.currentTime.toString();
+			const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
+			// 中心点距离飞机距离
+			const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
+			  (sourpos.z - tarPosition.z), 2,
+			));
+			// console.log(xb);
+			const jl = Math.sqrt(Math.pow((xb - height), 2));
+			
+			// 根据无人机距离中心点距离判断是否显示射线
+			if (jl <= 2000) {
+			  gzxArr.get(airPosition.id)._show = true;
+			  gzxArr2.get(airPosition.id)._show = false;
+			  gzxArr3.get(airPosition.id)._show = false;
+			} else if (jl <= 4000) {
+			  gzxArr.get(airPosition.id)._show = false;
+			  gzxArr2.get(airPosition.id)._show = true;
+			  gzxArr3.get(airPosition.id)._show = false;
+			} else if (jl <= 6000) {
+			  gzxArr.get(airPosition.id)._show = false;
+			  gzxArr2.get(airPosition.id)._show = false;
+			  gzxArr3.get(airPosition.id)._show = true;
+			} else {
+			  gzxArr.get(airPosition.id)._show = false;
+			  gzxArr2.get(airPosition.id)._show = false;
+			  gzxArr3.get(airPosition.id)._show = false;
+			}
+			
+			if (jl <= 5000) {
+			  $(`#mubiao${airPosition.id}`).show();
+			} else {
+			  $(`#mubiao${airPosition.id}`).hide();
+			}
+		}
+        
       });
     } else if (msg.topic.indexOf('Radar') != -1) {
       const radarInfo = JSON.parse(msg.payloadString);
