@@ -27,9 +27,17 @@ var vm = new Vue({
     WarnNum: '',
     // 光电自动跟踪
     gdAuto: false,
+	//告警列表显示flag
+	alertFlag:false
 
   },
   methods: {
+	  alertWarn:function(){
+	  	vm.alertFlag = !vm.alertFlag;
+	  },
+	  closeWarn:function(){
+	  	vm.alertFlag = false;
+	  },
     leidaIndexJian() {
       if (vm.leidaIndex > 0) {
         vm.leidaIndex--;

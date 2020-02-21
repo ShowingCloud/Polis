@@ -61,7 +61,7 @@
 							<li class="tianqiText">多云</li>
 						</ul>
 						<ul class="caozuo">
-							<li class="alarm"><a href="#"><img src="Source/Images/alarm.png"><b class="alarmNum">3</b></a></li>
+							<li class="alarm"><a href="#" @click="alertWarn()"><img src="Source/Images/alarm.png"><b class="alarmNum">3</b></a></li>
 							<li class="user"><a href="#"><img src="Source/Images/USER.png"> <b>admin</b></a></li>
 							<li class="tuichu"><a href="#"><img src="Source/Images/tuichu.png"></a></li>
 						</ul>
@@ -423,6 +423,75 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="warnPart" id="warnPart" v-show="alertFlag" style="pointer-events:auto;">
+					<h4>告警 
+					<span class="closeWarn" @click="closeWarn()">关闭</span>
+					<span class="closeWarn" style="margin-right: 15px;">清空</span>
+					</h4>
+					<div class="select">
+						<select>
+							<option value="">全部</option>
+							<option>打击</option>
+							<option>处置</option>
+							<option>警戒</option>
+							<option>阵地</option>
+						</select>
+					</div>
+					<div class="warnList">
+						<ul class="warnLists" id="test">
+							<li>
+								<div class="imgDiv">
+									<img src="Source/Images/warnVideo-140x115.png" alt="">
+								</div>
+								<span>
+									<p>2020-02-18 14:00:00</p>
+									<p>打击报警</p>
+									<button>处置</button>
+								</span>
+							</li>
+							<li>
+								<div class="imgDiv">
+									<img src="Source/Images/warnVideo-140x115.png" alt="">
+								</div>
+								<span>
+									<p>2020-02-18 14:00:00</p>
+									<p>处置报警</p>
+									<button>处置</button>
+								</span>
+							</li>
+							<li>
+								<div class="imgDiv">
+									<img src="Source/Images/warnVideo-140x115.png" alt="">
+								</div>
+								<span>
+									<p>2020-02-18 14:00:00</p>
+									<p>警戒报警</p>
+									<button>处置</button>
+								</span>
+							</li>
+							<li>
+								<div class="imgDiv">
+									<img src="Source/Images/warnVideo-140x115.png" alt="">
+								</div>
+								<span>
+									<p>2020-02-18 14:00:00</p>
+									<p>阵地报警</p>
+									<button>处置</button>
+								</span>
+							</li>
+							<li>
+								<div class="imgDiv">
+									<img src="Source/Images/warnVideo-140x115.png" alt="">
+								</div>
+								<span>
+									<p>2020-02-18 14:00:00</p>
+									<p>报警类型</p>
+									<button>处置</button>
+								</span>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
