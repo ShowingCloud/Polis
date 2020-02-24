@@ -923,7 +923,7 @@ const documentReady = async () => {
               new Cesium.Cartesian3()
             ),
           ],
-          material: Cesium.Color.MAGENTA.withAlpha(0.5),
+          material: Cesium.Color.MAGENTA.withAlpha(0.2),
           outline: true,
           outlineColor: Cesium.Color.BLACK,
           perPositionHeight: true,
@@ -1003,7 +1003,7 @@ const documentReady = async () => {
               new Cesium.Cartesian3()
             ),
           ],
-          material: Cesium.Color.CYAN.withAlpha(0.5),
+          material: Cesium.Color.CYAN.withAlpha(0.2),
           outline: true,
           outlineColor: Cesium.Color.BLACK,
           perPositionHeight: true,
