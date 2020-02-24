@@ -289,44 +289,44 @@ const documentReady = async () => {
   // 画圆
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'Red ellipse on surface with outline',
+    name: 'Red ellipse on surface within 1000 km with outline',
     ellipse: {
-      semiMinorAxis: 2000.0,
-      semiMajorAxis: 2000.0,
-      height: 30,
       fill: false,
+      height: 30,
       material: Cesium.Color.RED.withAlpha(0.1),
       outline: true,
-      outlineColor: Cesium.Color.RED.withAlpha(1),
+      outlineColor: Cesium.Color.RED,
       outlineWidth: 10,
+      semiMajorAxis: 1000.0,
+      semiMinorAxis: 1000.0,
     },
   });
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'YELLOW ellipse on surface with outline',
+    name: 'YELLOW ellipse on surface within 3000 km with outline',
     ellipse: {
-      semiMinorAxis: 4000.0,
-      semiMajorAxis: 4000.0,
-      height: 30,
       fill: false,
-      material: Cesium.Color.YELLOW.withAlpha(0.05),
+      height: 30,
+      material: Cesium.Color.YELLOW.withAlpha(0.1),
       outline: true,
-      outlineColor: Cesium.Color.YELLOW.withAlpha(1),
+      outlineColor: Cesium.Color.YELLOW,
       outlineWidth: 10,
+      semiMajorAxis: 3000.0,
+      semiMinorAxis: 3000.0,
     },
   });
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'GREEN ellipse on surface with outline',
+    name: 'GREEN ellipse on surface within 5000 km with outline',
     ellipse: {
-      semiMinorAxis: 6000.0,
-      semiMajorAxis: 6000.0,
-      height: 30,
       fill: false,
-      material: Cesium.Color.GREEN.withAlpha(0.02),
+      height: 30,
+      material: Cesium.Color.GREEN.withAlpha(0.1),
       outline: true,
-      outlineColor: Cesium.Color.GREEN.withAlpha(1),
+      outlineColor: Cesium.Color.GREEN,
       outlineWidth: 10,
+      semiMajorAxis: 5000.0,
+      semiMinorAxis: 5000.0,
     },
   });
   // 当前时间为起始时间,终止时间为1小时
