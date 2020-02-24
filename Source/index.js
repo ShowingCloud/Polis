@@ -774,6 +774,7 @@ const documentReady = async () => {
         const info = JSON.parse(msg.payloadString);
         if (ereconArr.get(info.id) != undefined) {
           viewer.entities.remove(ereconArr.get(info.id));
+        }
 
         for (var i = 0; i < vm.ereconArr.length; i++) {
           if (vm.ereconArr[i].id == info.id) {
@@ -795,7 +796,7 @@ const documentReady = async () => {
       }
 
       ereconArr.set(info.id, viewer.entities.add({
-        angle = info.azimuth,
+        angle: info.azimuth,
         polygon: {
           hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
             Cesium.Cartesian3.add(
@@ -881,6 +882,6 @@ const documentReady = async () => {
   viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
-}
+};
 
 window.onload = documentReady;
