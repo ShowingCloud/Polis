@@ -4,9 +4,9 @@ var vm = new Vue({
   el: '#main',
   data: {
     // 雷达信息
-    leidaArr: [],
+    radarArr: [],
     // 雷达下标
-    leidaIndex: 0,
+    radarIndex: 0,
     // 光电信息
     gdInfo: '',
     // 电子侦查信息
@@ -38,14 +38,14 @@ var vm = new Vue({
 	  closeWarn:function(){
 	  	vm.alertFlag = false;
 	  },
-    leidaIndexJian() {
-      if (vm.leidaIndex > 0) {
-        vm.leidaIndex--;
+    radarIndexJian() {
+      if (vm.radarIndex > 0) {
+        vm.radarIndex--;
       }
     },
-    leidaIndexJia() {
-      if (vm.leidaIndex < vm.leidaArr.length - 1) {
-        vm.leidaIndex++;
+    radarIndexJia() {
+      if (vm.radarIndex < vm.radarArr.length - 1) {
+        vm.radarIndex++;
       }
     },
     ereconIndexJian() {
@@ -216,7 +216,7 @@ const documentReady = async () => {
   viewshed3D[1].direction = 120;
   viewshed3D[2].direction = 240;
 
-  $('#leidaCoverage').click((e) => {
+  $('#radarCoverage').click((e) => {
     if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
       [0, 1, 2].forEach((i) => {
         viewshed3D[i].distance = 5000;
@@ -231,7 +231,7 @@ const documentReady = async () => {
   });
 
 
-  const radarViewer = new Cesium.Viewer('leidatu', {
+  const radarViewer = new Cesium.Viewer('radarChart', {
     infoBox: false,
     sceneMode: Cesium.SceneMode.SCENE2D,
   });
@@ -252,7 +252,7 @@ const documentReady = async () => {
   radarViewer.clock = viewer.clock;
 
   radarViewer._cesiumWidget._creditContainer.style.display = 'none';
-  $('#leidatu .cesium-viewer-navigationContainer').hide();
+  $('#radarChart .cesium-viewer-navigationContainer').hide();
 
   const radarHandler = new Cesium.ScreenSpaceEventHandler(radarScene.canvas);
   radarHandler.setInputAction(async (e) => {
@@ -731,18 +731,18 @@ const documentReady = async () => {
       const radarInfo = JSON.parse(msg.payloadString);
       // console.log(radarInfo)
       var flag = true;
-      for (var i = 0; i < vm.leidaArr.length; i++) {
-        if (vm.leidaArr[i].id == radarInfo.id) {
-          // vm.leidaArr[i] = radarInfo;
+      for (var i = 0; i < vm.radarArr.length; i++) {
+        if (vm.radarArr[i].id == radarInfo.id) {
+          // vm.radarArr[i] = radarInfo;
           // 深度监听对象数组
-          vm.$set(vm.leidaArr, i, radarInfo);
+          vm.$set(vm.radarArr, i, radarInfo);
           flag = false;
         }
       }
       if (flag) {
-        vm.leidaArr.push(radarInfo);
+        vm.radarArr.push(radarInfo);
       }
-      console.log(vm.leidaArr);
+      console.log(vm.radarArr);
     } else if (msg.topic.indexOf('GuangDian') != -1) {
       if (msg.topic.indexOf('GuangDianOut') != -1) {
         vm.gdInfo = '';
