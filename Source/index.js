@@ -246,7 +246,7 @@ const documentReady = async () => {
 
   radarViewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
     url: 'Source/Images/leidatu.jpg',
-    rectangle: Cesium.Rectangle.fromDegrees(108.83, 19.39, 108.97, 19.53),
+    rectangle: Cesium.Rectangle.fromDegrees(...POSITION_RADAR_RANGE),
   }));
 
   radarViewer.clock = viewer.clock;
