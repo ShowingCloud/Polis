@@ -401,42 +401,6 @@ const documentReady = async () => {
   });
 
 
-  let ereconAngle = 0
-  const ereconTarget = viewer.entities.add({
-    polygon: {
-      hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
-        Cesium.Cartesian3.add(
-          Cesium.Matrix4.multiplyByPointAsVector(
-            Cesium.Transforms.eastNorthUpToFixedFrame(
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-            ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle + 1.5), Math.PI / 2, 5000.0)),
-            new Cesium.Cartesian3()
-          ),
-          Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-          new Cesium.Cartesian3()
-        ),
-        Cesium.Cartesian3.add(
-          Cesium.Matrix4.multiplyByPointAsVector(
-            Cesium.Transforms.eastNorthUpToFixedFrame(
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-            ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle - 1.5), Math.PI / 2, 5000.0)),
-            new Cesium.Cartesian3()
-          ),
-          Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-          new Cesium.Cartesian3()
-        ),
-      ], false),
-      material: Cesium.Color.CYAN.withAlpha(0.5),
-      outline: true,
-      outlineColor: Cesium.Color.BLACK,
-      perPositionHeight: true,
-      show: false
-    },
-  });
-
-
   connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, `clientTest${Math.random(100)}`, (isConnected) => {
     if (isConnected) {
       // subscribe("/#", 0);
@@ -808,6 +772,9 @@ const documentReady = async () => {
     } else if (msg.topic.indexOf('DianZhen') != -1) {
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
+        if (dzArr.get(info.id) != undefined) {
+          viewer.entities.remove(dzArr.get(info.id));
+
         for (var i = 0; i < vm.dzArr.length; i++) {
           if (vm.dzArr[i].id == info.id) {
             vm.dzArr.splice(i, 1);
@@ -826,6 +793,42 @@ const documentReady = async () => {
       if (flag) {
         vm.dzArr.push(info);
       }
+
+      dzAr.set(info.id, viewer.entities.add({
+        angle = info.azimuth,
+        polygon: {
+          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                ),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                ),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+          ], false),
+          material: Cesium.Color.CYAN.withAlpha(0.5),
+          outline: true,
+          outlineColor: Cesium.Color.BLACK,
+          perPositionHeight: true,
+          show: false
+        },
+      }));
+
     } else if (msg.topic.indexOf('Crack') != -1) {
       if (msg.topic.indexOf('CrackOut') != -1) {
         const info = JSON.parse(msg.payloadString);
