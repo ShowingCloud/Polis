@@ -686,46 +686,46 @@ const documentReady = async () => {
 
       // 时间变化监听函数,动态显示信息
       viewer.clock.onTick.addEventListener((clock) => {
-		if(airArr.has(airPosition.id)){
-			// 中心点坐标
-			const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
-			// 飞机坐标
-			const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
-			// msg.label.text = clock.currentTime.toString();
-			const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
-			// 中心点距离飞机距离
-			const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
-			  (sourpos.z - tarPosition.z), 2,
-			));
-			// console.log(xb);
-			const jl = Math.sqrt(Math.pow((xb - height), 2));
-			
-			// 根据无人机距离中心点距离判断是否显示射线
-			if (jl <= 2000) {
-			  gzxArr.get(airPosition.id)._show = true;
-			  gzxArr2.get(airPosition.id)._show = false;
-			  gzxArr3.get(airPosition.id)._show = false;
-			} else if (jl <= 4000) {
-			  gzxArr.get(airPosition.id)._show = false;
-			  gzxArr2.get(airPosition.id)._show = true;
-			  gzxArr3.get(airPosition.id)._show = false;
-			} else if (jl <= 6000) {
-			  gzxArr.get(airPosition.id)._show = false;
-			  gzxArr2.get(airPosition.id)._show = false;
-			  gzxArr3.get(airPosition.id)._show = true;
-			} else {
-			  gzxArr.get(airPosition.id)._show = false;
-			  gzxArr2.get(airPosition.id)._show = false;
-			  gzxArr3.get(airPosition.id)._show = false;
-			}
-			
-			if (jl <= 5000) {
-			  $(`#mubiao${airPosition.id}`).show();
-			} else {
-			  $(`#mubiao${airPosition.id}`).hide();
-			}
-		}
-        
+        if(airArr.has(airPosition.id)){
+          // 中心点坐标
+          const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+          // 飞机坐标
+          const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
+          // msg.label.text = clock.currentTime.toString();
+          const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
+          // 中心点距离飞机距离
+          const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
+            (sourpos.z - tarPosition.z), 2,
+          ));
+          // console.log(xb);
+          const jl = Math.sqrt(Math.pow((xb - height), 2));
+
+          // 根据无人机距离中心点距离判断是否显示射线
+          if (jl <= 2000) {
+            gzxArr.get(airPosition.id)._show = true;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+          } else if (jl <= 4000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = true;
+            gzxArr3.get(airPosition.id)._show = false;
+          } else if (jl <= 6000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = true;
+          } else {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+          }
+
+          if (jl <= 5000) {
+            $(`#mubiao${airPosition.id}`).show();
+          } else {
+            $(`#mubiao${airPosition.id}`).hide();
+          }
+        }
+
       });
     } else if (msg.topic.indexOf('Radar') != -1) {
       const radarInfo = JSON.parse(msg.payloadString);
@@ -772,8 +772,8 @@ const documentReady = async () => {
     } else if (msg.topic.indexOf('DianZhen') != -1) {
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        if (ereconArr.get(info.id) != undefined) {
-          viewer.entities.remove(ereconArr.get(info.id));
+        if (vm.ereconArr.get(info.id) != undefined) {
+          viewer.entities.remove(vm.ereconArr.get(info.id));
         }
 
         for (var i = 0; i < vm.ereconArr.length; i++) {
@@ -788,6 +788,7 @@ const documentReady = async () => {
       for (var i = 0; i < vm.ereconArr.length; i++) {
         if (vm.ereconArr[i].id == info.id) {
           vm.$set(vm.ereconArr, i, info);
+          vm.ereconArr.get(info.id).angle = info.azimuth;
           flag = false;
         }
       }
@@ -795,7 +796,71 @@ const documentReady = async () => {
         vm.ereconArr.push(info);
       }
 
-      ereconArr.set(info.id, viewer.entities.add({
+      if (!vm.ereconArr.has(info.id)) {
+        vm.ereconArr.set(info.id, viewer.entities.add({
+          angle: info.azimuth,
+          polygon: {
+            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
+                ),
+                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
+                ),
+                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3()
+              ),
+            ], false),
+            material: Cesium.Color.MAGENTA.withAlpha(0.5),
+            outline: true,
+            outlineColor: Cesium.Color.BLACK,
+            perPositionHeight: true,
+            show: false
+          },
+        }));
+      }
+
+    } else if (msg.topic.indexOf('Crack') != -1) {
+      if (msg.topic.indexOf('CrackOut') != -1) {
+        const info = JSON.parse(msg.payloadString);
+        if (vm.crackerArr.get(info.id) != undefined) {
+          viewer.entities.remove(vm.crackerArr.get(info.id));
+        }
+
+        for (var i = 0; i < vm.crackerArr.length; i++) {
+          if (vm.crackerArr[i].id == info.id) {
+            vm.crackerArr.splice(i, 1);
+          }
+        }
+        return;
+      }
+      var info = JSON.parse(msg.payloadString);
+      var flag = true;
+      for (var i = 0; i < vm.crackerArr.length; i++) {
+        if (vm.crackerArr[i].id == info.id) {
+          vm.$set(vm.crackerArr, i, info);
+          vm.crackerArr.get(info.id).angle = info.azimuth;
+          flag = false;
+        }
+      }
+      if (flag) {
+        vm.crackerArr.push(info);
+      }
+
+      vm.crackerArr.set(info.id, viewer.entities.add({
         angle: info.azimuth,
         polygon: {
           hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
@@ -804,7 +869,7 @@ const documentReady = async () => {
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -815,7 +880,7 @@ const documentReady = async () => {
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -830,27 +895,6 @@ const documentReady = async () => {
         },
       }));
 
-    } else if (msg.topic.indexOf('Crack') != -1) {
-      if (msg.topic.indexOf('CrackOut') != -1) {
-        const info = JSON.parse(msg.payloadString);
-        for (var i = 0; i < vm.crackerArr.length; i++) {
-          if (vm.crackerArr[i].id == info.id) {
-            vm.crackerArr.splice(i, 1);
-          }
-        }
-        return;
-      }
-      var info = JSON.parse(msg.payloadString);
-      var flag = true;
-      for (var i = 0; i < vm.crackerArr.length; i++) {
-        if (vm.crackerArr[i].id == info.id) {
-          vm.$set(vm.crackerArr, i, info);
-          flag = false;
-        }
-      }
-      if (flag) {
-        vm.crackerArr.push(info);
-      }
     } else if (msg.topic.indexOf('ADSB') != -1) {
       if (msg.topic.indexOf('ADSBOut') != -1) {
         const info = JSON.parse(msg.payloadString);
