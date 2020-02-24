@@ -211,7 +211,7 @@ const documentReady = async () => {
       horizontalFov: 130,
       pitch: 45,
       verticalFov: 90,
-      viewPosition: POSITION_STATION_ONE,
+      viewPosition: [...POSITION_STATION_ONE.slice(0, 2), 30],
       visibleAreaColor: Cesium.Color.LAWNGREEN.withAlpha(0.5),
     });
   });
