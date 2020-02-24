@@ -856,8 +856,8 @@ const documentReady = async () => {
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
         vm.ereconArr.forEach((entity, i) => {
-          if (entity.id == info.id) {
-            viewer.entities.remove(vm.ereconArr.get(info.id));
+          if (entity._id == info.id) {
+            viewer.entities.remove(entity);
             vm.ereconArr.splice(i, 1);
           }
         });
@@ -933,11 +933,12 @@ const documentReady = async () => {
       }));
 
     } else if (msg.topic.indexOf('Crack') != -1) {
+
       if (msg.topic.indexOf('CrackOut') != -1) {
         const info = JSON.parse(msg.payloadString);
         vm.crackerArr.forEach((entity, i) => {
-          if (entity.id == info.id) {
-            viewer.entities.remove(vm.crackerArr.get(info.id));
+          if (entity._id == info.id) {
+            viewer.entities.remove(entity);
             vm.crackerArr.splice(i, 1);
           }
         });
