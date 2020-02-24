@@ -10,13 +10,13 @@ var vm = new Vue({
     // 光电信息
     gdInfo: '',
     // 电子侦查信息
-    dzArr: [],
+    ereconArr: [],
     // 电子侦查下标
-    dzIndex: 0,
+    ereconIndex: 0,
     // 协议破解信息
-    xypjArr: [],
+    crackerArr: [],
     // 协议破解下标
-    xypjIndex: 0,
+    crackerIndex: 0,
     // ADS-B信息
     adsbArr: [],
     // ADS-B下标
@@ -48,24 +48,24 @@ var vm = new Vue({
         vm.leidaIndex++;
       }
     },
-    dzIndexJian() {
-      if (vm.dzIndex > 0) {
-        vm.dzIndex--;
+    ereconIndexJian() {
+      if (vm.ereconIndex > 0) {
+        vm.ereconIndex--;
       }
     },
-    dzIndexJia() {
-      if (vm.dzIndex < vm.dzArr.length - 1) {
-        vm.dzIndex++;
+    ereconIndexJia() {
+      if (vm.ereconIndex < vm.ereconArr.length - 1) {
+        vm.ereconIndex++;
       }
     },
-    xypjIndexJian() {
-      if (vm.xypjIndex > 0) {
-        vm.xypjIndex--;
+    crackerIndexJian() {
+      if (vm.crackerIndex > 0) {
+        vm.crackerIndex--;
       }
     },
-    xypjIndexJia() {
-      if (vm.xypjIndex < vm.xypjArr.length - 1) {
-        vm.xypjIndex++;
+    crackerIndexJia() {
+      if (vm.crackerIndex < vm.crackerArr.length - 1) {
+        vm.crackerIndex++;
       }
     },
     adsbIndexJian() {
@@ -772,29 +772,29 @@ const documentReady = async () => {
     } else if (msg.topic.indexOf('DianZhen') != -1) {
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        if (dzArr.get(info.id) != undefined) {
-          viewer.entities.remove(dzArr.get(info.id));
+        if (ereconArr.get(info.id) != undefined) {
+          viewer.entities.remove(ereconArr.get(info.id));
 
-        for (var i = 0; i < vm.dzArr.length; i++) {
-          if (vm.dzArr[i].id == info.id) {
-            vm.dzArr.splice(i, 1);
+        for (var i = 0; i < vm.ereconArr.length; i++) {
+          if (vm.ereconArr[i].id == info.id) {
+            vm.ereconArr.splice(i, 1);
           }
         }
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.dzArr.length; i++) {
-        if (vm.dzArr[i].id == info.id) {
-          vm.$set(vm.dzArr, i, info);
+      for (var i = 0; i < vm.ereconArr.length; i++) {
+        if (vm.ereconArr[i].id == info.id) {
+          vm.$set(vm.ereconArr, i, info);
           flag = false;
         }
       }
       if (flag) {
-        vm.dzArr.push(info);
+        vm.ereconArr.push(info);
       }
 
-      dzAr.set(info.id, viewer.entities.add({
+      ereconArr.set(info.id, viewer.entities.add({
         angle = info.azimuth,
         polygon: {
           hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
@@ -832,23 +832,23 @@ const documentReady = async () => {
     } else if (msg.topic.indexOf('Crack') != -1) {
       if (msg.topic.indexOf('CrackOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        for (var i = 0; i < vm.xypjArr.length; i++) {
-          if (vm.xypjArr[i].id == info.id) {
-            vm.xypjArr.splice(i, 1);
+        for (var i = 0; i < vm.crackerArr.length; i++) {
+          if (vm.crackerArr[i].id == info.id) {
+            vm.crackerArr.splice(i, 1);
           }
         }
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.xypjArr.length; i++) {
-        if (vm.xypjArr[i].id == info.id) {
-          vm.$set(vm.xypjArr, i, info);
+      for (var i = 0; i < vm.crackerArr.length; i++) {
+        if (vm.crackerArr[i].id == info.id) {
+          vm.$set(vm.crackerArr, i, info);
           flag = false;
         }
       }
       if (flag) {
-        vm.xypjArr.push(info);
+        vm.crackerArr.push(info);
       }
     } else if (msg.topic.indexOf('ADSB') != -1) {
       if (msg.topic.indexOf('ADSBOut') != -1) {
