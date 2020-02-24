@@ -9,6 +9,14 @@ var vm = new Vue({
     radarIndex: 0,
     // 光电信息
     gdInfo: '',
+	//电子侦查信息
+	dzArr: [],
+	//电子侦查下标
+	dzIndex: 0,
+	//协议破解信息
+	xypjArr: [],
+	//协议破解下标
+	xypjIndex: 0,
     // 电子侦查信息
     ereconArr: [],
     // 电子侦查下标
@@ -32,6 +40,26 @@ var vm = new Vue({
 
   },
   methods: {
+	  dzIndexJian: function() {
+	  	if (vm.dzIndex > 0) {
+	  		vm.dzIndex--;
+	  	}
+	  },
+	  dzIndexJia: function() {
+	  	if (vm.dzIndex < vm.dzArr.length - 1) {
+	  		vm.dzIndex++;
+	  	}
+	  },
+	  xypjIndexJian: function() {
+	  	if (vm.xypjIndex > 0) {
+	  		vm.xypjIndex--;
+	  	}
+	  },
+	  xypjIndexJia: function() {
+	  	if (vm.xypjIndex < vm.xypjArr.length - 1) {
+	  		vm.xypjIndex++;
+	  	}
+	  },
 	  alertWarn:function(){
 	  	vm.alertFlag = !vm.alertFlag;
 	  },
@@ -859,12 +887,23 @@ const documentReady = async () => {
           if (entity.id == info.id) {
             viewer.entities.remove(vm.ereconArr.get(info.id));
             vm.ereconArr.splice(i, 1);
+			vm.dzArr.splice(i,1);
           }
         });
         return;
       }
 
       var info = JSON.parse(msg.payloadString);
+	  var flag = true;
+	  for (var i = 0; i < vm.dzArr.length; i++) {
+	  	if (vm.dzArr[i].id == info.id) {
+	  		vm.$set(vm.dzArr, i, info);
+	  		flag = false;
+	  	}
+	  }
+	  if (flag) {
+	  	vm.dzArr.push(info);
+	  }
       vm.ereconArr.forEach((entity) => {
         if (entity._id == info.id) {
           entity._angle = info.azimuth;
@@ -939,12 +978,23 @@ const documentReady = async () => {
           if (entity.id == info.id) {
             viewer.entities.remove(vm.crackerArr.get(info.id));
             vm.crackerArr.splice(i, 1);
+			vm.xypjArr.splice(i,1);
           }
         });
         return;
       }
 
       var info = JSON.parse(msg.payloadString);
+	  var flag = true;
+	  for (var i = 0; i < vm.xypjArr.length; i++) {
+	  	if (vm.xypjArr[i].id == info.id) {
+	  		vm.$set(vm.xypjArr, i, info);
+	  		flag = false;
+	  	}
+	  }
+	  if (flag) {
+	  	vm.xypjArr.push(info);
+	  }
       vm.crackerArr.forEach((entity, i) => {
         if (entity.id == info.id) {
           entity.angle = info.azimuth;
