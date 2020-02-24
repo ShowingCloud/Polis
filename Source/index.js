@@ -879,3 +879,5 @@ const documentReady = async () => {
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
 }
+
+window.onload = documentReady;
