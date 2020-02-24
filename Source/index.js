@@ -884,7 +884,7 @@ const documentReady = async () => {
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
         vm.ereconArr.forEach((entity, i) => {
-          if (entity._id == info.id) {
+          if (entity._targetId == info.id) {
             viewer.entities.remove(entity);
             vm.ereconArr.splice(i, 1);
             vm.dzArr.splice(i,1);
@@ -904,79 +904,62 @@ const documentReady = async () => {
       if (flag) {
         vm.dzArr.push(info);
       }
+      flag = true;
       vm.ereconArr.forEach((entity) => {
-        if (entity._id == info.id) {
-          entity._angle = info.azimuth;
-          entity.polygon.hierarchy = [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth + 1.5), Math.PI / 2, 5000.0)),
-                new Cesium.Cartesian3()
-              ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-              new Cesium.Cartesian3()
-            ),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth - 1.5), Math.PI / 2, 5000.0)),
-                new Cesium.Cartesian3()
-              ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-              new Cesium.Cartesian3()
-            ),
-          ];
-          return;
+        if (entity._targetId == info.id) {
+          entity._targetAngle = info.azimuth;
+          flag = false;
         }
       });
-      vm.ereconArr.push(viewer.entities.add({
-        _angle: info.azimuth,
-        _id: info.id,
-        _json: info,
-        polygon: {
-          hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
+      if (flag) {
+        vm.ereconArr.push(viewer.entities.add({
+          _targetAngle: info.azimuth,
+          _targetId: info.id,
+          _json: info,
+          polygon: {
+            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
+                    Math.PI / 180 * (90 - vm.ereconArr.find(i => i._targetId == info.id)._targetAngle + 1.5),
+                    Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 + 1.5), Math.PI / 2, 5000.0)),
+                Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
-              new Cesium.Cartesian3()
-            ),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
+                    Math.PI / 180 * (90 - vm.ereconArr.find(i => i._targetId == info.id)._targetAngle - 1.5),
+                    Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 1.5), Math.PI / 2, 5000.0)),
+                Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
-              new Cesium.Cartesian3()
-            ),
-          ],
-          material: Cesium.Color.MAGENTA.withAlpha(0.2),
-          outline: true,
-          outlineColor: Cesium.Color.BLACK,
-          perPositionHeight: true,
-          show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
-        },
-      }));
+            ], false),
+            material: Cesium.Color.MAGENTA.withAlpha(0.2),
+            outline: true,
+            outlineColor: Cesium.Color.BLACK,
+            perPositionHeight: true,
+            show: $('#ereconButton :button').attr('aria-pressed') == 'true',
+          },
+        }));
+      }
 
     } else if (msg.topic.indexOf('Crack') != -1) {
 
       if (msg.topic.indexOf('CrackOut') != -1) {
         const info = JSON.parse(msg.payloadString);
         vm.crackerArr.forEach((entity, i) => {
-          if (entity._id == info.id) {
+          if (entity._targetId == info.id) {
             viewer.entities.remove(entity);
             vm.crackerArr.splice(i, 1);
             vm.xypjArr.splice(i,1);
@@ -997,72 +980,51 @@ const documentReady = async () => {
         vm.xypjArr.push(info);
       }
       console.log(vm.xypjArr)
+      flag = true;
       vm.crackerArr.forEach((entity, i) => {
-        if (entity._id == info.id) {
-          entity._angle = info.azimuth;
-          entity.polygon.hierarchy = [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth + 1.5), Math.PI / 2, 5000.0)),
-                new Cesium.Cartesian3()
-              ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-              new Cesium.Cartesian3()
-            ),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth - 1.5), Math.PI / 2, 5000.0)),
-                new Cesium.Cartesian3()
-              ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-              new Cesium.Cartesian3()
-            ),
-          ];
-          return;
+        if (entity._targetId == info.id) {
+          entity._targetAngle = info.azimuth;
+          flag = false;
         }
       });
-      vm.crackerArr.push(viewer.entities.add({
-        _angle: info.azimuth,
-        _id: info.id,
-        _json: info,
-        polygon: {
-          hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
+      if (flag) {
+        vm.crackerArr.push(viewer.entities.add({
+          _targetAngle: info.azimuth,
+          _targetId: info.id,
+          _json: info,
+          polygon: {
+            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle + 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 + 1.5), Math.PI / 2, 5000.0)),
+                Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
-              new Cesium.Cartesian3()
-            ),
-            Cesium.Cartesian3.add(
-              Cesium.Matrix4.multiplyByPointAsVector(
-                Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle - 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 1.5), Math.PI / 2, 5000.0)),
+                Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
-              new Cesium.Cartesian3()
-            ),
-          ],
-          material: Cesium.Color.CYAN.withAlpha(0.2),
-          outline: true,
-          outlineColor: Cesium.Color.BLACK,
-          perPositionHeight: true,
-          show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
-        },
-      }));
+            ], false),
+            material: Cesium.Color.CYAN.withAlpha(0.2),
+            outline: true,
+            outlineColor: Cesium.Color.BLACK,
+            perPositionHeight: true,
+            show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'true',
+          },
+        }));
+      }
 
     } else if (msg.topic.indexOf('ADSB') != -1) {
       if (msg.topic.indexOf('ADSBOut') != -1) {
