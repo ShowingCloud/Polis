@@ -216,8 +216,8 @@ const documentReady = async () => {
   viewshed3D[1].direction = 120;
   viewshed3D[2].direction = 240;
 
-  $('#leidaCoverage').click(() => {
-    if ($('#leidaCoverage :button').attr('aria-pressed') === 'false') { /* Before toggled */
+  $('#leidaCoverage').click((e) => {
+    if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
       [0, 1, 2].forEach((i) => {
         viewshed3D[i].distance = 5000;
         viewshed3D[i].build();
