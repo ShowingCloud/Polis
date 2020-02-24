@@ -477,11 +477,11 @@ const documentReady = async () => {
           airPositionArr.delete(airId.id);
           airArr.delete(airId.id);
 
-          for (let i = 0; i < vm.targetArr.length; i++) {
+          vm.targetArr.forEach((i) => {
             if (vm.targetArr[i].id == airId.id) {
               vm.targetArr.splice(i, 1);
             }
-          }
+          });
         }
         return;
       }
@@ -489,12 +489,12 @@ const documentReady = async () => {
       // 目标信息
       const airPosition = JSON.parse(msg.payloadString);
       let targetFlag = true;
-      for (let i = 0; i < vm.targetArr.length; i++) {
+      vm.targetArr.forEach((i) => {
         if (vm.targetArr[i].id == airPosition.id) {
           vm.$set(vm.targetArr, i, airPosition);
           targetFlag = !targetFlag;
         }
-      }
+      });
       if (targetFlag) {
         vm.targetArr.push(airPosition);
       }
@@ -757,14 +757,14 @@ const documentReady = async () => {
       const radarInfo = JSON.parse(msg.payloadString);
       // console.log(radarInfo)
       var flag = true;
-      for (var i = 0; i < vm.radarArr.length; i++) {
+      vm.radarArr.forEach((i) => {
         if (vm.radarArr[i].id == radarInfo.id) {
           // vm.radarArr[i] = radarInfo;
           // 深度监听对象数组
           vm.$set(vm.radarArr, i, radarInfo);
           flag = false;
         }
-      }
+      });
       if (flag) {
         vm.radarArr.push(radarInfo);
       }
@@ -802,22 +802,22 @@ const documentReady = async () => {
           viewer.entities.remove(vm.ereconArr.get(info.id));
         }
 
-        for (var i = 0; i < vm.ereconArr.length; i++) {
+        vm.ereconArr.forEach((i) => {
           if (vm.ereconArr[i].id == info.id) {
             vm.ereconArr.splice(i, 1);
           }
-        }
+        });
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.ereconArr.length; i++) {
+      vm.ereconArr.forEach((i) => {
         if (vm.ereconArr[i].id == info.id) {
           vm.$set(vm.ereconArr, i, info);
           vm.ereconArr.get(info.id).angle = info.azimuth;
           flag = false;
         }
-      }
+      });
       if (flag) {
         vm.ereconArr.push(info);
       }
@@ -866,22 +866,22 @@ const documentReady = async () => {
           viewer.entities.remove(vm.crackerArr.get(info.id));
         }
 
-        for (var i = 0; i < vm.crackerArr.length; i++) {
+        vm.crackerArr.forEach((i) => {
           if (vm.crackerArr[i].id == info.id) {
             vm.crackerArr.splice(i, 1);
           }
-        }
+        });
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.crackerArr.length; i++) {
+      vm.crackerArr.forEach((i) => {
         if (vm.crackerArr[i].id == info.id) {
           vm.$set(vm.crackerArr, i, info);
           vm.crackerArr.get(info.id).angle = info.azimuth;
           flag = false;
         }
-      }
+      });
       if (flag) {
         vm.crackerArr.push(info);
       }
@@ -926,21 +926,21 @@ const documentReady = async () => {
     } else if (msg.topic.indexOf('ADSB') != -1) {
       if (msg.topic.indexOf('ADSBOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        for (var i = 0; i < vm.adsbArr.length; i++) {
+        vm.adsbArr.forEach((i) => {
           if (vm.adsbArr[i].id == info.id) {
             vm.adsbArr.splice(i, 1);
           }
-        }
+        });
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.adsbArr.length; i++) {
+      vm.adsbArr.forEach((i) => {
         if (vm.adsbArr[i].id == info.id) {
           vm.$set(vm.adsbArr, i, info);
           flag = false;
         }
-      }
+      });
       if (flag) {
         vm.adsbArr.push(info);
       }
