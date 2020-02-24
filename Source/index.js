@@ -9,14 +9,6 @@ var vm = new Vue({
     radarIndex: 0,
     // 光电信息
     gdInfo: '',
-	//电子侦查信息
-	dzArr: [],
-	//电子侦查下标
-	dzIndex: 0,
-	//协议破解信息
-	xypjArr: [],
-	//协议破解下标
-	xypjIndex: 0,
     // 电子侦查信息
     ereconArr: [],
     // 电子侦查下标
@@ -40,30 +32,10 @@ var vm = new Vue({
 
   },
   methods: {
-	  dzIndexJian: function() {
-	  	if (vm.dzIndex > 0) {
-	  		vm.dzIndex--;
-	  	}
-	  },
-	  dzIndexJia: function() {
-	  	if (vm.dzIndex < vm.dzArr.length - 1) {
-	  		vm.dzIndex++;
-	  	}
-	  },
-	  xypjIndexJian: function() {
-	  	if (vm.xypjIndex > 0) {
-	  		vm.xypjIndex--;
-	  	}
-	  },
-	  xypjIndexJia: function() {
-	  	if (vm.xypjIndex < vm.xypjArr.length - 1) {
-	  		vm.xypjIndex++;
-	  	}
-	  },
-	  alertWarn:function(){
+	  alertWarn() {
 	  	vm.alertFlag = !vm.alertFlag;
 	  },
-	  closeWarn:function(){
+	  closeWarn() {
 	  	vm.alertFlag = false;
 	  },
     radarIndexJian() {
@@ -883,35 +855,20 @@ const documentReady = async () => {
 
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        vm.ereconArr.forEach((entity, i) => {
-          if (entity._targetId == info.id) {
-            viewer.entities.remove(entity);
-            vm.ereconArr.splice(i, 1);
-            vm.dzArr.splice(i,1);
-          }
+        vm.ereconArr.filter(i => i._targetId == info.id).forEach((entity, i) => {
+          viewer.entities.remove(entity);
+          vm.ereconArr.splice(i, 1);
         });
         return;
       }
 
       var info = JSON.parse(msg.payloadString);
-      var flag = true;
-      for (var i = 0; i < vm.dzArr.length; i++) {
-        if (vm.dzArr[i].id == info.id) {
-          vm.$set(vm.dzArr, i, info);
-          flag = false;
-        }
-      }
-      if (flag) {
-        vm.dzArr.push(info);
-      }
-      flag = true;
-      vm.ereconArr.forEach((entity) => {
-        if (entity._targetId == info.id) {
-          entity._targetAngle = info.azimuth;
-          flag = false;
-        }
-      });
-      if (flag) {
+
+      let entity = vm.ereconArr.find(i => i._targetId == info.id);
+      if (entity) {
+        entity._targetAngle = info.azimuth;
+        entity._json = info;
+      } else {
         vm.ereconArr.push(viewer.entities.add({
           _targetAngle: info.azimuth,
           _targetId: info.id,
@@ -958,36 +915,20 @@ const documentReady = async () => {
 
       if (msg.topic.indexOf('CrackOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        vm.crackerArr.forEach((entity, i) => {
-          if (entity._targetId == info.id) {
-            viewer.entities.remove(entity);
-            vm.crackerArr.splice(i, 1);
-            vm.xypjArr.splice(i,1);
-          }
+        vm.crackerArr.filter(i => i._targetId == info.id).forEach((entity, i) => {
+          viewer.entities.remove(entity);
+          vm.crackerArr.splice(i, 1);
         });
         return;
       }
 
       var info = JSON.parse(msg.payloadString);
-      var flag = true;
-      for (var i = 0; i < vm.xypjArr.length; i++) {
-        if (vm.xypjArr[i].id == info.id) {
-          vm.$set(vm.xypjArr, i, info);
-          flag = false;
-        }
-      }
-      if (flag) {
-        vm.xypjArr.push(info);
-      }
-      console.log(vm.xypjArr)
-      flag = true;
-      vm.crackerArr.forEach((entity, i) => {
-        if (entity._targetId == info.id) {
-          entity._targetAngle = info.azimuth;
-          flag = false;
-        }
-      });
-      if (flag) {
+
+      let entity = vm.crackerArr.find(i => i._targetId == info.id);
+      if (entity) {
+        entity._targetAngle = info.azimuth;
+        entity._json = info;
+      } else {
         vm.crackerArr.push(viewer.entities.add({
           _targetAngle: info.azimuth,
           _targetId: info.id,
@@ -999,7 +940,9 @@ const documentReady = async () => {
                   Cesium.Transforms.eastNorthUpToFixedFrame(
                     Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
                   ),
-                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle + 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
+                    Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle + 1.5),
+                    Math.PI / 2, 5000.0)),
                   new Cesium.Cartesian3()
                 ),
                 Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
@@ -1010,7 +953,9 @@ const documentReady = async () => {
                   Cesium.Transforms.eastNorthUpToFixedFrame(
                     Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
                   ),
-                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle - 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
+                    Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle - 1.5),
+                    Math.PI / 2, 5000.0)),
                   new Cesium.Cartesian3()
                 ),
                 Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),

@@ -186,7 +186,7 @@
 						</div>
 						<div class="shebei dzzc">
 							<a href="#" style="pointer-events:auto;" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"><b
-								 class="mubiaoNum" v-if="dzArr.length>0">{{dzArr.length}}</b><img src="Source/Images/dzzc.png" id="dzzcImg"></a>
+								 class="mubiaoNum" v-if="ereconArr.length>0">{{ereconArr.length}}</b><img src="Source/Images/dzzc.png" id="dzzcImg"></a>
 							<div class="shebei_left myHide" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
 							 ondragstart="return false;" onselectstart="return false;">
 								<div class="shebei_left_bottom" style="display: none;" id="ereconButton">
@@ -197,34 +197,34 @@
 							</div>
 							<div class="shebei_right myLeft" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
 							 ondragstart="return false;" onselectstart="return false;">
-								<div class="canshu" v-if="dzArr.length>0">
+								<div class="canshu" v-if="ereconArr.length>0">
 									<h3 style="width: 60%;">运行状态：</h3>
-									<h3 style="width: 25%;color: red;margin-left: 0px!important;">{{dzArr[dzIndex].status}}</h3>
+									<h3 style="width: 25%;color: red;margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.status}}</h3>
 								</div>
-								<div class="canshu" v-if="dzArr.length>0" style="margin-left: 8%!important;">
+								<div class="canshu" v-if="ereconArr.length>0" style="margin-left: 8%!important;">
 									<h3 style="width: 50%;">方位角：</h3>
-									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{dzArr[dzIndex].azimuth}}</h3>
+									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.azimuth}}</h3>
 								</div>
-								<div class="canshu" v-if="dzArr.length>0">
+								<div class="canshu" v-if="ereconArr.length>0">
 									<h3 style="width: 60%;">发现频段：</h3>
-									<h3 style="width: 25%;color: rgb(187,40,215);margin-left: 0px!important;">{{dzArr[dzIndex].frequency}}GHZ</h3>
+									<h3 style="width: 25%;color: rgb(187,40,215);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.frequency}}GHZ</h3>
 								</div>
-								<div class="canshu" v-if="dzArr.length>0" style="margin-left: 8%!important;">
+								<div class="canshu" v-if="ereconArr.length>0" style="margin-left: 8%!important;">
 									<h3 style="width: 60%;">目标标志：</h3>
-									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{dzArr[dzIndex].targetSign}}</h3>
+									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.targetSign}}</h3>
 								</div>
-								<div class="canshu" v-if="dzArr.length>0" style="width: 90%;padding-top: 0px!important;">
+								<div class="canshu" v-if="ereconArr.length>0" style="width: 90%;padding-top: 0px!important;">
 									<h3 style="width: 30%;">发现时间：</h3>
-									<h3 style="width: 40%;color: rgb(39,218,159);margin-left: 0px!important;">{{dzArr[dzIndex].time}}</h3>
+									<h3 style="width: 40%;color: rgb(39,218,159);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.time}}</h3>
 								</div>
-								<i class="glyphicon glyphicon-chevron-up leida_up" v-if="dzIndex>0" v-on:click="dzIndexJian()"></i>
-								<i class="glyphicon glyphicon-chevron-down leida_dowm" v-if="dzIndex<dzArr.length-1" v-on:click="dzIndexJia()"></i>
-								<div v-if="dzArr.length==0" class="zwsj">暂无数据</div>
+								<i class="glyphicon glyphicon-chevron-up leida_up" v-if="ereconIndex>0" v-on:click="ereconIndexJian()"></i>
+								<i class="glyphicon glyphicon-chevron-down leida_dowm" v-if="ereconIndex<ereconArr.length-1" v-on:click="ereconIndexJia()"></i>
+								<div v-if="ereconArr.length==0" class="zwsj">暂无数据</div>
 							</div>
 						</div>
 						<div class="shebei xypj">
 							<a href="#" style="pointer-events:auto;" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"><b
-								 class="mubiaoNum" v-if="xypjArr.length>0">{{xypjArr.length}}</b><img src="Source/Images/xypj.png" id="xypjImg"></a>
+								 class="mubiaoNum" v-if="crackerArr.length>0">{{crackerArr.length}}</b><img src="Source/Images/xypj.png" id="xypjImg"></a>
 							<div class="shebei_left myHide" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
 							 ondragstart="return false;" onselectstart="return false;">
 								<div class="shebei_left_bottom" style="display: none;" id="protocolCrackingButton">
@@ -235,29 +235,29 @@
 							</div>
 							<div class="shebei_right myLeft" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
 							 ondragstart="return false;" onselectstart="return false;">
-								<div class="canshu" v-if="xypjArr.length>0">
+								<div class="canshu" v-if="crackerArr.length>0">
 									<h3 style="width: 60%;">运行状态：</h3>
-									<h3 style="width: 25%;color: rgb(28,235,33);margin-left: 0px!important;">{{xypjArr[xypjIndex].status}}</h3>
+									<h3 style="width: 25%;color: rgb(28,235,33);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.status}}</h3>
 								</div>
-								<div class="canshu" v-if="xypjArr.length>0" style="margin-left: 8%!important;">
+								<div class="canshu" v-if="crackerArr.length>0" style="margin-left: 8%!important;">
 									<h3 style="width: 50%;">方位角：</h3>
-									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{xypjArr[xypjIndex].azimuth}}</h3>
+									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.azimuth}}</h3>
 								</div>
-								<div class="canshu" v-if="xypjArr.length>0" style="width: 62%;">
+								<div class="canshu" v-if="crackerArr.length>0" style="width: 62%;">
 									<h3 style="width: 53%;">当前发现型号：</h3>
-									<h3 style="width: 20%;color: rgb(187,40,215);margin-left: 0px!important;">{{xypjArr[xypjIndex].type}}</h3>
+									<h3 style="width: 20%;color: rgb(187,40,215);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.type}}</h3>
 								</div>
-								<div class="canshu" v-if="xypjArr.length>0" style="margin-left: -8%!important;width: 29%;">
+								<div class="canshu" v-if="crackerArr.length>0" style="margin-left: -8%!important;width: 29%;">
 									<h3 style="width: 81%;">发现频段：</h3>
-									<h3 style="width: 10%;color: rgb(225,227,26);margin-left: 0px!important;">{{xypjArr[xypjIndex].frequency}}G</h3>
+									<h3 style="width: 10%;color: rgb(225,227,26);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.frequency}}G</h3>
 								</div>
-								<div class="canshu" v-if="xypjArr.length>0" style="width: 90%;padding-top: 0px!important;">
+								<div class="canshu" v-if="crackerArr.length>0" style="width: 90%;padding-top: 0px!important;">
 									<h3 style="width: 30%;">发现时间：</h3>
-									<h3 style="width: 40%;color: rgb(39,218,159);margin-left: 0px!important;">{{xypjArr[xypjIndex].time}}</h3>
+									<h3 style="width: 40%;color: rgb(39,218,159);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.time}}</h3>
 								</div>
-								<i class="glyphicon glyphicon-chevron-up leida_up" v-if="xypjIndex>0" v-on:click="xypjIndexJian()"></i>
-								<i class="glyphicon glyphicon-chevron-down leida_dowm" v-if="xypjIndex<xypjArr.length-1" v-on:click="xypjIndexJia()"></i>
-								<div v-if="xypjArr.length==0" class="zwsj">暂无数据</div>
+								<i class="glyphicon glyphicon-chevron-up leida_up" v-if="crackerIndex>0" v-on:click="crackerIndexJian()"></i>
+								<i class="glyphicon glyphicon-chevron-down leida_dowm" v-if="crackerIndex<crackerArr.length-1" v-on:click="crackerIndexJia()"></i>
+								<div v-if="crackerArr.length==0" class="zwsj">暂无数据</div>
 							</div>
 						</div>
 						<div class="shebei ADS-B">
