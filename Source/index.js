@@ -289,10 +289,10 @@ const documentReady = async () => {
   radarHandler.setInputAction(async (e) => {
     const pickedObject = radarScene.pick(e.position);
     if (Cesium.defined(pickedObject)) {
-      await mainViewer.flyTo(pickedObject.id, {
+      await viewer.flyTo(pickedObject.id, {
         offset: new Cesium.HeadingPitchRange(0.0, -0.5, 100.0),
       });
-      mainViewer.trackedEntity = pickedObject.id;
+      viewer.trackedEntity = pickedObject.id;
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
