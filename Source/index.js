@@ -873,14 +873,15 @@ const documentReady = async () => {
       });
       vm.ereconArr.push(viewer.entities.add({
         angle: info.azimuth,
+        id: info.id,
         polygon: {
-          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.filter(i => i.id == info.id).angle + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -891,7 +892,7 @@ const documentReady = async () => {
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.filter(i => i.id == info.id).angle - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -927,14 +928,15 @@ const documentReady = async () => {
       });
       vm.crackerArr.push(viewer.entities.add({
         angle: info.azimuth,
+        id: info.id,
         polygon: {
-          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.filter(i => i.id == info.id).angle + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -945,7 +947,7 @@ const documentReady = async () => {
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.filter(i => i.id == info.id).angle - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
