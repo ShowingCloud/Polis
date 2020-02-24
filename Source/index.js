@@ -206,8 +206,8 @@ const documentReady = async () => {
     Object.assign(viewshed3D[i], {
       hiddenAreaColor: Cesium.Color.GRAY.withAlpha(0.5),
       horizontalFov: 130,
-      pitch: 30,
-      verticalFov: 120,
+      pitch: 45,
+      verticalFov: 90,
       viewPosition: POSITION_STATION_ONE,
       visibleAreaColor: Cesium.Color.LAWNGREEN.withAlpha(0.5),
     });
@@ -477,8 +477,8 @@ const documentReady = async () => {
           airPositionArr.delete(airId.id);
           airArr.delete(airId.id);
 
-          vm.targetArr.forEach((i) => {
-            if (vm.targetArr[i].id == airId.id) {
+          vm.targetArr.forEach((entity, i) => {
+            if (entity.id == airId.id) {
               vm.targetArr.splice(i, 1);
             }
           });
@@ -489,8 +489,8 @@ const documentReady = async () => {
       // 目标信息
       const airPosition = JSON.parse(msg.payloadString);
       let targetFlag = true;
-      vm.targetArr.forEach((i) => {
-        if (vm.targetArr[i].id == airPosition.id) {
+      vm.targetArr.forEach((entity, i) => {
+        if (entity.id == airPosition.id) {
           vm.$set(vm.targetArr, i, airPosition);
           targetFlag = !targetFlag;
         }
@@ -757,8 +757,8 @@ const documentReady = async () => {
       const radarInfo = JSON.parse(msg.payloadString);
       // console.log(radarInfo)
       var flag = true;
-      vm.radarArr.forEach((i) => {
-        if (vm.radarArr[i].id == radarInfo.id) {
+      vm.radarArr.forEach((entity, i) => {
+        if (entity.id == radarInfo.id) {
           // vm.radarArr[i] = radarInfo;
           // 深度监听对象数组
           vm.$set(vm.radarArr, i, radarInfo);
@@ -796,138 +796,119 @@ const documentReady = async () => {
       // console.log(info)
       vm.gdInfo = info;
     } else if (msg.topic.indexOf('DianZhen') != -1) {
+
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        if (vm.ereconArr.get(info.id) != undefined) {
-          viewer.entities.remove(vm.ereconArr.get(info.id));
-        }
-
-        vm.ereconArr.forEach((i) => {
-          if (vm.ereconArr[i].id == info.id) {
+        vm.ereconArr.forEach((entity, i) => {
+          if (entity.id == info.id) {
+            viewer.entities.remove(vm.ereconArr.get(info.id));
             vm.ereconArr.splice(i, 1);
           }
         });
         return;
       }
+
       var info = JSON.parse(msg.payloadString);
-      var flag = true;
-      vm.ereconArr.forEach((i) => {
-        if (vm.ereconArr[i].id == info.id) {
-          vm.$set(vm.ereconArr, i, info);
-          vm.ereconArr.get(info.id).angle = info.azimuth;
-          flag = false;
+      vm.ereconArr.forEach((entity, i) => {
+        if (entity.id == info.id) {
+          entity.angle = info.azimuth;
+          return;
         }
       });
-      if (flag) {
-        vm.ereconArr.push(info);
-      }
-
-      if (!vm.ereconArr.has(info.id)) {
-        vm.ereconArr.set(info.id, viewer.entities.add({
-          angle: info.azimuth,
-          polygon: {
-            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
-              Cesium.Cartesian3.add(
-                Cesium.Matrix4.multiplyByPointAsVector(
-                  Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                  ),
-                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+      vm.ereconArr.push(viewer.entities.add({
+        angle: info.azimuth,
+        polygon: {
+          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.add(
-                Cesium.Matrix4.multiplyByPointAsVector(
-                  Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                  ),
-                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-            ], false),
-            material: Cesium.Color.MAGENTA.withAlpha(0.5),
-            outline: true,
-            outlineColor: Cesium.Color.BLACK,
-            perPositionHeight: true,
-            show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
-          },
-        }));
-      }
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+          ], false),
+          material: Cesium.Color.MAGENTA.withAlpha(0.5),
+          outline: true,
+          outlineColor: Cesium.Color.BLACK,
+          perPositionHeight: true,
+          show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
+        },
+      }));
 
     } else if (msg.topic.indexOf('Crack') != -1) {
       if (msg.topic.indexOf('CrackOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        if (vm.crackerArr.get(info.id) != undefined) {
-          viewer.entities.remove(vm.crackerArr.get(info.id));
-        }
-
-        vm.crackerArr.forEach((i) => {
-          if (vm.crackerArr[i].id == info.id) {
+        vm.crackerArr.forEach((entity, i) => {
+          if (entity.id == info.id) {
+            viewer.entities.remove(vm.crackerArr.get(info.id));
             vm.crackerArr.splice(i, 1);
           }
         });
         return;
       }
+
       var info = JSON.parse(msg.payloadString);
-      var flag = true;
-      vm.crackerArr.forEach((i) => {
-        if (vm.crackerArr[i].id == info.id) {
-          vm.$set(vm.crackerArr, i, info);
-          vm.crackerArr.get(info.id).angle = info.azimuth;
-          flag = false;
+      vm.crackerArr.forEach((entity, i) => {
+        if (entity.id == info.id) {
+          entity.angle = info.azimuth;
+          return;
         }
       });
-      if (flag) {
-        vm.crackerArr.push(info);
-      }
-
-      if (!vm.ereconArr.has(info.id)) {
-        vm.crackerArr.set(info.id, viewer.entities.add({
-          angle: info.azimuth,
-          polygon: {
-            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
-              Cesium.Cartesian3.add(
-                Cesium.Matrix4.multiplyByPointAsVector(
-                  Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                  ),
-                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+      vm.crackerArr.push(viewer.entities.add({
+        angle: info.azimuth,
+        polygon: {
+          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.add(
-                Cesium.Matrix4.multiplyByPointAsVector(
-                  Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-                  ),
-                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-            ], false),
-            material: Cesium.Color.CYAN.withAlpha(0.5),
-            outline: true,
-            outlineColor: Cesium.Color.BLACK,
-            perPositionHeight: true,
-            show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
-          },
-        }));
-      }
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+          ], false),
+          material: Cesium.Color.CYAN.withAlpha(0.5),
+          outline: true,
+          outlineColor: Cesium.Color.BLACK,
+          perPositionHeight: true,
+          show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
+        },
+      }));
 
     } else if (msg.topic.indexOf('ADSB') != -1) {
       if (msg.topic.indexOf('ADSBOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        vm.adsbArr.forEach((i) => {
-          if (vm.adsbArr[i].id == info.id) {
+        vm.adsbArr.forEach((entity, i) => {
+          if (entity.id == info.id) {
             vm.adsbArr.splice(i, 1);
           }
         });
@@ -935,8 +916,8 @@ const documentReady = async () => {
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      vm.adsbArr.forEach((i) => {
-        if (vm.adsbArr[i].id == info.id) {
+      vm.adsbArr.forEach((entity, i) => {
+        if (entity.id == info.id) {
           vm.$set(vm.adsbArr, i, info);
           flag = false;
         }
