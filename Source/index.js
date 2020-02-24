@@ -887,23 +887,23 @@ const documentReady = async () => {
           if (entity._id == info.id) {
             viewer.entities.remove(entity);
             vm.ereconArr.splice(i, 1);
-			vm.dzArr.splice(i,1);
+            vm.dzArr.splice(i,1);
           }
         });
         return;
       }
 
       var info = JSON.parse(msg.payloadString);
-	  var flag = true;
-	  for (var i = 0; i < vm.dzArr.length; i++) {
-	  	if (vm.dzArr[i].id == info.id) {
-	  		vm.$set(vm.dzArr, i, info);
-	  		flag = false;
-	  	}
-	  }
-	  if (flag) {
-	  	vm.dzArr.push(info);
-	  }
+      var flag = true;
+      for (var i = 0; i < vm.dzArr.length; i++) {
+        if (vm.dzArr[i].id == info.id) {
+          vm.$set(vm.dzArr, i, info);
+          flag = false;
+        }
+      }
+      if (flag) {
+        vm.dzArr.push(info);
+      }
       vm.ereconArr.forEach((entity) => {
         if (entity._id == info.id) {
           entity._angle = info.azimuth;
@@ -937,28 +937,29 @@ const documentReady = async () => {
       vm.ereconArr.push(viewer.entities.add({
         _angle: info.azimuth,
         _id: info.id,
+        _json: info,
         polygon: {
           hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
                 ),
                 new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
               new Cesium.Cartesian3()
             ),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
                 ),
                 new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
               new Cesium.Cartesian3()
             ),
           ],
@@ -966,8 +967,7 @@ const documentReady = async () => {
           outline: true,
           outlineColor: Cesium.Color.BLACK,
           perPositionHeight: true,
-          // show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
-          show: true,
+          show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
         },
       }));
 
@@ -979,23 +979,23 @@ const documentReady = async () => {
           if (entity._id == info.id) {
             viewer.entities.remove(entity);
             vm.crackerArr.splice(i, 1);
-			vm.xypjArr.splice(i,1);
+            vm.xypjArr.splice(i,1);
           }
         });
         return;
       }
 
       var info = JSON.parse(msg.payloadString);
-	  var flag = true;
-	  for (var i = 0; i < vm.xypjArr.length; i++) {
-	  	if (vm.xypjArr[i].id == info.id) {
-	  		vm.$set(vm.xypjArr, i, info);
-	  		flag = false;
-	  	}
-	  }
-	  if (flag) {
-	  	vm.xypjArr.push(info);
-	  }
+      var flag = true;
+      for (var i = 0; i < vm.xypjArr.length; i++) {
+        if (vm.xypjArr[i].id == info.id) {
+          vm.$set(vm.xypjArr, i, info);
+          flag = false;
+        }
+      }
+      if (flag) {
+        vm.xypjArr.push(info);
+      }
       vm.crackerArr.forEach((entity, i) => {
         if (entity._id == info.id) {
           entity._angle = info.azimuth;
@@ -1029,28 +1029,29 @@ const documentReady = async () => {
       vm.crackerArr.push(viewer.entities.add({
         _angle: info.azimuth,
         _id: info.id,
+        _json: info,
         polygon: {
           hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
                 ),
                 new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
               new Cesium.Cartesian3()
             ),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
-                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
                 ),
                 new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
               new Cesium.Cartesian3()
             ),
           ],
@@ -1058,8 +1059,7 @@ const documentReady = async () => {
           outline: true,
           outlineColor: Cesium.Color.BLACK,
           perPositionHeight: true,
-          // show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
-          show: true,
+          show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
         },
       }));
 
