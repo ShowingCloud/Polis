@@ -87,8 +87,8 @@ $(() => {
     $('.xypj .shebei_right').removeClass('myLeft');
   });
 
-  $('#leidaButton').click(() => {
-    $('#leidatu').toggle();
+  $('#radarButton').click(() => {
+    $('#radarChart').toggle();
   });
   $('#gdButton').click(() => {
     $('#gdtu').toggle();

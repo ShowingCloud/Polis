@@ -27,8 +27,8 @@ var vm = new Vue({
     WarnNum: '',
     // 光电自动跟踪
     gdAuto: false,
-	//告警列表显示flag
-	alertFlag:false
+    //告警列表显示flag
+    alertFlag:false
 
   },
   methods: {
