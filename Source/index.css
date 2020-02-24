@@ -430,7 +430,7 @@ div{
     white-space: nowrap;
 }
 
-#leidatu{
+#radarChart{
     width: 400px;
     height: 350px;
     position: absolute;
@@ -446,7 +446,16 @@ div{
     right: -380px;
     background-color: rgba(60,136,185,0.8);
 }
-#leidatu img{
+#radarCoverage{
+	top: 28%!important;
+}
+#radarCoverage button{
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	padding-left: 5px;
+}
+#radarChart img{
     width: 100%!important;
     height: 90%!important;
 }

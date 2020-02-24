@@ -4,19 +4,19 @@ var vm = new Vue({
   el: '#main',
   data: {
     // 雷达信息
-    leidaArr: [],
+    radarArr: [],
     // 雷达下标
-    leidaIndex: 0,
+    radarIndex: 0,
     // 光电信息
     gdInfo: '',
     // 电子侦查信息
-    dzArr: [],
+    ereconArr: [],
     // 电子侦查下标
-    dzIndex: 0,
+    ereconIndex: 0,
     // 协议破解信息
-    xypjArr: [],
+    crackerArr: [],
     // 协议破解下标
-    xypjIndex: 0,
+    crackerIndex: 0,
     // ADS-B信息
     adsbArr: [],
     // ADS-B下标
@@ -27,8 +27,8 @@ var vm = new Vue({
     WarnNum: '',
     // 光电自动跟踪
     gdAuto: false,
-	//告警列表显示flag
-	alertFlag:false
+    //告警列表显示flag
+    alertFlag:false
 
   },
   methods: {
@@ -38,34 +38,34 @@ var vm = new Vue({
 	  closeWarn:function(){
 	  	vm.alertFlag = false;
 	  },
-    leidaIndexJian() {
-      if (vm.leidaIndex > 0) {
-        vm.leidaIndex--;
+    radarIndexJian() {
+      if (vm.radarIndex > 0) {
+        vm.radarIndex--;
       }
     },
-    leidaIndexJia() {
-      if (vm.leidaIndex < vm.leidaArr.length - 1) {
-        vm.leidaIndex++;
+    radarIndexJia() {
+      if (vm.radarIndex < vm.radarArr.length - 1) {
+        vm.radarIndex++;
       }
     },
-    dzIndexJian() {
-      if (vm.dzIndex > 0) {
-        vm.dzIndex--;
+    ereconIndexJian() {
+      if (vm.ereconIndex > 0) {
+        vm.ereconIndex--;
       }
     },
-    dzIndexJia() {
-      if (vm.dzIndex < vm.dzArr.length - 1) {
-        vm.dzIndex++;
+    ereconIndexJia() {
+      if (vm.ereconIndex < vm.ereconArr.length - 1) {
+        vm.ereconIndex++;
       }
     },
-    xypjIndexJian() {
-      if (vm.xypjIndex > 0) {
-        vm.xypjIndex--;
+    crackerIndexJian() {
+      if (vm.crackerIndex > 0) {
+        vm.crackerIndex--;
       }
     },
-    xypjIndexJia() {
-      if (vm.xypjIndex < vm.xypjArr.length - 1) {
-        vm.xypjIndex++;
+    crackerIndexJia() {
+      if (vm.crackerIndex < vm.crackerArr.length - 1) {
+        vm.crackerIndex++;
       }
     },
     adsbIndexJian() {
@@ -129,6 +129,7 @@ function jljian() {
   s -= sc;
 }
 
+<<<<<<< HEAD
 /* function jljianStart() {
   jlTime = setInterval(function(){
 	  console.log(1)
@@ -141,6 +142,9 @@ function jljianEnd() {
 } */
 
 function onload(Cesium) {
+=======
+const documentReady = async () => {
+>>>>>>> 3dd42309214c472b3fc9c9ef9cff9efd6d72eb79
   const partOfUrl = '/iserver/services/3D-hn1108/rest/realspace';
   // 加载三维地球场景
   viewer = new Cesium.Viewer('cesiumContainer', {
@@ -211,13 +215,14 @@ function onload(Cesium) {
 
   $('#loadingbar').remove();
 
+
   // 可视域分析,创建雷达扫描
   const viewshed3D = [];
-  [0, 1].forEach((i) => {
+  [0, 1, 2].forEach((i) => {
     viewshed3D[i] = new Cesium.ViewShed3D(scene);
     Object.assign(viewshed3D[i], {
       hiddenAreaColor: Cesium.Color.GRAY.withAlpha(0.5),
-      horizontalFov: 179,
+      horizontalFov: 130,
       pitch: 30,
       verticalFov: 120,
       viewPosition: POSITION_STATION_ONE,
@@ -225,16 +230,17 @@ function onload(Cesium) {
     });
   });
   viewshed3D[0].direction = 0;
-  viewshed3D[1].direction = 180;
+  viewshed3D[1].direction = 120;
+  viewshed3D[2].direction = 240;
 
-  $('#leidaCoverage').click(() => {
-    if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
-    [0, 1].forEach((i) => {
-      viewshed3D[i].distance = 2000;
-      viewshed3D[i].build();
-    });
+  $('#radarCoverage').click((e) => {
+    if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
+      [0, 1, 2].forEach((i) => {
+        viewshed3D[i].distance = 5000;
+        viewshed3D[i].build();
+      });
     } else {
-      [0, 1].forEach((i) => {
+      [0, 1, 2].forEach((i) => {
         viewshed3D[i].distance = 0.1;
         viewshed3D[i].build();
       });
@@ -242,7 +248,7 @@ function onload(Cesium) {
   });
 
 
-  const radarViewer = new Cesium.Viewer('leidatu', {
+  const radarViewer = new Cesium.Viewer('radarChart', {
     infoBox: false,
     sceneMode: Cesium.SceneMode.SCENE2D,
   });
@@ -257,14 +263,49 @@ function onload(Cesium) {
 
   radarViewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
     url: 'Source/Images/leidatu.jpg',
-    rectangle: Cesium.Rectangle.fromDegrees(108.83, 19.39, 108.97, 19.53),
+    rectangle: Cesium.Rectangle.fromDegrees(...POSITION_RADAR_RANGE),
   }));
 
   radarViewer.clock = viewer.clock;
 
   radarViewer._cesiumWidget._creditContainer.style.display = 'none';
-  $('#leidatu .cesium-viewer-navigationContainer').hide();
+  $('#radarChart .cesium-viewer-navigationContainer').hide();
 
+  const radarHandler = new Cesium.ScreenSpaceEventHandler(radarScene.canvas);
+  radarHandler.setInputAction(async (e) => {
+    const pickedObject = radarScene.pick(e.position);
+    if (Cesium.defined(pickedObject)) {
+      await mainViewer.flyTo(pickedObject.id, {
+        offset: new Cesium.HeadingPitchRange(0.0, -0.5, 100.0),
+      });
+      mainViewer.trackedEntity = pickedObject.id;
+    }
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+
+  $('#ereconButton').click((e) => {
+    if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
+      vm.ereconArr.forEach((entity) => {
+        entity.show = true;
+      });
+    } else {
+      vm.ereconArr.forEach((entity) => {
+        entity.show = false;
+      });
+    }
+  });
+
+  $('#protocolCrackingButton').click((e) => {
+    if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
+      vm.crackerArr.forEach((entity) => {
+        entity.show = true;
+      });
+    } else {
+      vm.crackerArr.forEach((entity) => {
+        entity.show = false;
+      });
+    }
+  });
 
   // 站1
   const water1 = viewer.entities.add({
@@ -289,46 +330,48 @@ function onload(Cesium) {
   // 画圆
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'Red ellipse on surface with outline',
+    name: 'Red ellipse on surface within 1000 km with outline',
     ellipse: {
-      semiMinorAxis: 2000.0,
-      semiMajorAxis: 2000.0,
-      height: 30,
       fill: false,
+      height: 30,
       material: Cesium.Color.RED.withAlpha(0.1),
       outline: true,
-      outlineColor: Cesium.Color.RED.withAlpha(1),
+      outlineColor: Cesium.Color.RED,
       outlineWidth: 10,
+      semiMajorAxis: 1000.0,
+      semiMinorAxis: 1000.0,
     },
   });
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'YELLOW ellipse on surface with outline',
+    name: 'YELLOW ellipse on surface within 3000 km with outline',
     ellipse: {
-      semiMinorAxis: 4000.0,
-      semiMajorAxis: 4000.0,
-      height: 30,
       fill: false,
-      material: Cesium.Color.YELLOW.withAlpha(0.05),
+      height: 30,
+      material: Cesium.Color.YELLOW.withAlpha(0.1),
       outline: true,
-      outlineColor: Cesium.Color.YELLOW.withAlpha(1),
+      outlineColor: Cesium.Color.YELLOW,
       outlineWidth: 10,
+      semiMajorAxis: 3000.0,
+      semiMinorAxis: 3000.0,
     },
   });
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'GREEN ellipse on surface with outline',
+    name: 'GREEN ellipse on surface within 5000 km with outline',
     ellipse: {
-      semiMinorAxis: 6000.0,
-      semiMajorAxis: 6000.0,
-      height: 30,
       fill: false,
-      material: Cesium.Color.GREEN.withAlpha(0.02),
+      height: 30,
+      material: Cesium.Color.GREEN.withAlpha(0.1),
       outline: true,
-      outlineColor: Cesium.Color.GREEN.withAlpha(1),
+      outlineColor: Cesium.Color.GREEN,
       outlineWidth: 10,
+      semiMajorAxis: 5000.0,
+      semiMinorAxis: 5000.0,
     },
   });
+
+
   // 当前时间为起始时间,终止时间为1小时
   const start = Cesium.JulianDate.now();
   const stop = Cesium.JulianDate.addSeconds(start, 3600, new Cesium.JulianDate());
@@ -414,42 +457,6 @@ function onload(Cesium) {
   });
 
 
-  let ereconAngle = 0
-  const ereconTarget = viewer.entities.add({
-    polygon: {
-      hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
-        Cesium.Cartesian3.add(
-          Cesium.Matrix4.multiplyByPointAsVector(
-            Cesium.Transforms.eastNorthUpToFixedFrame(
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-            ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle + 1.5), Math.PI / 2, 5000.0)),
-            new Cesium.Cartesian3()
-          ),
-          Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-          new Cesium.Cartesian3()
-        ),
-        Cesium.Cartesian3.add(
-          Cesium.Matrix4.multiplyByPointAsVector(
-            Cesium.Transforms.eastNorthUpToFixedFrame(
-              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
-            ),
-            new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - ereconAngle - 1.5), Math.PI / 2, 5000.0)),
-            new Cesium.Cartesian3()
-          ),
-          Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-          new Cesium.Cartesian3()
-        ),
-      ], false),
-      material: Cesium.Color.CYAN.withAlpha(0.5),
-      outline: true,
-      outlineColor: Cesium.Color.BLACK,
-      perPositionHeight: true,
-      show: false
-    },
-  });
-
-
   connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, `clientTest${Math.random(100)}`, (isConnected) => {
     if (isConnected) {
       // 无人机坐标点消息
@@ -504,11 +511,11 @@ function onload(Cesium) {
           airPositionArr.delete(airId.id);
           airArr.delete(airId.id);
 
-          for (let i = 0; i < vm.targetArr.length; i++) {
+          vm.targetArr.forEach((i) => {
             if (vm.targetArr[i].id == airId.id) {
               vm.targetArr.splice(i, 1);
             }
-          }
+          });
         }
         return;
       }else if(msg.topic.indexOf('DroneIn') != -1){
@@ -518,12 +525,12 @@ function onload(Cesium) {
       // 目标信息
       const airPosition = JSON.parse(msg.payloadString);
       let targetFlag = true;
-      for (let i = 0; i < vm.targetArr.length; i++) {
+      vm.targetArr.forEach((i) => {
         if (vm.targetArr[i].id == airPosition.id) {
           vm.$set(vm.targetArr, i, airPosition);
           targetFlag = !targetFlag;
         }
-      }
+      });
       if (targetFlag) {
         vm.targetArr.push(airPosition);
       }
@@ -769,6 +776,7 @@ function onload(Cesium) {
 
       // 时间变化监听函数,动态显示信息
       viewer.clock.onTick.addEventListener((clock) => {
+<<<<<<< HEAD
 		if(airArr.has(airPosition.id)){
 			// 中心点坐标
 			const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
@@ -813,23 +821,65 @@ function onload(Cesium) {
 			}
 		}
         
+=======
+        if(airArr.has(airPosition.id)){
+          // 中心点坐标
+          const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+          // 飞机坐标
+          const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
+          // msg.label.text = clock.currentTime.toString();
+          const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
+          // 中心点距离飞机距离
+          const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
+            (sourpos.z - tarPosition.z), 2,
+          ));
+          // console.log(xb);
+          const jl = Math.sqrt(Math.pow((xb - height), 2));
+
+          // 根据无人机距离中心点距离判断是否显示射线
+          if (jl <= 2000) {
+            gzxArr.get(airPosition.id)._show = true;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+          } else if (jl <= 4000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = true;
+            gzxArr3.get(airPosition.id)._show = false;
+          } else if (jl <= 6000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = true;
+          } else {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+          }
+
+          if (jl <= 5000) {
+            $(`#mubiao${airPosition.id}`).show();
+          } else {
+            $(`#mubiao${airPosition.id}`).hide();
+          }
+        }
+
+>>>>>>> 3dd42309214c472b3fc9c9ef9cff9efd6d72eb79
       });
     } else if (msg.topic.indexOf('Radar') != -1) {
       const radarInfo = JSON.parse(msg.payloadString);
       // console.log(radarInfo)
       var flag = true;
-      for (var i = 0; i < vm.leidaArr.length; i++) {
-        if (vm.leidaArr[i].id == radarInfo.id) {
-          // vm.leidaArr[i] = radarInfo;
+      vm.radarArr.forEach((i) => {
+        if (vm.radarArr[i].id == radarInfo.id) {
+          // vm.radarArr[i] = radarInfo;
           // 深度监听对象数组
-          vm.$set(vm.leidaArr, i, radarInfo);
+          vm.$set(vm.radarArr, i, radarInfo);
           flag = false;
         }
-      }
+      });
       if (flag) {
-        vm.leidaArr.push(radarInfo);
+        vm.radarArr.push(radarInfo);
       }
-      console.log(vm.leidaArr);
+      console.log(vm.radarArr);
     } else if (msg.topic.indexOf('GuangDian') != -1) {
       if (msg.topic.indexOf('GuangDianOut') != -1) {
         vm.gdInfo = '';
@@ -860,63 +910,149 @@ function onload(Cesium) {
     } else if (msg.topic.indexOf('DianZhen') != -1) {
       if (msg.topic.indexOf('DianZhenOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        for (var i = 0; i < vm.dzArr.length; i++) {
-          if (vm.dzArr[i].id == info.id) {
-            vm.dzArr.splice(i, 1);
-          }
+        if (vm.ereconArr.get(info.id) != undefined) {
+          viewer.entities.remove(vm.ereconArr.get(info.id));
         }
+
+        vm.ereconArr.forEach((i) => {
+          if (vm.ereconArr[i].id == info.id) {
+            vm.ereconArr.splice(i, 1);
+          }
+        });
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.dzArr.length; i++) {
-        if (vm.dzArr[i].id == info.id) {
-          vm.$set(vm.dzArr, i, info);
+      vm.ereconArr.forEach((i) => {
+        if (vm.ereconArr[i].id == info.id) {
+          vm.$set(vm.ereconArr, i, info);
+          vm.ereconArr.get(info.id).angle = info.azimuth;
           flag = false;
         }
-      }
+      });
       if (flag) {
-        vm.dzArr.push(info);
+        vm.ereconArr.push(info);
       }
+
+      if (!vm.ereconArr.has(info.id)) {
+        vm.ereconArr.set(info.id, viewer.entities.add({
+          angle: info.azimuth,
+          polygon: {
+            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
+                ),
+                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
+                ),
+                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3()
+              ),
+            ], false),
+            material: Cesium.Color.MAGENTA.withAlpha(0.5),
+            outline: true,
+            outlineColor: Cesium.Color.BLACK,
+            perPositionHeight: true,
+            show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
+          },
+        }));
+      }
+
     } else if (msg.topic.indexOf('Crack') != -1) {
       if (msg.topic.indexOf('CrackOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        for (var i = 0; i < vm.xypjArr.length; i++) {
-          if (vm.xypjArr[i].id == info.id) {
-            vm.xypjArr.splice(i, 1);
-          }
+        if (vm.crackerArr.get(info.id) != undefined) {
+          viewer.entities.remove(vm.crackerArr.get(info.id));
         }
+
+        vm.crackerArr.forEach((i) => {
+          if (vm.crackerArr[i].id == info.id) {
+            vm.crackerArr.splice(i, 1);
+          }
+        });
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.xypjArr.length; i++) {
-        if (vm.xypjArr[i].id == info.id) {
-          vm.$set(vm.xypjArr, i, info);
+      vm.crackerArr.forEach((i) => {
+        if (vm.crackerArr[i].id == info.id) {
+          vm.$set(vm.crackerArr, i, info);
+          vm.crackerArr.get(info.id).angle = info.azimuth;
           flag = false;
         }
-      }
+      });
       if (flag) {
-        vm.xypjArr.push(info);
+        vm.crackerArr.push(info);
       }
+
+      if (!vm.ereconArr.has(info.id)) {
+        vm.crackerArr.set(info.id, viewer.entities.add({
+          angle: info.azimuth,
+          polygon: {
+            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_CENTER),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.get(info.id).angle + 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
+                ),
+                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.add(
+                Cesium.Matrix4.multiplyByPointAsVector(
+                  Cesium.Transforms.eastNorthUpToFixedFrame(
+                    Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                  ),
+                  new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.get(info.id).angle - 1.5), Math.PI / 2, 5000.0)),
+                  new Cesium.Cartesian3()
+                ),
+                Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+                new Cesium.Cartesian3()
+              ),
+            ], false),
+            material: Cesium.Color.CYAN.withAlpha(0.5),
+            outline: true,
+            outlineColor: Cesium.Color.BLACK,
+            perPositionHeight: true,
+            show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
+          },
+        }));
+      }
+
     } else if (msg.topic.indexOf('ADSB') != -1) {
       if (msg.topic.indexOf('ADSBOut') != -1) {
         const info = JSON.parse(msg.payloadString);
-        for (var i = 0; i < vm.adsbArr.length; i++) {
+        vm.adsbArr.forEach((i) => {
           if (vm.adsbArr[i].id == info.id) {
             vm.adsbArr.splice(i, 1);
           }
-        }
+        });
         return;
       }
       var info = JSON.parse(msg.payloadString);
       var flag = true;
-      for (var i = 0; i < vm.adsbArr.length; i++) {
+      vm.adsbArr.forEach((i) => {
         if (vm.adsbArr[i].id == info.id) {
           vm.$set(vm.adsbArr, i, info);
           flag = false;
         }
-      }
+      });
       if (flag) {
         vm.adsbArr.push(info);
       }
@@ -930,4 +1066,6 @@ function onload(Cesium) {
   viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
-}
+};
+
+window.onload = documentReady;
