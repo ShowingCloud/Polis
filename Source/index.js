@@ -127,7 +127,7 @@ function jljian() {
   s -= sc;
 }
 
-function onload(Cesium) {
+const documentReady = async () => {
   const partOfUrl = '/iserver/services/3D-hn1108/rest/realspace';
   // 加载三维地球场景
   viewer = new Cesium.Viewer('cesiumContainer', {
@@ -198,13 +198,14 @@ function onload(Cesium) {
 
   $('#loadingbar').remove();
 
+
   // 可视域分析,创建雷达扫描
   const viewshed3D = [];
-  [0, 1].forEach((i) => {
+  [0, 1, 2].forEach((i) => {
     viewshed3D[i] = new Cesium.ViewShed3D(scene);
     Object.assign(viewshed3D[i], {
       hiddenAreaColor: Cesium.Color.GRAY.withAlpha(0.5),
-      horizontalFov: 179,
+      horizontalFov: 130,
       pitch: 30,
       verticalFov: 120,
       viewPosition: POSITION_STATION_ONE,
@@ -212,16 +213,17 @@ function onload(Cesium) {
     });
   });
   viewshed3D[0].direction = 0;
-  viewshed3D[1].direction = 180;
+  viewshed3D[1].direction = 120;
+  viewshed3D[2].direction = 240;
 
   $('#leidaCoverage').click(() => {
-    if ($('#radarArea').attr('aria-pressed') === 'false') { /* Before toggled */
-    [0, 1].forEach((i) => {
-      viewshed3D[i].distance = 2000;
-      viewshed3D[i].build();
-    });
+    if ($('#leidaCoverage :button').attr('aria-pressed') === 'false') { /* Before toggled */
+      [0, 1, 2].forEach((i) => {
+        viewshed3D[i].distance = 5000;
+        viewshed3D[i].build();
+      });
     } else {
-      [0, 1].forEach((i) => {
+      [0, 1, 2].forEach((i) => {
         viewshed3D[i].distance = 0.1;
         viewshed3D[i].build();
       });
@@ -251,6 +253,17 @@ function onload(Cesium) {
 
   radarViewer._cesiumWidget._creditContainer.style.display = 'none';
   $('#leidatu .cesium-viewer-navigationContainer').hide();
+
+  const radarHandler = new Cesium.ScreenSpaceEventHandler(radarScene.canvas);
+  radarHandler.setInputAction(async (e) => {
+    const pickedObject = radarScene.pick(e.position);
+    if (Cesium.defined(pickedObject)) {
+      await mainViewer.flyTo(pickedObject.id, {
+        offset: new Cesium.HeadingPitchRange(0.0, -0.5, 100.0),
+      });
+      mainViewer.trackedEntity = pickedObject.id;
+    }
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
 
   // 站1

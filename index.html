@@ -11,8 +11,8 @@
 		<link rel="stylesheet" type="text/css" href="Source/css/pretty.css">
 		<link rel="stylesheet" type="text/css" href="Source/index.css">
 	</head>
-	<body>
-		<div  style="pointer-events:auto;position: absolute;top: 100px;left: 30px;z-index: 10000;">
+    <body onload="documentReady()">
+        <div  style="pointer-events:auto;position: absolute;top: 100px;left: 30px;z-index: 10000;">
 			<button type="button" onclick="fuwei()">复位</button>
 			<button type="button" onclick="fwjia()">方位加</button>
 			<button type="button" onclick="fwjian()">方位减</button>
@@ -89,8 +89,8 @@
 								 style="filter: brightness(0.75);"></a>
 							<div class="shebei_left myHide" style="pointer-events:auto;display: none;" oncontextmenu="return false;"
 							 ondragstart="return false;" onselectstart="return false;">
-								<div class="shebei_left_top" style="display: none;" id="leidaCoverage">
-									<h3>覆盖区域</h3>
+                                <div class="shebei_left_top" style="display: none;" id="leidaCoverage">
+									<button type="button" class="btn btn-success button" data-toggle="button" aria-pressed="false">覆盖区域</button>
 								</div>
 								<div class="shebei_left_bottom" style="display: none;" id="leidaButton">
 									<h3>雷达图</h3>
