@@ -997,8 +997,8 @@ const documentReady = async () => {
 	  	vm.xypjArr.push(info);
 	  }
       vm.crackerArr.forEach((entity, i) => {
-        if (entity.id == info.id) {
-          entity.angle = info.azimuth;
+        if (entity._id == info.id) {
+          entity._angle = info.azimuth;
           entity.polygon.hierarchy = [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
