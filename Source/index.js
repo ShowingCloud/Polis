@@ -97,6 +97,8 @@ const fwc = Math.PI / 180 * 1; // 方位差
 const fyc = Math.PI / 180 * 1; // 俯仰差
 const sc = 100; // 距离差
 
+let jlTime;
+
 function fuwei() {
   fw = 0;
   fy = 0;
@@ -126,6 +128,7 @@ function jljia() {
 function jljian() {
   s -= sc;
 }
+
 
 const documentReady = async () => {
   const partOfUrl = '/iserver/services/3D-hn1108/rest/realspace';
@@ -384,6 +387,8 @@ const documentReady = async () => {
   const gzxArr2 = new Map();
   // 指向4km内无人机绿线集合
   const gzxArr3 = new Map();
+  // 指向4km内无人机绿线集合
+  const gzxArr4 = new Map();
 
 
   // 光电线测试
@@ -408,6 +413,17 @@ const documentReady = async () => {
         const lon1 = Cesium.Math.toDegrees(cartographic1.longitude);
         const lat1 = Cesium.Math.toDegrees(cartographic1.latitude);
         const height1 = cartographic1.height;
+		
+		/* if(qflag){
+			console.log("lon:"+lon1);
+			console.log("lat:"+lat1);
+			console.log("height:"+height1);
+			
+			console.log("fw:"+fw);
+			console.log("fy:"+fy);
+			console.log("s:"+s);
+			qflag = false;
+		} */
         // 源坐标位置
         const tarpos = center;
         const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(tarpos);
@@ -429,9 +445,9 @@ const documentReady = async () => {
 
   connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, `clientTest${Math.random(100)}`, (isConnected) => {
     if (isConnected) {
-      // subscribe("/#", 0);
       // 无人机坐标点消息
       subscribe('/CC/MsgForAntiUAV/Drone/#', 0);
+	  subscribe('/CC/MsgForAntiUAV/DroneIn/#', 0);
       // 雷达信息消息
       subscribe('/CC/MsgForAntiUAV/Radar/#', 0);
       // 光电信息
@@ -458,9 +474,11 @@ const documentReady = async () => {
       subscribe('/CC/MsgForAntiUAV/DroneOut/#', 0);
       // 告警数量
       subscribe('/CC/MsgForAntiUAV/Warning/#', 0);
+	  //光电自动跟踪
+	  subscribe('/CC/MsgForAntiUAV/GuangDianTrack/#', 0);
     }
   }, (msg) => {
-    console.log(msg);
+    //console.log(msg);
     // 接收到飞机位置信息
     if (msg.topic.indexOf('Drone') != -1) {
       // 无人机离开,集合中去掉,地图上去掉
@@ -474,6 +492,8 @@ const documentReady = async () => {
           gzxArr2.delete(airId.id);
           viewer.entities.remove(gzxArr3.get(airId.id));
           gzxArr3.delete(airId.id);
+		  viewer.entities.remove(gzxArr4.get(airId.id));
+		  gzxArr4.delete(airId.id);
           airPositionArr.delete(airId.id);
           airArr.delete(airId.id);
 
@@ -484,7 +504,9 @@ const documentReady = async () => {
           });
         }
         return;
-      }
+      }else if(msg.topic.indexOf('DroneIn') != -1){
+		  return;
+	  }
 
       // 目标信息
       const airPosition = JSON.parse(msg.payloadString);
@@ -678,6 +700,34 @@ const documentReady = async () => {
             }),
           },
         }));
+		// 添加6km绿色射线
+		gzxArr4.set(airPosition.id, viewer.entities.add({
+		  polyline: {
+		    // 时间回调获取位置
+		    positions: new Cesium.CallbackProperty(((time, result) => {
+		      // 目标坐标位置
+		      const sourpos = sourEntity.position.getValue(time);
+		      const cartographic1 = Cesium.Ellipsoid.WGS84.cartesianToCartographic(sourpos);
+		      const lon1 = Cesium.Math.toDegrees(cartographic1.longitude);
+		      const lat1 = Cesium.Math.toDegrees(cartographic1.latitude);
+		      const height1 = cartographic1.height;
+		      // 源坐标位置
+		      const tarpos = tarPosition3;
+		      const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(tarpos);
+		      const lon2 = Cesium.Math.toDegrees(cartographic.longitude);
+		      const lat2 = Cesium.Math.toDegrees(cartographic.latitude);
+		      const height2 = cartographic.height;
+		
+		      return Cesium.Cartesian3.fromDegreesArrayHeights([lon1, lat1, height1, lon2, lat2, height2], Cesium.Ellipsoid
+		        .WGS84, result);
+		    }), false), // 此处false表示isConstant为false,表示场景更新的每一帧中都获取该属性的数值，从而来更新三维场景中的物体
+		    width: 5,
+		    material: new Cesium.PolylineGlowMaterialProperty({
+		      glowPower: 0.3,
+		      color: Cesium.Color.GREEN.withAlpha(0.9),
+		    }),
+		  },
+		}));
 
         // 射线初始隐藏
         gzxArr.get(airPosition.id)._show = false;
@@ -712,45 +762,50 @@ const documentReady = async () => {
 
       // 时间变化监听函数,动态显示信息
       viewer.clock.onTick.addEventListener((clock) => {
-        if(airArr.has(airPosition.id)){
-          // 中心点坐标
-          const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
-          // 飞机坐标
-          const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
-          // msg.label.text = clock.currentTime.toString();
-          const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
-          // 中心点距离飞机距离
-          const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
-            (sourpos.z - tarPosition.z), 2,
-          ));
-          // console.log(xb);
-          const jl = Math.sqrt(Math.pow((xb - height), 2));
 
-          // 根据无人机距离中心点距离判断是否显示射线
-          if (jl <= 2000) {
-            gzxArr.get(airPosition.id)._show = true;
-            gzxArr2.get(airPosition.id)._show = false;
-            gzxArr3.get(airPosition.id)._show = false;
-          } else if (jl <= 4000) {
-            gzxArr.get(airPosition.id)._show = false;
-            gzxArr2.get(airPosition.id)._show = true;
-            gzxArr3.get(airPosition.id)._show = false;
-          } else if (jl <= 6000) {
-            gzxArr.get(airPosition.id)._show = false;
-            gzxArr2.get(airPosition.id)._show = false;
-            gzxArr3.get(airPosition.id)._show = true;
-          } else {
-            gzxArr.get(airPosition.id)._show = false;
-            gzxArr2.get(airPosition.id)._show = false;
-            gzxArr3.get(airPosition.id)._show = false;
-          }
-
-          if (jl <= 5000) {
-            $(`#mubiao${airPosition.id}`).show();
-          } else {
-            $(`#mubiao${airPosition.id}`).hide();
-          }
-        }
+		if(airArr.has(airPosition.id)){
+			// 中心点坐标
+			const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+			// 飞机坐标
+			const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
+			// msg.label.text = clock.currentTime.toString();
+			const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
+			// 中心点距离飞机距离
+			const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
+			  (sourpos.z - tarPosition.z), 2,
+			));
+			// console.log(xb);
+			const jl = Math.sqrt(Math.pow((xb - height), 2));
+			
+			// 根据无人机距离中心点距离判断是否显示射线
+			if (jl <= 2000) {
+			  gzxArr.get(airPosition.id)._show = true;
+			  gzxArr2.get(airPosition.id)._show = false;
+			  gzxArr3.get(airPosition.id)._show = false;
+			  gzxArr4.get(airPosition.id)._show = false;
+			} else if (jl <= 4000) {
+			  gzxArr.get(airPosition.id)._show = false;
+			  gzxArr2.get(airPosition.id)._show = false;
+			  gzxArr3.get(airPosition.id)._show = false;
+			  gzxArr4.get(airPosition.id)._show = false;
+			} else if (jl <= 6000) {
+			  gzxArr.get(airPosition.id)._show = false;
+			  gzxArr2.get(airPosition.id)._show = false;
+			  gzxArr3.get(airPosition.id)._show = true;
+			  gzxArr4.get(airPosition.id)._show = true;
+			} else {
+			  gzxArr.get(airPosition.id)._show = false;
+			  gzxArr2.get(airPosition.id)._show = false;
+			  gzxArr3.get(airPosition.id)._show = false;
+			  gzxArr4.get(airPosition.id)._show = false;
+			}
+			
+			if (jl <= 5000) {
+			  $(`#mubiao${airPosition.id}`).show();
+			} else {
+			  $(`#mubiao${airPosition.id}`).hide();
+			}
+		}
 
       });
     } else if (msg.topic.indexOf('Radar') != -1) {
@@ -773,7 +828,8 @@ const documentReady = async () => {
       if (msg.topic.indexOf('GuangDianOut') != -1) {
         vm.gdInfo = '';
         return;
-      } if (msg.topic.indexOf('GuangDianCtrl') != -1) {
+      } 
+	  if (msg.topic.indexOf('GuangDianCtrl') != -1) {
         const info = JSON.parse(msg.payloadString);
         // if(!vm.gdAuto){
         fw = info.azimuth;
@@ -781,15 +837,15 @@ const documentReady = async () => {
         s = info.distance;
         // }
         return;
-      } if (msg.topic.indexOf('GuangDianAuto') != -1) {
-        if (msg.payloadString == 'on') {
+      } 
+	  if (msg.topic.indexOf('GuangDianTrack') != -1) {
+		let info = JSON.parse(msg.payloadString);
+		
+        if (info.track_status == 'start') {
           vm.gdAuto = true;
-          gdx._show = false;
-        } else if (msg.payloadString == 'off') {
+        } else if (info.track_status == 'end') {
           vm.gdAuto = false;
-          gdx._show = true;
         }
-        console.log(vm.gdAuto);
         return;
       }
       var info = JSON.parse(msg.payloadString);
