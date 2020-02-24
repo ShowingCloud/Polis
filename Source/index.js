@@ -996,6 +996,7 @@ const documentReady = async () => {
 	  if (flag) {
 	  	vm.xypjArr.push(info);
 	  }
+	  console.log(vm.xypjArr)
       vm.crackerArr.forEach((entity, i) => {
         if (entity.id == info.id) {
           entity.angle = info.azimuth;
