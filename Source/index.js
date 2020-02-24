@@ -865,23 +865,47 @@ const documentReady = async () => {
       }
 
       var info = JSON.parse(msg.payloadString);
-      vm.ereconArr.forEach((entity, i) => {
-        if (entity.id == info.id) {
-          entity.angle = info.azimuth;
+      vm.ereconArr.forEach((entity) => {
+        if (entity._id == info.id) {
+          entity._angle = info.azimuth;
+          entity.polygon.hierarchy = [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                ),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                ),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+          ];
           return;
         }
       });
       vm.ereconArr.push(viewer.entities.add({
-        angle: info.azimuth,
-        id: info.id,
+        _angle: info.azimuth,
+        _id: info.id,
         polygon: {
-          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
+          hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.filter(i => i.id == info.id).angle + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -892,18 +916,19 @@ const documentReady = async () => {
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.ereconArr.filter(i => i.id == info.id).angle - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
               new Cesium.Cartesian3()
             ),
-          ], false),
+          ],
           material: Cesium.Color.MAGENTA.withAlpha(0.5),
           outline: true,
           outlineColor: Cesium.Color.BLACK,
           perPositionHeight: true,
-          show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
+          // show: $('#ereconButton :button').attr('aria-pressed') == 'false' ? true : false,
+          show: true,
         },
       }));
 
@@ -923,20 +948,44 @@ const documentReady = async () => {
       vm.crackerArr.forEach((entity, i) => {
         if (entity.id == info.id) {
           entity.angle = info.azimuth;
+          entity.polygon.hierarchy = [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                ),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+            Cesium.Cartesian3.add(
+              Cesium.Matrix4.multiplyByPointAsVector(
+                Cesium.Transforms.eastNorthUpToFixedFrame(
+                  Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
+                ),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - info.azimuth - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3()
+              ),
+              Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
+              new Cesium.Cartesian3()
+            ),
+          ];
           return;
         }
       });
       vm.crackerArr.push(viewer.entities.add({
-        angle: info.azimuth,
-        id: info.id,
+        _angle: info.azimuth,
+        _id: info.id,
         polygon: {
-          hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
+          hierarchy: [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
             Cesium.Cartesian3.add(
               Cesium.Matrix4.multiplyByPointAsVector(
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.filter(i => i.id == info.id).angle + 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 + 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
@@ -947,18 +996,19 @@ const documentReady = async () => {
                 Cesium.Transforms.eastNorthUpToFixedFrame(
                   Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)
                 ),
-                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - vm.crackerArr.filter(i => i.id == info.id).angle - 1.5), Math.PI / 2, 5000.0)),
+                new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(Math.PI / 180 * (90 - 1.5), Math.PI / 2, 5000.0)),
                 new Cesium.Cartesian3()
               ),
               Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
               new Cesium.Cartesian3()
             ),
-          ], false),
+          ],
           material: Cesium.Color.CYAN.withAlpha(0.5),
           outline: true,
           outlineColor: Cesium.Color.BLACK,
           perPositionHeight: true,
-          show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
+          // show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'false' ? true : false,
+          show: true,
         },
       }));
 
