@@ -90,43 +90,96 @@ let scene;
 const delay = 0;
 
 // 初始值
-let fw = 0; // 方位角
-let fy = 0; // 俯仰角
-let s = 4000; // 距离
-const fwc = Math.PI / 180 * 1; // 方位差
-const fyc = Math.PI / 180 * 1; // 俯仰差
-const sc = 100; // 距离差
+var GimbalAzimuth = 0; // 方位角
+var GimbalPitchAngle = 0; // 俯仰角
+var GimbalDistance = 4000; // 距离
+var GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
+var GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
+var GimbalDistanceDvalue = 100; // 距离差
+var AzimuthAddTime;//方位角增加定时器
+var AzimuthSubTime;//方位角减少定时器
+var PitchAngleAddTime;//俯仰角增加定时器
+var PitchAngleSubTime;//俯仰角减少定时器
+var DistanceAddTime;//距离增加定时器
+var DistanceSubTime;//距离减少定时器
+var GimbalRate = 400//变化速率，ms
 
-let jlTime;
-
-function fuwei() {
-  fw = 0;
-  fy = 0;
-  s = 4000;
+function GimbalReset() {
+  GimbalAzimuth = 0;
+  GimbalPitchAngle = 0;
+  GimbalDistance = 4000;
 }
 
-function fwjia() {
-  fw += fwc;
+function AzimuthAdd() {
+  GimbalAzimuth += GimbalAzimuthDvalue;
+}
+function AzimuthAddStart() {
+  AzimuthAddTime = setInterval(function(){
+	  GimbalAzimuth += GimbalAzimuthDvalue;
+  },GimbalRate)
+}
+function AzimuthAddEnd() {
+  clearInterval(AzimuthAddTime)
 }
 
-function fwjian() {
-  fw -= fwc;
+function AzimuthSub() {
+  GimbalAzimuth -= GimbalAzimuthDvalue;
+}
+function AzimuthSubStart() {
+  AzimuthSubTime = setInterval(function(){
+	  GimbalAzimuth -= GimbalAzimuthDvalue;
+  },GimbalRate)
+}
+function AzimuthSubEnd() {
+  clearInterval(AzimuthSubTime)
 }
 
-function fyjia() {
-  fy += fyc;
+function PitchAngleAdd() {
+  GimbalPitchAngle += GimbalPitchAngleDvalue;
+}
+function PitchAngleAddStart() {
+  PitchAngleAddTime = setInterval(function(){
+	  GimbalPitchAngle += GimbalPitchAngleDvalue;
+  },GimbalRate)
+}
+function PitchAngleAddEnd() {
+  clearInterval(PitchAngleAddTime)
 }
 
-function fyjian() {
-  fy -= fyc;
+function PitchAngleSub() {
+  GimbalPitchAngle -= GimbalPitchAngleDvalue;
+}
+function PitchAngleSubStart() {
+  PitchAngleSubTime = setInterval(function(){
+	  GimbalPitchAngle -= GimbalPitchAngleDvalue;
+  },GimbalRate)
+}
+function PitchAngleSubEnd() {
+  clearInterval(PitchAngleSubTime)
 }
 
-function jljia() {
-  s += sc;
+function DistanceAdd() {
+  GimbalDistance += GimbalDistanceDvalue;
+}
+function DistanceAddStart() {
+  DistanceAddTime = setInterval(function(){
+	  GimbalDistance += GimbalDistanceDvalue;
+  },GimbalRate)
+}
+function DistanceAddEnd() {
+  clearInterval(DistanceAddTime)
 }
 
-function jljian() {
-  s -= sc;
+function DistanceSub() {
+  GimbalDistance -= GimbalDistanceDvalue;
+}
+function DistanceSubStart() {
+  DistanceSubTime = setInterval(function(){
+	  GimbalDistance -= GimbalDistanceDvalue;
+  },GimbalRate)
+}
+function DistanceSubEnd() {
+  clearInterval(DistanceSubTime)
 }
 
 
@@ -400,15 +453,11 @@ const documentReady = async () => {
         const center = Cesium.Cartesian3.fromDegrees(108.90047618, 19.46586216, 60);
         const transform = Cesium.Transforms.eastNorthUpToFixedFrame(center);
         // 目标坐标位置
-        const x = Math.cos(fy) * s * Math.sin(fw);
-        const y = Math.cos(fy) * s * Math.cos(fw);
-        const z = Math.sin(fy) * s;
+        const x = Math.cos(GimbalPitchAngle) * GimbalDistance * Math.sin(GimbalAzimuth);
+        const y = Math.cos(GimbalPitchAngle) * GimbalDistance * Math.cos(GimbalAzimuth);
+        const z = Math.sin(GimbalPitchAngle) * GimbalDistance;
         const p = new Cesium.Cartesian3(x, y, z);
         const sourpos = Cesium.Matrix4.multiplyByPoint(transform, p, new Cesium.Cartesian3());
-        /* console.log(Math.cos(fy)*s*Math.cos(fw))
-        console.log(Math.cos(fy)*s*Math.sin(fw))
-        console.log(Math.sin(fy)*s) */
-        // console.log(ellipsoid.cartesianToCartographic(sourpos))
         const cartographic1 = Cesium.Ellipsoid.WGS84.cartesianToCartographic(sourpos);
         const lon1 = Cesium.Math.toDegrees(cartographic1.longitude);
         const lat1 = Cesium.Math.toDegrees(cartographic1.latitude);
@@ -832,9 +881,9 @@ const documentReady = async () => {
 	  if (msg.topic.indexOf('GuangDianCtrl') != -1) {
         const info = JSON.parse(msg.payloadString);
         // if(!vm.gdAuto){
-        fw = info.azimuth;
-        fy = info.overlookAngle;
-        s = info.distance;
+        GimbalAzimuth = info.azimuth;
+        GimbalPitchAngle = info.overlookAngle;
+        GimbalDistance = info.distance;
         // }
         return;
       } 
