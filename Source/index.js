@@ -208,34 +208,27 @@ const documentReady = async () => {
     imageryLayers.addImageryProvider(labelImagery); */
 
     // 添加S3M图层服务
-    // var promise = scene.open(host + partOfUrl);
-    const promise = scene.addS3MTilesLayerByScp(
+    const layer = await scene.addS3MTilesLayerByScp(
       LAYER_S3M_URL, {
         name: 'Config1',
       },
     );
+    layer.style3D.bottomAltitude = 55;
+    layer.refresh();
+
+    // 设置相机位置、视角，便于观察场景
+    scene.camera.flyTo({
+      destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
+    });
+
+    if (!scene.pickPositionSupported) {
+      alert('不支持深度纹理,无法拾取位置！');
+    }
+
     // 加载二维图层
-    const layer = viewer.imageryLayers.addImageryProvider(new Cesium.SuperMapImageryProvider({
+    const backgroundLayer = viewer.imageryLayers.addImageryProvider(new Cesium.SuperMapImageryProvider({
       url: LAYER_IMAGERY_URL,
     }));
-
-    // 相机定位
-    Cesium.when(promise, (layer) => {
-      layer.style3D.bottomAltitude = 55;
-      layer.refresh();
-      // 设置相机位置、视角，便于观察场景
-      scene.camera.flyTo({
-        destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
-      });
-      if (!scene.pickPositionSupported) {
-        alert('不支持深度纹理,无法拾取位置！');
-      }
-    }, (e) => {
-      if (widget._showRenderLoopErrors) {
-        const title = '加载SCP失败，请检查网络连接状态或者url地址是否正确？';
-        widget.showErrorPanel(title, undefined, e);
-      }
-    });
 
     // 圆形探测波
     /* viewer.scene.scanEffect.show = true;
