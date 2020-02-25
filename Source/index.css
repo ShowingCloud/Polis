@@ -76,6 +76,9 @@ a:active {
     left: 27%!important;
 }
 
+.brighter{
+	filter: brightness(2);
+}
 
 body{
     background: url("Images/阴影.png") no-repeat,url("Images/背景.png") no-repeat;

@@ -121,4 +121,16 @@ $(() => {
     $('.gpsBtn').removeClass('xz');
     $('.ytkzBtn').removeClass('xz');
   });
+  
+  $('.jiantouImg').each(function (index) {
+       $(this).mousedown(function(){
+		   $(this).addClass('brighter');
+	   });
+	   $(this).mouseup(function(){
+	   		$(this).removeClass('brighter');  
+	   });
+	   $(this).mouseout(function(){
+	   		$(this).removeClass('brighter');  
+	   });
+    });
 });
