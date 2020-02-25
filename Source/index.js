@@ -102,6 +102,7 @@ var PitchAngleAddTime;//俯仰角增加定时器
 var PitchAngleSubTime;//俯仰角减少定时器
 var DistanceAddTime;//距离增加定时器
 var DistanceSubTime;//距离减少定时器
+var GimbalRate = 400//变化速率，ms
 
 function GimbalReset() {
   GimbalAzimuth = 0;
@@ -115,7 +116,7 @@ function AzimuthAdd() {
 function AzimuthAddStart() {
   AzimuthAddTime = setInterval(function(){
 	  GimbalAzimuth += GimbalAzimuthDvalue;
-  },500)
+  },GimbalRate)
 }
 function AzimuthAddEnd() {
   clearInterval(AzimuthAddTime)
@@ -127,7 +128,7 @@ function AzimuthSub() {
 function AzimuthSubStart() {
   AzimuthSubTime = setInterval(function(){
 	  GimbalAzimuth -= GimbalAzimuthDvalue;
-  },500)
+  },GimbalRate)
 }
 function AzimuthSubEnd() {
   clearInterval(AzimuthSubTime)
@@ -139,7 +140,7 @@ function PitchAngleAdd() {
 function PitchAngleAddStart() {
   PitchAngleAddTime = setInterval(function(){
 	  GimbalPitchAngle += GimbalPitchAngleDvalue;
-  },500)
+  },GimbalRate)
 }
 function PitchAngleAddEnd() {
   clearInterval(PitchAngleAddTime)
@@ -151,7 +152,7 @@ function PitchAngleSub() {
 function PitchAngleSubStart() {
   PitchAngleSubTime = setInterval(function(){
 	  GimbalPitchAngle -= GimbalPitchAngleDvalue;
-  },500)
+  },GimbalRate)
 }
 function PitchAngleSubEnd() {
   clearInterval(PitchAngleSubTime)
@@ -163,7 +164,7 @@ function DistanceAdd() {
 function DistanceAddStart() {
   DistanceAddTime = setInterval(function(){
 	  GimbalDistance += GimbalDistanceDvalue;
-  },500)
+  },GimbalRate)
 }
 function DistanceAddEnd() {
   clearInterval(DistanceAddTime)
@@ -175,7 +176,7 @@ function DistanceSub() {
 function DistanceSubStart() {
   DistanceSubTime = setInterval(function(){
 	  GimbalDistance -= GimbalDistanceDvalue;
-  },500)
+  },GimbalRate)
 }
 function DistanceSubEnd() {
   clearInterval(DistanceSubTime)
