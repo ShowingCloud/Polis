@@ -24,7 +24,12 @@ var vm = new Vue({
     // 目标集合
     targetArr: [],
     // 告警数量
-    WarnNum: '',
+    WarnNum: {
+		blowNum:0,
+		disposeNum:0,
+		warnNum:0,
+		positionNum:0
+	},
     // 光电自动跟踪
     gdAuto: false,
     //告警列表显示flag
