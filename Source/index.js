@@ -859,6 +859,11 @@ const documentReady = async () => {
           viewer.entities.remove(entity);
           vm.ereconArr.splice(i, 1);
         });
+
+        if (vm.ereconIndex > vm.ereconArr.length - 1 && vm.ereconArr.length > 0) {
+          vm.ereconIndex = vm.ereconArr.length - 1;
+        }
+
         return;
       }
 
@@ -919,6 +924,11 @@ const documentReady = async () => {
           viewer.entities.remove(entity);
           vm.crackerArr.splice(i, 1);
         });
+
+        if (vm.crackerIndex > vm.crackerArr.length - 1 && vm.crackerArr.length > 0) {
+          vm.crackerIndex = vm.crackerArr.length - 1;
+        }
+
         return;
       }
 
