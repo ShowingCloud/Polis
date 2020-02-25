@@ -90,13 +90,18 @@ let scene;
 const delay = 0;
 
 // 初始值
-let GimbalAzimuth = 0; // 方位角
-let GimbalPitchAngle = 0; // 俯仰角
-let GimbalDistance = 4000; // 距离
-const GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
-const GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
-const GimbalDistanceDvalue = 100; // 距离差
-
+var GimbalAzimuth = 0; // 方位角
+var GimbalPitchAngle = 0; // 俯仰角
+var GimbalDistance = 4000; // 距离
+var GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
+var GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
+var GimbalDistanceDvalue = 100; // 距离差
+var AzimuthAddTime;//方位角增加定时器
+var AzimuthSubTime;//方位角减少定时器
+var PitchAngleAddTime;//俯仰角增加定时器
+var PitchAngleSubTime;//俯仰角减少定时器
+var DistanceAddTime;//距离增加定时器
+var DistanceSubTime;//距离减少定时器
 
 function GimbalReset() {
   GimbalAzimuth = 0;
@@ -107,25 +112,73 @@ function GimbalReset() {
 function AzimuthAdd() {
   GimbalAzimuth += GimbalAzimuthDvalue;
 }
+function AzimuthAddStart() {
+  AzimuthAddTime = setInterval(function(){
+	  GimbalAzimuth += GimbalAzimuthDvalue;
+  },500)
+}
+function AzimuthAddEnd() {
+  clearInterval(AzimuthAddTime)
+}
 
 function AzimuthSub() {
   GimbalAzimuth -= GimbalAzimuthDvalue;
+}
+function AzimuthSubStart() {
+  AzimuthSubTime = setInterval(function(){
+	  GimbalAzimuth -= GimbalAzimuthDvalue;
+  },500)
+}
+function AzimuthSubEnd() {
+  clearInterval(AzimuthSubTime)
 }
 
 function PitchAngleAdd() {
   GimbalPitchAngle += GimbalPitchAngleDvalue;
 }
+function PitchAngleAddStart() {
+  PitchAngleAddTime = setInterval(function(){
+	  GimbalPitchAngle += GimbalPitchAngleDvalue;
+  },500)
+}
+function PitchAngleAddEnd() {
+  clearInterval(PitchAngleAddTime)
+}
 
 function PitchAngleSub() {
   GimbalPitchAngle -= GimbalPitchAngleDvalue;
 }
-
-function jljia() {
-  GimbalDistance += GimbalDistanceDvalue;
+function PitchAngleSubStart() {
+  PitchAngleSubTime = setInterval(function(){
+	  GimbalPitchAngle -= GimbalPitchAngleDvalue;
+  },500)
+}
+function PitchAngleSubEnd() {
+  clearInterval(PitchAngleSubTime)
 }
 
-function jljian() {
+function DistanceAdd() {
+  GimbalDistance += GimbalDistanceDvalue;
+}
+function DistanceAddStart() {
+  DistanceAddTime = setInterval(function(){
+	  GimbalDistance += GimbalDistanceDvalue;
+  },500)
+}
+function DistanceAddEnd() {
+  clearInterval(DistanceAddTime)
+}
+
+function DistanceSub() {
   GimbalDistance -= GimbalDistanceDvalue;
+}
+function DistanceSubStart() {
+  DistanceSubTime = setInterval(function(){
+	  GimbalDistance -= GimbalDistanceDvalue;
+  },500)
+}
+function DistanceSubEnd() {
+  clearInterval(DistanceSubTime)
 }
 
 

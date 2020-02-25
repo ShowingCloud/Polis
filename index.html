@@ -12,9 +12,9 @@
 		<link rel="stylesheet" type="text/css" href="Source/index.css">
 	</head>
 	<body>
-		<!-- <div  style="pointer-events:auto;position: absolute;top: 100px;left: 30px;z-index: 10000;">
+		<!-- <div style="pointer-events:auto;position: absolute;top: 100px;left: 30px;z-index: 10000;">
 			<button type="button" onclick="fuwei()">复位</button>
-			<button type="button" onclick="fwjia()">方位加</button>
+			<button type="button" onmousedown="AzimuthAddStart();DistanceAddStart();" onmouseup="AzimuthAddEnd();DistanceAddEnd();" onmouseleave="AzimuthAddEnd();DistanceAddEnd;">方位加</button>
 			<button type="button" onclick="fwjian()">方位减</button>
 			<button type="button" onclick="fyjia()">俯仰加</button>
 			<button type="button" onclick="fyjian()">俯仰减</button>
@@ -363,20 +363,20 @@
 							<div style="height: 64%;width: 94%;margin-left: 3%!important;position: relative;">
 								<div style="width: 50%;height: 100%;margin-left: 30px!important;">
 									<!-- <button type="button"><i class="glyphicon glyphicon-arrow-up"></i></button> -->
-									<div class="jiantouImg"><img src="Source/Images/tu1.png" width="75%" height="75%"></div>
-									<div class="jiantouImg"><img src="Source/Images/tu8.png" width="75%" height="75%" style="transform: rotate(180deg);" onclick="PitchAngleAdd()"></div>
-									<div class="jiantouImg"><img src="Source/Images/tu3.png" width="75%" height="75%"></div>
-									<div class="jiantouImg" style="clear: left;"><img src="Source/Images/tu4.png" width="75%" height="75%" onclick="AzimuthSub()"></div>
+									<div class="jiantouImg"><img src="Source/Images/tu1.png" width="75%" height="75%" onmousedown="PitchAngleAddStart();AzimuthSubStart();" onmouseup="PitchAngleAddEnd();AzimuthSubEnd();" onmouseout="PitchAngleAddEnd();AzimuthSubEnd();"></div>
+									<div class="jiantouImg"><img src="Source/Images/tu8.png" width="75%" height="75%" style="transform: rotate(180deg);" onmousedown="PitchAngleAddStart()" onmouseup="PitchAngleAddEnd()" onmouseout="PitchAngleAddEnd()"></div>
+									<div class="jiantouImg"><img src="Source/Images/tu3.png" width="75%" height="75%" onmousedown="PitchAngleAddStart();AzimuthAddStart();" onmouseup="PitchAngleAddEnd();AzimuthAddEnd();" onmouseout="PitchAngleAddEnd();AzimuthAddEnd();"></div>
+									<div class="jiantouImg" style="clear: left;"><img src="Source/Images/tu4.png" width="75%" height="75%" onmousedown="AzimuthSubStart()" onmouseup="AzimuthSubEnd()" onmouseout="AzimuthSubEnd()"></div>
 									<div class="jiantouImg"><img src="Source/Images/tu5.png" width="75%" height="75%" onclick="GimbalReset()"></div>
-									<div class="jiantouImg"><img src="Source/Images/tu6.png" width="75%" height="75%" onclick="AzimuthAdd()"></div>
-									<div class="jiantouImg"><img src="Source/Images/tu7.png" width="75%" height="75%"></div>
-									<div class="jiantouImg"><img src="Source/Images/tu8.png" width="75%" height="75%" onclick="PitchAngleSub()"></div>
-									<div class="jiantouImg"><img src="Source/Images/tu9.png" width="75%" height="78%"></div>
+									<div class="jiantouImg"><img src="Source/Images/tu6.png" width="75%" height="75%" onmousedown="AzimuthAddStart()" onmouseup="AzimuthAddEnd()" onmouseout="AzimuthAddEnd()"></div>
+									<div class="jiantouImg"><img src="Source/Images/tu7.png" width="75%" height="75%" onmousedown="PitchAngleAddStart();AzimuthSubStart();" onmouseup="PitchAngleSubEnd();AzimuthSubEnd();" onmouseout="PitchAngleSubEnd();AzimuthSubEnd();"></div>
+									<div class="jiantouImg"><img src="Source/Images/tu8.png" width="75%" height="75%" onmousedown="PitchAngleSubStart()" onmouseup="PitchAngleSubEnd()" onmouseout="PitchAngleSubEnd()"></div>
+									<div class="jiantouImg"><img src="Source/Images/tu9.png" width="75%" height="78%" onmousedown="PitchAngleSubStart();AzimuthAddStart();" onmouseup="PitchAngleSubEnd();AzimuthAddEnd();" onmouseout="PitchAngleSubEnd();AzimuthAddEnd();"></div>
 								</div>
 								<div style="width: 40%;height: 100%;" id="tiaozheng">
 									<div class="tiaozheng"><b>光圈</b> <img src="Source/Images/jiaohao.png"> <img src="Source/Images/jianhao.png"></div>
 									<div class="tiaozheng"><b>变焦</b> <img src="Source/Images/jiaohao.png"> <img src="Source/Images/jianhao.png"></div>
-									<div class="tiaozheng"><b>焦距</b> <img src="Source/Images/jiaohao.png" onclick="jljia()"> <img src="Source/Images/jianhao.png" onclick="jljian()"></div>
+									<div class="tiaozheng"><b>焦距</b> <img src="Source/Images/jiaohao.png" onmousedown="DistanceSubStart()" onmouseup="DistanceAddEnd()" onmouseout="DistanceAddEnd()"> <img src="Source/Images/jianhao.png" onmousedown="DistanceSubStart()" onmouseup="DistanceSubEnd()" onmouseout="DistanceSubEnd()"></div>
 								</div>
 							</div>
 							<div>
