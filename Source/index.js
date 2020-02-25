@@ -323,11 +323,11 @@ const documentReady = async () => {
   $('#ereconButton').click((e) => {
     if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
       vm.ereconArr.forEach((entity) => {
-        entity.show = true;
+        entity.polygon.show = true;
       });
     } else {
       vm.ereconArr.forEach((entity) => {
-        entity.show = false;
+        entity.polygon.show = false;
       });
     }
   });
@@ -335,11 +335,11 @@ const documentReady = async () => {
   $('#protocolCrackingButton').click((e) => {
     if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
       vm.crackerArr.forEach((entity) => {
-        entity.show = true;
+        entity.polygon.show = true;
       });
     } else {
       vm.crackerArr.forEach((entity) => {
-        entity.show = false;
+        entity.polygon.show = false;
       });
     }
   });
