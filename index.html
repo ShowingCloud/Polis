@@ -199,23 +199,23 @@
 							 ondragstart="return false;" onselectstart="return false;">
 								<div class="canshu" v-if="ereconArr.length>0">
 									<h3 style="width: 60%;">运行状态：</h3>
-									<h3 style="width: 25%;color: red;margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.status}}</h3>
+									<h3 style="width: 25%;color: red;margin-left: 0px!important;">{{ereconArr[ereconIndex].json.status}}</h3>
 								</div>
 								<div class="canshu" v-if="ereconArr.length>0" style="margin-left: 8%!important;">
 									<h3 style="width: 50%;">方位角：</h3>
-									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.azimuth}}</h3>
+									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{ereconArr[ereconIndex].json.azimuth}}</h3>
 								</div>
 								<div class="canshu" v-if="ereconArr.length>0">
 									<h3 style="width: 60%;">发现频段：</h3>
-									<h3 style="width: 25%;color: rgb(187,40,215);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.frequency}}GHZ</h3>
+									<h3 style="width: 25%;color: rgb(187,40,215);margin-left: 0px!important;">{{ereconArr[ereconIndex].json.frequency}}GHZ</h3>
 								</div>
 								<div class="canshu" v-if="ereconArr.length>0" style="margin-left: 8%!important;">
 									<h3 style="width: 60%;">目标标志：</h3>
-									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.targetSign}}</h3>
+									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{ereconArr[ereconIndex].json.targetSign}}</h3>
 								</div>
 								<div class="canshu" v-if="ereconArr.length>0" style="width: 90%;padding-top: 0px!important;">
 									<h3 style="width: 30%;">发现时间： </h3>
-									<h3 style="width: 50%;color: rgb(39,218,159);margin-left: 0px!important;">{{ereconArr[ereconIndex]._json.time}}</h3>
+									<h3 style="width: 50%;color: rgb(39,218,159);margin-left: 0px!important;">{{ereconArr[ereconIndex].json.time}}</h3>
 								</div>
 								<i class="glyphicon glyphicon-chevron-up leida_up" v-if="ereconIndex>0" v-on:click="ereconIndexJian()"></i>
 								<i class="glyphicon glyphicon-chevron-down leida_dowm" v-if="ereconIndex<ereconArr.length-1" v-on:click="ereconIndexJia()"></i>
@@ -237,23 +237,23 @@
 							 ondragstart="return false;" onselectstart="return false;">
 								<div class="canshu" v-if="crackerArr.length>0">
 									<h3 style="width: 60%;">运行状态：</h3>
-									<h3 style="width: 25%;color: rgb(28,235,33);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.status}}</h3>
+									<h3 style="width: 25%;color: rgb(28,235,33);margin-left: 0px!important;">{{crackerArr[crackerIndex].json.status}}</h3>
 								</div>
 								<div class="canshu" v-if="crackerArr.length>0" style="margin-left: 8%!important;">
 									<h3 style="width: 50%;">方位角：</h3>
-									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.azimuth}}</h3>
+									<h3 style="width: 25%;color: rgb(225,227,26);margin-left: 0px!important;">{{crackerArr[crackerIndex].json.azimuth}}</h3>
 								</div>
 								<div class="canshu" v-if="crackerArr.length>0" style="width: 62%;">
 									<h3 style="width: 53%;">当前发现型号：</h3>
-									<h3 style="width: 20%;color: rgb(187,40,215);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.type}}</h3>
+									<h3 style="width: 20%;color: rgb(187,40,215);margin-left: 0px!important;">{{crackerArr[crackerIndex].json.type}}</h3>
 								</div>
 								<div class="canshu" v-if="crackerArr.length>0" style="margin-left: -8%!important;width: 29%;">
 									<h3 style="width: 81%;">发现频段：</h3>
-									<h3 style="width: 10%;color: rgb(225,227,26);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.frequency}}G</h3>
+									<h3 style="width: 10%;color: rgb(225,227,26);margin-left: 0px!important;">{{crackerArr[crackerIndex].json.frequency}}G</h3>
 								</div>
 								<div class="canshu" v-if="crackerArr.length>0" style="width: 90%;padding-top: 0px!important;">
 									<h3 style="width: 30%;">发现时间：</h3>
-									<h3 style="width: 50%;color: rgb(39,218,159);margin-left: 0px!important;">{{crackerArr[crackerIndex]._json.time}}</h3>
+									<h3 style="width: 50%;color: rgb(39,218,159);margin-left: 0px!important;">{{crackerArr[crackerIndex].json.time}}</h3>
 								</div>
 								<i class="glyphicon glyphicon-chevron-up leida_up" v-if="crackerIndex>0" v-on:click="crackerIndexJian()"></i>
 								<i class="glyphicon glyphicon-chevron-down leida_dowm" v-if="crackerIndex<crackerArr.length-1" v-on:click="crackerIndexJia()"></i>

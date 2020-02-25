@@ -876,7 +876,7 @@ const documentReady = async () => {
         vm.gdInfo = '';
         return;
       } 
-	  if (msg.topic.indexOf('GuangDianCtrl') != -1) {
+      if (msg.topic.indexOf('GuangDianCtrl') != -1) {
         const info = JSON.parse(msg.payloadString);
         // if(!vm.gdAuto){
         GimbalAzimuth = info.azimuth;
@@ -885,9 +885,9 @@ const documentReady = async () => {
         // }
         return;
       } 
-	  if (msg.topic.indexOf('GuangDianTrack') != -1) {
-		let info = JSON.parse(msg.payloadString);
-		
+      if (msg.topic.indexOf('GuangDianTrack') != -1) {
+        let info = JSON.parse(msg.payloadString);
+
         if (info.track_status == 'start') {
           vm.gdAuto = true;
         } else if (info.track_status == 'end') {
@@ -898,11 +898,10 @@ const documentReady = async () => {
       var info = JSON.parse(msg.payloadString);
       // console.log(info)
       vm.gdInfo = info;
-    } else if (msg.topic.indexOf('DianZhen') != -1) {
-
-      if (msg.topic.indexOf('DianZhenOut') != -1) {
+    } else if (msg.topic.indexOf('DianZhen') !== -1) {
+      if (msg.topic.indexOf('DianZhenOut') !== -1) {
         const info = JSON.parse(msg.payloadString);
-        vm.ereconArr.filter(i => i._targetId == info.id).forEach((entity, i) => {
+        vm.ereconArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
           viewer.entities.remove(entity);
           vm.ereconArr.splice(i, 1);
         });
@@ -914,60 +913,68 @@ const documentReady = async () => {
         return;
       }
 
-      var info = JSON.parse(msg.payloadString);
+      const info = JSON.parse(msg.payloadString);
 
-      let entity = vm.ereconArr.find(i => i._targetId == info.id);
+      const entity = vm.ereconArr.find((i) => i.targetId === info.id);
       if (entity) {
-        entity._targetAngle = info.azimuth;
-        entity._json = info;
+        entity.targetAngle = info.azimuth;
+        entity.json = info;
       } else {
         vm.ereconArr.push(viewer.entities.add({
-          _targetAngle: info.azimuth,
-          _targetId: info.id,
-          _json: info,
+          targetAngle: info.azimuth,
+          targetId: info.id,
+          json: info,
           polygon: {
-            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
+            hierarchy: new Cesium.CallbackProperty(() => [
+              // The Apex
+              ...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_ONE),
+              // One Base Point
               Cesium.Cartesian3.add(
                 Cesium.Matrix4.multiplyByPointAsVector(
                   Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    Math.PI / 180 * (90 - vm.ereconArr.find(i => i._targetId == info.id)._targetAngle + 1.5),
-                    Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+                    (Math.PI / 180) * (90 - vm.ereconArr.find(
+                      (i) => i.targetId === info.id,
+                    ).targetAngle + 1.5),
+                    Math.PI / 2, 5000.0,
+                  )),
+                  new Cesium.Cartesian3(),
                 ),
                 Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
-                new Cesium.Cartesian3()
+                new Cesium.Cartesian3(),
               ),
+              // Another Base Point
               Cesium.Cartesian3.add(
                 Cesium.Matrix4.multiplyByPointAsVector(
                   Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    Math.PI / 180 * (90 - vm.ereconArr.find(i => i._targetId == info.id)._targetAngle - 1.5),
-                    Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+                    (Math.PI / 180) * (90 - vm.ereconArr.find(
+                      (i) => i.targetId === info.id,
+                    ).targetAngle - 1.5),
+                    Math.PI / 2, 5000.0,
+                  )),
+                  new Cesium.Cartesian3(),
                 ),
                 Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
-                new Cesium.Cartesian3()
+                new Cesium.Cartesian3(),
               ),
             ], false),
             material: Cesium.Color.MAGENTA.withAlpha(0.2),
             outline: true,
             outlineColor: Cesium.Color.BLACK,
             perPositionHeight: true,
-            show: $('#ereconButton :button').attr('aria-pressed') == 'true',
+            show: $('#ereconButton :button').attr('aria-pressed') === 'true',
           },
         }));
       }
-
-    } else if (msg.topic.indexOf('Crack') != -1) {
-
-      if (msg.topic.indexOf('CrackOut') != -1) {
+    } else if (msg.topic.indexOf('Crack') !== -1) {
+      if (msg.topic.indexOf('CrackOut') !== -1) {
         const info = JSON.parse(msg.payloadString);
-        vm.crackerArr.filter(i => i._targetId == info.id).forEach((entity, i) => {
+        vm.crackerArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
           viewer.entities.remove(entity);
           vm.crackerArr.splice(i, 1);
         });
@@ -979,84 +986,91 @@ const documentReady = async () => {
         return;
       }
 
-      var info = JSON.parse(msg.payloadString);
+      const info = JSON.parse(msg.payloadString);
 
-      let entity = vm.crackerArr.find(i => i._targetId == info.id);
+      const entity = vm.crackerArr.find((i) => i.targetId === info.id);
       if (entity) {
-        entity._targetAngle = info.azimuth;
-        entity._json = info;
+        entity.targetAngle = info.azimuth;
+        entity.json = info;
       } else {
         vm.crackerArr.push(viewer.entities.add({
-          _targetAngle: info.azimuth,
-          _targetId: info.id,
-          _json: info,
+          targetAngle: info.azimuth,
+          targetId: info.id,
+          json: info,
           polygon: {
-            hierarchy: new Cesium.CallbackProperty(() => [...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
+            hierarchy: new Cesium.CallbackProperty(() => [
+              // The Apex
+              ...Cesium.Cartesian3.fromDegreesArrayHeights(POSITION_STATION_TWO),
+              // One Base Point
               Cesium.Cartesian3.add(
                 Cesium.Matrix4.multiplyByPointAsVector(
                   Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle + 1.5),
-                    Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+                    (Math.PI / 180) * (90 - vm.crackerArr.find(
+                      (i) => i.targetId === info.id,
+                    ).targetAngle + 1.5),
+                    Math.PI / 2, 5000.0,
+                  )),
+                  new Cesium.Cartesian3(),
                 ),
                 Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
-                new Cesium.Cartesian3()
+                new Cesium.Cartesian3(),
               ),
+              // Another Base Point
               Cesium.Cartesian3.add(
                 Cesium.Matrix4.multiplyByPointAsVector(
                   Cesium.Transforms.eastNorthUpToFixedFrame(
-                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO)
+                    Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    Math.PI / 180 * (90 - vm.crackerArr.find(i => i._targetId == info.id)._targetAngle - 1.5),
-                    Math.PI / 2, 5000.0)),
-                  new Cesium.Cartesian3()
+                    (Math.PI / 180) * (90 - vm.crackerArr.find(
+                      (i) => i.targetId === info.id,
+                    ).targetAngle - 1.5),
+                    Math.PI / 2, 5000.0,
+                  )),
+                  new Cesium.Cartesian3(),
                 ),
                 Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
-                new Cesium.Cartesian3()
+                new Cesium.Cartesian3(),
               ),
             ], false),
             material: Cesium.Color.CYAN.withAlpha(0.2),
             outline: true,
             outlineColor: Cesium.Color.BLACK,
             perPositionHeight: true,
-            show: $('#protocolCrackingButton :button').attr('aria-pressed') == 'true',
+            show: $('#protocolCrackingButton :button').attr('aria-pressed') === 'true',
           },
         }));
       }
-
-    } else if (msg.topic.indexOf('ADSB') != -1) {
-      if (msg.topic.indexOf('ADSBOut') != -1) {
+    } else if (msg.topic.indexOf('ADSB') !== -1) {
+      if (msg.topic.indexOf('ADSBOut') !== -1) {
         const info = JSON.parse(msg.payloadString);
-        vm.adsbArr.forEach((entity, i) => {
-          if (entity.id == info.id) {
-            vm.adsbArr.splice(i, 1);
-          }
+        vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
+          vm.adsbArr.splice(i, 1);
         });
         return;
       }
-      var info = JSON.parse(msg.payloadString);
-      var flag = true;
-      vm.adsbArr.forEach((entity, i) => {
-        if (entity.id == info.id) {
-          vm.$set(vm.adsbArr, i, info);
-          flag = false;
-        }
+      const info = JSON.parse(msg.payloadString);
+      let flag = true;
+      vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
+        vm.$set(vm.adsbArr, i, info);
+        flag = false;
       });
       if (flag) {
         vm.adsbArr.push(info);
       }
-    } else if (msg.topic.indexOf('Warning') != -1) {
+    } else if (msg.topic.indexOf('Warning') !== -1) {
       vm.WarnNum = JSON.parse(msg.payloadString);
     }
   });
   // 去除底部logo
   viewer._cesiumWidget._creditContainer.style.display = 'none';
   // 取消双击追踪目标事件
-  viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+  viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+    Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
+  );
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
 };
