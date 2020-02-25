@@ -246,6 +246,7 @@ const documentReady = async () => {
   } catch (e) {
     if (widget._showRenderLoopErrors) {
       const title = '渲染时发生错误，已停止渲染。';
+      alert(title);
       widget.showErrorPanel(title, undefined, e);
     }
   }
