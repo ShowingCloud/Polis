@@ -212,6 +212,11 @@ const documentReady = async () => {
     });
     imageryLayers.addImageryProvider(labelImagery); */
 
+    // 加载二维图层
+    const backgroundLayer = viewer.imageryLayers.addImageryProvider(await new Cesium.SuperMapImageryProvider({
+      url: LAYER_IMAGERY_URL,
+    }));
+
     // 添加S3M图层服务
     const layer = await scene.addS3MTilesLayerByScp(
       LAYER_S3M_URL, {
@@ -230,11 +235,6 @@ const documentReady = async () => {
       alert('不支持深度纹理,无法拾取位置！');
     }
 
-    // 加载二维图层
-    const backgroundLayer = viewer.imageryLayers.addImageryProvider(await new Cesium.SuperMapImageryProvider({
-      url: LAYER_IMAGERY_URL,
-    }));
-
     // 圆形探测波
     /* viewer.scene.scanEffect.show = true;
     viewer.scene.scanEffect.color  = Cesium.Color.RED;
@@ -246,7 +246,6 @@ const documentReady = async () => {
   } catch (e) {
     if (widget._showRenderLoopErrors) {
       const title = '渲染时发生错误，已停止渲染。';
-      alert(title);
       widget.showErrorPanel(title, undefined, e);
     }
   }
