@@ -231,7 +231,7 @@ const documentReady = async () => {
     }
 
     // 加载二维图层
-    const backgroundLayer = viewer.imageryLayers.addImageryProvider(new Cesium.SuperMapImageryProvider({
+    const backgroundLayer = viewer.imageryLayers.addImageryProvider(await new Cesium.SuperMapImageryProvider({
       url: LAYER_IMAGERY_URL,
     }));
 
