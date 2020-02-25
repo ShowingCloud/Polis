@@ -90,43 +90,42 @@ let scene;
 const delay = 0;
 
 // 初始值
-let fw = 0; // 方位角
-let fy = 0; // 俯仰角
-let s = 4000; // 距离
-const fwc = Math.PI / 180 * 1; // 方位差
-const fyc = Math.PI / 180 * 1; // 俯仰差
-const sc = 100; // 距离差
+let GimbalAzimuth = 0; // 方位角
+let GimbalPitchAngle = 0; // 俯仰角
+let GimbalDistance = 4000; // 距离
+const GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
+const GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
+const GimbalDistanceDvalue = 100; // 距离差
 
-let jlTime;
 
-function fuwei() {
-  fw = 0;
-  fy = 0;
-  s = 4000;
+function GimbalReset() {
+  GimbalAzimuth = 0;
+  GimbalPitchAngle = 0;
+  GimbalDistance = 4000;
 }
 
-function fwjia() {
-  fw += fwc;
+function AzimuthAdd() {
+  GimbalAzimuth += GimbalAzimuthDvalue;
 }
 
-function fwjian() {
-  fw -= fwc;
+function AzimuthSub() {
+  GimbalAzimuth -= GimbalAzimuthDvalue;
 }
 
-function fyjia() {
-  fy += fyc;
+function PitchAngleAdd() {
+  GimbalPitchAngle += GimbalPitchAngleDvalue;
 }
 
-function fyjian() {
-  fy -= fyc;
+function PitchAngleSub() {
+  GimbalPitchAngle -= GimbalPitchAngleDvalue;
 }
 
 function jljia() {
-  s += sc;
+  GimbalDistance += GimbalDistanceDvalue;
 }
 
 function jljian() {
-  s -= sc;
+  GimbalDistance -= GimbalDistanceDvalue;
 }
 
 
@@ -400,15 +399,11 @@ const documentReady = async () => {
         const center = Cesium.Cartesian3.fromDegrees(108.90047618, 19.46586216, 60);
         const transform = Cesium.Transforms.eastNorthUpToFixedFrame(center);
         // 目标坐标位置
-        const x = Math.cos(fy) * s * Math.sin(fw);
-        const y = Math.cos(fy) * s * Math.cos(fw);
-        const z = Math.sin(fy) * s;
+        const x = Math.cos(GimbalPitchAngle) * GimbalDistance * Math.sin(GimbalAzimuth);
+        const y = Math.cos(GimbalPitchAngle) * GimbalDistance * Math.cos(GimbalAzimuth);
+        const z = Math.sin(GimbalPitchAngle) * GimbalDistance;
         const p = new Cesium.Cartesian3(x, y, z);
         const sourpos = Cesium.Matrix4.multiplyByPoint(transform, p, new Cesium.Cartesian3());
-        /* console.log(Math.cos(fy)*s*Math.cos(fw))
-        console.log(Math.cos(fy)*s*Math.sin(fw))
-        console.log(Math.sin(fy)*s) */
-        // console.log(ellipsoid.cartesianToCartographic(sourpos))
         const cartographic1 = Cesium.Ellipsoid.WGS84.cartesianToCartographic(sourpos);
         const lon1 = Cesium.Math.toDegrees(cartographic1.longitude);
         const lat1 = Cesium.Math.toDegrees(cartographic1.latitude);
@@ -832,9 +827,9 @@ const documentReady = async () => {
 	  if (msg.topic.indexOf('GuangDianCtrl') != -1) {
         const info = JSON.parse(msg.payloadString);
         // if(!vm.gdAuto){
-        fw = info.azimuth;
-        fy = info.overlookAngle;
-        s = info.distance;
+        GimbalAzimuth = info.azimuth;
+        GimbalPitchAngle = info.overlookAngle;
+        GimbalDistance = info.distance;
         // }
         return;
       } 
