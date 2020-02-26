@@ -138,59 +138,6 @@ function GimbalReset() {
   GimbalSendMsg(0,0);
 }
 
-function AzimuthAdd() {
-  /* GimbalAzimuth += GimbalAzimuthDvalue; */
-  GimbalSendMsg(3,GimbalAzimuthDvalue);
-}
-function AzimuthAddStart() {
-  AzimuthAddTime = setInterval(function(){
-	  //GimbalAzimuth += GimbalAzimuthDvalue;
-	  GimbalSendMsg(3,GimbalAzimuthDvalue);
-  },GimbalRate)
-}
-function AzimuthAddEnd() {
-  clearInterval(AzimuthAddTime)
-}
-
-function AzimuthSub() {
-  GimbalAzimuth -= GimbalAzimuthDvalue;
-}
-function AzimuthSubStart() {
-  AzimuthSubTime = setInterval(function(){
-	  //GimbalAzimuth -= GimbalAzimuthDvalue;
-	  GimbalSendMsg(7,GimbalAzimuthDvalue);
-  },GimbalRate)
-}
-function AzimuthSubEnd() {
-  clearInterval(AzimuthSubTime)
-}
-
-function PitchAngleAdd() {
-  GimbalPitchAngle += GimbalPitchAngleDvalue;
-}
-function PitchAngleAddStart() {
-  PitchAngleAddTime = setInterval(function(){
-	  //GimbalPitchAngle += GimbalPitchAngleDvalue;
-	  GimbalSendMsg(1,GimbalPitchAngleDvalue);
-  },GimbalRate)
-}
-function PitchAngleAddEnd() {
-  clearInterval(PitchAngleAddTime)
-}
-
-function PitchAngleSub() {
-  GimbalPitchAngle -= GimbalPitchAngleDvalue;
-}
-function PitchAngleSubStart() {
-  PitchAngleSubTime = setInterval(function(){
-	  //GimbalPitchAngle -= GimbalPitchAngleDvalue;
-	  GimbalSendMsg(5,GimbalPitchAngleDvalue);
-  },GimbalRate)
-}
-function PitchAngleSubEnd() {
-  clearInterval(PitchAngleSubTime)
-}
-
 function DistanceAdd() {
   GimbalDistance += GimbalDistanceDvalue;
 }
