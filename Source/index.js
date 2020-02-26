@@ -108,29 +108,44 @@ var PitchAngleSubTime;//俯仰角减少定时器
 var DistanceAddTime;//距离增加定时器
 var DistanceSubTime;//距离减少定时器
 var GimbalRate = 400//变化速率，ms
+var IntervalTime = new Map();
+
+function GimbalSendMsg(direction,step){
+	let msg = {
+		  direction:direction,
+		  step:step
+	}
+	sendMsg("/CC/MsgForAntiUAV/GuangDianCtrl/0", JSON.stringify(msg), 0, false);
+}
+
+function GimbalControl(SetOrCancle,type,model,Dvalue){
+	if(SetOrCancle){
+		IntervalTime.set(type,setInterval(function(){
+			GimbalSendMsg(model,Dvalue);
+		},GimbalRate));
+		console.log(IntervalTime);
+	}else{
+		clearInterval(IntervalTime.get(type));
+		IntervalTime.delete(type);
+		console.log(IntervalTime);
+	}
+}
 
 function GimbalReset() {
   /* GimbalAzimuth = 0;
   GimbalPitchAngle = 0;
   GimbalDistance = 4000; */
-  let msg = {
-	  direction:0,
-	  step:0
-  }
-  sendMsg("/CC/MsgForAntiUAV/GuangDianCtrl/0", JSON.stringify(msg), 0, false);
+  GimbalSendMsg(0,0);
 }
 
 function AzimuthAdd() {
   /* GimbalAzimuth += GimbalAzimuthDvalue; */
-  let msg = {
-  	  direction:3,
-  	  step:Math.PI/6
-  }
-  sendMsg("/CC/MsgForAntiUAV/GuangDianCtrl/0", JSON.stringify(msg), 0, false);
+  GimbalSendMsg(3,GimbalAzimuthDvalue);
 }
 function AzimuthAddStart() {
   AzimuthAddTime = setInterval(function(){
-	  GimbalAzimuth += GimbalAzimuthDvalue;
+	  //GimbalAzimuth += GimbalAzimuthDvalue;
+	  GimbalSendMsg(3,GimbalAzimuthDvalue);
   },GimbalRate)
 }
 function AzimuthAddEnd() {
@@ -142,7 +157,8 @@ function AzimuthSub() {
 }
 function AzimuthSubStart() {
   AzimuthSubTime = setInterval(function(){
-	  GimbalAzimuth -= GimbalAzimuthDvalue;
+	  //GimbalAzimuth -= GimbalAzimuthDvalue;
+	  GimbalSendMsg(7,GimbalAzimuthDvalue);
   },GimbalRate)
 }
 function AzimuthSubEnd() {
@@ -154,7 +170,8 @@ function PitchAngleAdd() {
 }
 function PitchAngleAddStart() {
   PitchAngleAddTime = setInterval(function(){
-	  GimbalPitchAngle += GimbalPitchAngleDvalue;
+	  //GimbalPitchAngle += GimbalPitchAngleDvalue;
+	  GimbalSendMsg(1,GimbalPitchAngleDvalue);
   },GimbalRate)
 }
 function PitchAngleAddEnd() {
@@ -166,7 +183,8 @@ function PitchAngleSub() {
 }
 function PitchAngleSubStart() {
   PitchAngleSubTime = setInterval(function(){
-	  GimbalPitchAngle -= GimbalPitchAngleDvalue;
+	  //GimbalPitchAngle -= GimbalPitchAngleDvalue;
+	  GimbalSendMsg(5,GimbalPitchAngleDvalue);
   },GimbalRate)
 }
 function PitchAngleSubEnd() {
