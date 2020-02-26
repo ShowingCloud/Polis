@@ -13,7 +13,6 @@
 	</head>
 	<body>
 		<div id="cesiumContainer">
-
 			<div class="container-fluid" id="main" style="position: absolute;top: 0;left: 0;z-index: 2000;pointer-events:none;">
 				<div class="row" id="top" style="pointer-events:auto;" oncontextmenu="return false;" ondragstart="return false;"
 				 onselectstart="return false;">
@@ -306,7 +305,7 @@
 										<th style="width: 55%;">高度</th>
 										<th style="width: 100%;">威胁等级</th>
 									</tr>
-									<tr v-for="t in targetArr">
+									<tr v-for="t in targetArr" @click="changeLog(t.id)" style="cursor: pointer;">
 										<td>{{t.id}}</td>
 										<td>{{t.distince}}</td>
 										<td>{{t.speed}}</td>
@@ -330,13 +329,8 @@
 							</div>
 							<div style="height: 60%;border: 1px solid rgb(20,194,141);width: 96%;margin-left: 3%!important;margin-top: 5px!important;"
 							 class="scroll">
-								<p>处置001自动模式</p>
-								<p>08:01发现目标001，进入5km禁区，一级告警，高度300m，速度20km/s</p>
-								<p>未知飞行物</p>
-								<p>证据已经保留(点击查看)</p>
-								<p>08:01自动执行</p>
-								<p>预案，执行定向干扰打击(自动)，点击查看预案文档</p>
-								<p>08:05处置完毕，拦截失败</p>
+								<p v-if="PlanArr.length==0" style="font-size: 20px;font-weight: 600;">暂无目标</p>
+								<p v-for="log in PlanArr.log">{{log}}</p>
 							</div>
 							<!-- <div style="height: 15%;color: white;padding: 2px 15px!important;margin-top: 7px!important;">
 							<button type="button" class="chuzhiBtn xz2" style="float: right;">上报实保系统</button>

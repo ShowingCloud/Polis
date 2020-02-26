@@ -35,7 +35,7 @@ var vm = new Vue({
     //告警列表显示flag
     alertFlag:false,
 	//预案信息
-	PlanArr:[],
+	PlanArr:{},
 	PlanArrPreset:[
 		{
 			id:1,
@@ -62,15 +62,22 @@ var vm = new Vue({
 			]
 		}
 	],
-
   },
   methods: {
-	  alertWarn() {
+	changeLog(id){
+		
+		for(var i=0;i<vm.PlanArrPreset.length;i++){
+			if(vm.PlanArrPreset[i].id==id){
+				vm.PlanArr = vm.PlanArrPreset[i];
+			}
+		}
+	},
+	alertWarn() {
 	  	vm.alertFlag = !vm.alertFlag;
-	  },
-	  closeWarn() {
+	},
+		closeWarn() {
 	  	vm.alertFlag = false;
-	  },
+	},
     radarIndexJian() {
       if (vm.radarIndex > 0) {
         vm.radarIndex--;
@@ -545,7 +552,6 @@ const documentReady = async () => {
         vm.targetArr.push(airPosition);
       }
 
-
       position2 = Cesium.Cartesian3.fromDegrees(+airPosition.lon, +airPosition.lat, +airPosition.hei);
 
       // 新目标则创建新的实体类
@@ -850,6 +856,7 @@ const documentReady = async () => {
       console.log(vm.radarArr);
     }else if (/.*\/RadarTargetOut\/.*/.test(msg.topic)) {
         const airId = JSON.parse(msg.payloadString);
+		
         if (airArr.get(airId.id) != undefined) {
           viewer.entities.remove(airArr.get(airId.id));
           viewer.entities.remove(gzxArr.get(airId.id));
@@ -862,7 +869,10 @@ const documentReady = async () => {
 		  gzxArr4.delete(airId.id);
           airPositionArr.delete(airId.id);
           airArr.delete(airId.id);
-
+		  
+		  if(airId.id==vm.PlanArr.id){
+			  vm.PlanArr = '';
+		  }
           vm.targetArr.forEach((entity, i) => {
             if (entity.id == airId.id) {
               vm.targetArr.splice(i, 1);
