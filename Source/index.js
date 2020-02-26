@@ -110,13 +110,23 @@ var DistanceSubTime;//距离减少定时器
 var GimbalRate = 400//变化速率，ms
 
 function GimbalReset() {
-  GimbalAzimuth = 0;
+  /* GimbalAzimuth = 0;
   GimbalPitchAngle = 0;
-  GimbalDistance = 4000;
+  GimbalDistance = 4000; */
+  let msg = {
+	  direction:0,
+	  step:0
+  }
+  sendMsg("/CC/MsgForAntiUAV/GuangDianCtrl/0", JSON.stringify(msg), 0, false);
 }
 
 function AzimuthAdd() {
-  GimbalAzimuth += GimbalAzimuthDvalue;
+  /* GimbalAzimuth += GimbalAzimuthDvalue; */
+  let msg = {
+  	  direction:3,
+  	  step:Math.PI/6
+  }
+  sendMsg("/CC/MsgForAntiUAV/GuangDianCtrl/0", JSON.stringify(msg), 0, false);
 }
 function AzimuthAddStart() {
   AzimuthAddTime = setInterval(function(){
@@ -488,9 +498,17 @@ const documentReady = async () => {
       }),
     },
   });
+  
+  function S4() {
+  	return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+  
+  function NewGuid() {
+  	return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+  }
 
 
-  connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, `clientTest${Math.random(100)}`, (isConnected) => {
+  connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, "clientTest" + NewGuid(), (isConnected) => {
     if (isConnected) {
       // 无人机坐标点消息
       subscribe('/CC/MsgForAntiUAV/RadarTarget/#', 0);
@@ -522,7 +540,7 @@ const documentReady = async () => {
 	  subscribe('/CC/MsgForAntiUAV/GuangDianWorkingMode/#', 0);
     }
   }, (msg) => {
-    //console.log(msg);
+    console.log(msg);
     // 接收到飞机位置信息
     if (/.*\/RadarTarget\/.*/.test(msg.topic)) {
       // 目标信息
