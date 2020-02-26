@@ -33,7 +33,35 @@ var vm = new Vue({
     // 光电自动跟踪
     gdAuto: false,
     //告警列表显示flag
-    alertFlag:false
+    alertFlag:false,
+	//预案信息
+	PlanArr:[],
+	PlanArrPreset:[
+		{
+			id:1,
+			log:[
+				'处置001自动模式',
+				'08:01发现目标001，进入5km禁区，一级告警，高度300m，速度20km/s',
+				'大疆无人机',
+				'证据已经保留(点击查看)',
+				'08:01自动执行',
+				'预案，执行定向干扰打击(自动)，点击查看预案文档',
+				'08:05处置完毕，拦截失败',
+			]
+		},
+		{
+			id:2,
+			log:[
+				'处置002自动模式',
+				'08:03发现目标002，进入5km禁区，一级告警，高度500m，速度23km/s',
+				'未知飞行物',
+				'证据已经保留(点击查看)',
+				'08:06自动执行',
+				'预案，执行定向干扰打击(自动)，点击查看预案文档',
+				'08:09处置完毕，拦截失败',
+			]
+		}
+	],
 
   },
   methods: {
@@ -101,10 +129,6 @@ var GimbalDistance = 4000; // 距离
 var GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
 var GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
 var GimbalDistanceDvalue = 100; // 距离差
-var AzimuthAddTime;//方位角增加定时器
-var AzimuthSubTime;//方位角减少定时器
-var PitchAngleAddTime;//俯仰角增加定时器
-var PitchAngleSubTime;//俯仰角减少定时器
 var DistanceAddTime;//距离增加定时器
 var DistanceSubTime;//距离减少定时器
 var GimbalRate = 400//变化速率，ms
