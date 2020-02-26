@@ -503,8 +503,6 @@ const documentReady = async () => {
       subscribe('/CC/MsgForAntiUAV/GuangDianOut/#', 0);
       // 光电控制云台信息
       subscribe('/CC/MsgForAntiUAV/GuangDianCtrl/#', 0);
-      // 光电自动跟踪
-      subscribe('/CC/MsgForAntiUAV/GuangDianAuto/#', 0);
       // 电子侦查信息
       subscribe('/CC/MsgForAntiUAV/DianZhen/#', 0);
       // 电子侦查信息目标离开
