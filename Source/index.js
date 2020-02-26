@@ -493,66 +493,38 @@ const documentReady = async () => {
   connect(MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, `clientTest${Math.random(100)}`, (isConnected) => {
     if (isConnected) {
       // 无人机坐标点消息
-      subscribe('/CC/MsgForAntiUAV/Drone/#', 0);
-	  subscribe('/CC/MsgForAntiUAV/DroneIn/#', 0);
+      subscribe('/CC/MsgForAntiUAV/RadarTarget/#', 0);
       // 雷达信息消息
-      subscribe('/CC/MsgForAntiUAV/Radar/#', 0);
+      subscribe('/CC/MsgForAntiUAV/RadarDevice/#', 0);
       // 光电信息
-      subscribe('/CC/MsgForAntiUAV/GuangDian/#', 0);
+      subscribe('/CC/MsgForAntiUAV/GuangDianDevice/#', 0);
       // 光电目标离开信息
-      subscribe('/CC/MsgForAntiUAV/GuangDianOut/#', 0);
+      subscribe('/CC/MsgForAntiUAV/GuangDianTargetOut/#', 0);
       // 光电控制云台信息
-      subscribe('/CC/MsgForAntiUAV/GuangDianCtrl/#', 0);
+      subscribe('/CC/MsgForAntiUAV/GuangDianTarget/#', 0);
       // 电子侦查信息
-      subscribe('/CC/MsgForAntiUAV/DianZhen/#', 0);
+      subscribe('/CC/MsgForAntiUAV/DianZhenTarget/#', 0);
       // 电子侦查信息目标离开
-      subscribe('/CC/MsgForAntiUAV/DianZhenOut/#', 0);
+      subscribe('/CC/MsgForAntiUAV/DianZhenTargetOut/#', 0);
       // 协议破解信息
-      subscribe('/CC/MsgForAntiUAV/Crack/#', 0);
+      subscribe('/CC/MsgForAntiUAV/ProtocolCrackTarget/#', 0);
       // 协议破解信息目标离开
-      subscribe('/CC/MsgForAntiUAV/CrackOut/#', 0);
+      subscribe('/CC/MsgForAntiUAV/ProtocolCrackTargetOut/#', 0);
       // ADS-B信息
-      subscribe('/CC/MsgForAntiUAV/ADSB/#', 0);
+      subscribe('/CC/MsgForAntiUAV/ADSBTarget/#', 0);
       // ADS-B目标离开
-      subscribe('/CC/MsgForAntiUAV/ADSBOut/#', 0);
+      subscribe('/CC/MsgForAntiUAV/ADSBTargetOut/#', 0);
       // 雷达通知无人机离开
-      subscribe('/CC/MsgForAntiUAV/DroneOut/#', 0);
+      subscribe('/CC/MsgForAntiUAV/RadarTargetOut/#', 0);
       // 告警数量
       subscribe('/CC/MsgForAntiUAV/Warning/#', 0);
-	  //光电自动跟踪
-	  subscribe('/CC/MsgForAntiUAV/GuangDianTrack/#', 0);
+	  //光电工作模式
+	  subscribe('/CC/MsgForAntiUAV/GuangDianWorkingMode/#', 0);
     }
   }, (msg) => {
     //console.log(msg);
     // 接收到飞机位置信息
-    if (msg.topic.indexOf('Drone') != -1) {
-      // 无人机离开,集合中去掉,地图上去掉
-      if (msg.topic.indexOf('DroneOut') != -1) {
-        const airId = JSON.parse(msg.payloadString);
-        if (airArr.get(airId.id) != undefined) {
-          viewer.entities.remove(airArr.get(airId.id));
-          viewer.entities.remove(gzxArr.get(airId.id));
-          gzxArr.delete(airId.id);
-          viewer.entities.remove(gzxArr2.get(airId.id));
-          gzxArr2.delete(airId.id);
-          viewer.entities.remove(gzxArr3.get(airId.id));
-          gzxArr3.delete(airId.id);
-		  viewer.entities.remove(gzxArr4.get(airId.id));
-		  gzxArr4.delete(airId.id);
-          airPositionArr.delete(airId.id);
-          airArr.delete(airId.id);
-
-          vm.targetArr.forEach((entity, i) => {
-            if (entity.id == airId.id) {
-              vm.targetArr.splice(i, 1);
-            }
-          });
-        }
-        return;
-      }else if(msg.topic.indexOf('DroneIn') != -1){
-		  return;
-	  }
-
+    if (/.*\/RadarTarget\/.*/.test(msg.topic)) {
       // 目标信息
       const airPosition = JSON.parse(msg.payloadString);
       let targetFlag = true;
@@ -853,7 +825,7 @@ const documentReady = async () => {
 		}
 
       });
-    } else if (msg.topic.indexOf('Radar') != -1) {
+    } else if (/.*\/RadarDevice\/.*/.test(msg.topic)) {
       const radarInfo = JSON.parse(msg.payloadString);
       // console.log(radarInfo)
       var flag = true;
@@ -869,48 +841,49 @@ const documentReady = async () => {
         vm.radarArr.push(radarInfo);
       }
       console.log(vm.radarArr);
-    } else if (msg.topic.indexOf('GuangDian') != -1) {
-      if (msg.topic.indexOf('GuangDianOut') != -1) {
-        vm.gdInfo = '';
-        return;
-      } 
-      if (msg.topic.indexOf('GuangDianCtrl') != -1) {
-        const info = JSON.parse(msg.payloadString);
-        // if(!vm.gdAuto){
-        GimbalAzimuth = info.azimuth;
-        GimbalPitchAngle = info.overlookAngle;
-        GimbalDistance = info.distance;
-        // }
-        return;
-      } 
-      if (msg.topic.indexOf('GuangDianTrack') != -1) {
-        let info = JSON.parse(msg.payloadString);
+    }else if (/.*\/RadarTargetOut\/.*/.test(msg.topic)) {
+        const airId = JSON.parse(msg.payloadString);
+        if (airArr.get(airId.id) != undefined) {
+          viewer.entities.remove(airArr.get(airId.id));
+          viewer.entities.remove(gzxArr.get(airId.id));
+          gzxArr.delete(airId.id);
+          viewer.entities.remove(gzxArr2.get(airId.id));
+          gzxArr2.delete(airId.id);
+          viewer.entities.remove(gzxArr3.get(airId.id));
+          gzxArr3.delete(airId.id);
+		  viewer.entities.remove(gzxArr4.get(airId.id));
+		  gzxArr4.delete(airId.id);
+          airPositionArr.delete(airId.id);
+          airArr.delete(airId.id);
 
-        if (info.track_status == 'start') {
-          vm.gdAuto = true;
-        } else if (info.track_status == 'end') {
-          vm.gdAuto = false;
+          vm.targetArr.forEach((entity, i) => {
+            if (entity.id == airId.id) {
+              vm.targetArr.splice(i, 1);
+            }
+          });
         }
-        return;
-      }
+    } else if (/.*\/GuangDianDevice\/.*/.test(msg.topic)) {
       var info = JSON.parse(msg.payloadString);
       // console.log(info)
       vm.gdInfo = info;
-    } else if (msg.topic.indexOf('DianZhen') !== -1) {
-      if (msg.topic.indexOf('DianZhenOut') !== -1) {
-        const info = JSON.parse(msg.payloadString);
-        vm.ereconArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
-          viewer.entities.remove(entity);
-          vm.ereconArr.splice(i, 1);
-        });
-
-        if (vm.ereconIndex > vm.ereconArr.length - 1 && vm.ereconArr.length > 0) {
-          vm.ereconIndex = vm.ereconArr.length - 1;
-        }
-
-        return;
-      }
-
+    }else if(/.*\/GuangDianTargetOut\/.*/.test(msg.topic)){
+		vm.gdInfo = '';
+	}else if(/.*\/GuangDianTarget\/.*/.test(msg.topic)){
+		const info = JSON.parse(msg.payloadString);
+		// if(!vm.gdAuto){
+		GimbalAzimuth = info.azimuth;
+		GimbalPitchAngle = info.overlookAngle;
+		GimbalDistance = info.distance;
+		// }
+	}else if(/.*\/GuangDianWorkingMode\/.*/.test(msg.topic)){
+		let info = JSON.parse(msg.payloadString);
+		
+		if (info.work_mode == 'Auto') {
+		  vm.gdAuto = true;
+		} else if (info.work_mode == 'Manual') {
+		  vm.gdAuto = false;
+		}
+	} else if (/.*\/DianZhenTarget\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
 
       const entity = vm.ereconArr.find((i) => i.targetId === info.id);
@@ -969,21 +942,17 @@ const documentReady = async () => {
           },
         }));
       }
-    } else if (msg.topic.indexOf('Crack') !== -1) {
-      if (msg.topic.indexOf('CrackOut') !== -1) {
-        const info = JSON.parse(msg.payloadString);
-        vm.crackerArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
-          viewer.entities.remove(entity);
-          vm.crackerArr.splice(i, 1);
-        });
-
-        if (vm.crackerIndex > vm.crackerArr.length - 1 && vm.crackerArr.length > 0) {
-          vm.crackerIndex = vm.crackerArr.length - 1;
-        }
-
-        return;
-      }
-
+    }else if(/.*\/DianZhenTargetOut\/.*/.test(msg.topic)){
+		const info = JSON.parse(msg.payloadString);
+		vm.ereconArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
+		  viewer.entities.remove(entity);
+		  vm.ereconArr.splice(i, 1);
+		});
+		
+		if (vm.ereconIndex > vm.ereconArr.length - 1 && vm.ereconArr.length > 0) {
+		  vm.ereconIndex = vm.ereconArr.length - 1;
+		}
+	} else if (/.*\/ProtocolCrackTarget\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
 
       const entity = vm.crackerArr.find((i) => i.targetId === info.id);
@@ -1042,14 +1011,19 @@ const documentReady = async () => {
           },
         }));
       }
-    } else if (msg.topic.indexOf('ADSB') !== -1) {
-      if (msg.topic.indexOf('ADSBOut') !== -1) {
-        const info = JSON.parse(msg.payloadString);
-        vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
-          vm.adsbArr.splice(i, 1);
-        });
-        return;
-      }
+    }else if(/.*\/ProtocolCrackTargetOut\/.*/.test(msg.topic)){
+		const info = JSON.parse(msg.payloadString);
+		vm.crackerArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
+		  viewer.entities.remove(entity);
+		  vm.crackerArr.splice(i, 1);
+		});
+		
+		if (vm.crackerIndex > vm.crackerArr.length - 1 && vm.crackerArr.length > 0) {
+		  vm.crackerIndex = vm.crackerArr.length - 1;
+		}
+		
+		return;
+	} else if (/.*\/ADSBTarget\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
       let flag = true;
       vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
@@ -1059,7 +1033,13 @@ const documentReady = async () => {
       if (flag) {
         vm.adsbArr.push(info);
       }
-    } else if (msg.topic.indexOf('Warning') !== -1) {
+    }else if(/.*\/ADSBTargetOut\/.*/.test(msg.topic)){
+		const info = JSON.parse(msg.payloadString);
+		vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
+		  vm.adsbArr.splice(i, 1);
+		});
+		return;
+	} else if (msg.topic.indexOf('Warning') !== -1) {
       vm.WarnNum = JSON.parse(msg.payloadString);
     }
   });
