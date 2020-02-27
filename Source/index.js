@@ -3,6 +3,8 @@
 var vm = new Vue({
   el: '#main',
   data: {
+	//控制按钮切换
+	controlButton:4,
     // 雷达信息
     radarArr: [],
     // 雷达下标

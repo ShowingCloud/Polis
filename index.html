@@ -341,13 +341,13 @@
 						<div id="sbkz" style="pointer-events:auto;" oncontextmenu="return false;" ondragstart="return false;"
 						 onselectstart="return false;">
 							<div style="height: 15%;color: white;padding: 2px 15px!important;margin-top: 7px!important;" id="controlButtons">
-								<button type="button" class="ytkzBtn xz">云台控制</button>
-								<button type="button" class="gpsBtn">GPS控制</button>
-								<button type="button" class="dxdjBtn">定向打击</button>
-								<button type="button" class="glareBtn">强光</button>
-								<button type="button" class="mapjBtn">地图</button>
+								<button type="button" class="ytkzBtn xz" onclick="vm.controlButton=0">云台控制</button>
+								<button type="button" class="gpsBtn" onclick="vm.controlButton=1">GPS控制</button>
+								<button type="button" class="dxdjBtn" onclick="vm.controlButton=2">定向打击</button>
+								<button type="button" class="glareBtn" onclick="vm.controlButton=3">强光</button>
+								<button type="button" class="mapjBtn" onclick="vm.controlButton=4">地图</button>
 							</div>
-							<div style="height: 64%;width: 94%;margin-left: 3%!important;position: relative;">
+							<div style="height: 64%;width: 94%;margin-left: 3%!important;position: relative;" v-if="controlButton===0">
 								<div style="width: 50%;height: 100%;margin-left: 30px!important;">
 									<!-- <button type="button"><i class="glyphicon glyphicon-arrow-up"></i></button> -->
 									<div class="jiantouImg"><img src="Source/Images/tu1.png" width="75%" height="75%" onmousedown="GimbalControl(true,'LeftAndUp',8,GimbalAzimuthDvalue)" onmouseup="GimbalControl(false,'LeftAndUp');" onmouseout="GimbalControl(false,'LeftAndUp');"></div>
@@ -366,7 +366,7 @@
 									<div class="tiaozheng"><b>焦距</b> <img src="Source/Images/jiaohao.png" onmousedown="DistanceSubStart()" onmouseup="DistanceAddEnd()" onmouseout="DistanceAddEnd()"> <img src="Source/Images/jianhao.png" onmousedown="DistanceSubStart()" onmouseup="DistanceSubEnd()" onmouseout="DistanceSubEnd()"></div>
 								</div>
 							</div>
-							<div>
+							<div v-if="controlButton===0">
 								<div class="btn-group">
 									<label>变倍值</label><select>
 										<option value="1">1</option>
@@ -408,6 +408,13 @@
 									</select>
 
 								</div>
+							</div>
+							
+							<!-- 地图控制按钮 -->
+							<div v-if="controlButton===4" id="mapControl">
+								<button class="btn btn-success">复位</button>
+								<button class="btn btn-success">开始旋转</button>
+								<button class="btn btn-success">停止旋转</button>
 							</div>
 						</div>
 					</div>

@@ -736,3 +736,11 @@ div{
     background: #0b4090;
     border-radius: 0px;
 }
+
+#mapControl{
+	padding: 18px 15px;
+}
+
+#mapControl button{
+	margin-right: 10px;
+}
