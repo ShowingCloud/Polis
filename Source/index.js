@@ -850,30 +850,36 @@ const documentReady = async () => {
     } else if (/.*\/RadarTargetOut\/.*/.test(msg.topic)) {
       const airId = JSON.parse(msg.payloadString);
 
-      if (viewer.trackedEntity === airArr.get(airId.id)) {
-        await scene.camera.flyTo({
-          destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
-        });
-        viewer.trackedEntity = undefined;
-      }
+      if (airArr.get(airId.id)) {
+        if (viewer.trackedEntity === airArr.get(airId.id)) {
+          await scene.camera.flyTo({
+            destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
+          });
+          viewer.trackedEntity = undefined;
+        }
 
-      if (airArr.get(airId.id) !== undefined) {
         viewer.entities.remove(airArr.get(airId.id));
         radarViewer.entities.remove(airArr.get(airId.id));
+
         viewer.entities.remove(gzxArr.get(airId.id));
         gzxArr.delete(airId.id);
+
         viewer.entities.remove(gzxArr2.get(airId.id));
         gzxArr2.delete(airId.id);
+
         viewer.entities.remove(gzxArr3.get(airId.id));
         gzxArr3.delete(airId.id);
+
         viewer.entities.remove(gzxArr4.get(airId.id));
         gzxArr4.delete(airId.id);
+
         airPositionArr.delete(airId.id);
         airArr.delete(airId.id);
 
         if(airId.id === vm.PlanArr.id){
           vm.PlanArr = '';
         }
+
         vm.targetArr.filter((i) => i.id === airId).forEach((entity, i) => {
           vm.targetArr.splice(i, 1);
         });
