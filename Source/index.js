@@ -69,32 +69,32 @@ const vm = new Vue({
     ],
   },
   methods: {
-	rorate() {
-		const center = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);//camera视野的中心点坐标
-		const heading = Cesium.Math.toRadians(vm.rotateAngle);
-		const pitch = Cesium.Math.toRadians(-20.0);
-		const range = 4000.0;
-		viewer.camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, range));
-		vm.rotateAngle += 1;
-		//scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
-	},
-	mapReset(){
-		scene.camera.flyTo({
-		  destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
-		  orientation: {
-		          heading : 6.283185307179586,
-		          pitch : Cesium.Math.toRadians(-90),
-		          roll : 0
-		  }
-		});
-	},
-	rotateStart(){
-		viewer.clock.onTick.addEventListener(vm.rorate);
-	},
-	rotateEnd(){
-		viewer.clock.onTick.removeEventListener(vm.rorate);
-		viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
-	},
+    rorate() {
+      const center = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);//camera视野的中心点坐标
+      const heading = Cesium.Math.toRadians(vm.rotateAngle);
+      const pitch = Cesium.Math.toRadians(-20.0);
+      const range = 4000.0;
+      viewer.camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, range));
+      vm.rotateAngle += 1;
+      //scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
+    },
+    mapReset(){
+      scene.camera.flyTo({
+        destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
+        orientation: {
+          heading : 6.283185307179586,
+          pitch : Cesium.Math.toRadians(-90),
+          roll : 0
+        }
+      });
+    },
+    rotateStart(){
+      viewer.clock.onTick.addEventListener(vm.rorate);
+    },
+    rotateEnd(){
+      viewer.clock.onTick.removeEventListener(vm.rorate);
+      viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
+    },
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
         vm.PlanArr = entity;
@@ -161,8 +161,8 @@ const delay = 0;
 let GimbalAzimuth = 0; // 方位角
 let GimbalPitchAngle = 0; // 俯仰角
 let GimbalDistance = 4000; // 距离
-let GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
-let GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
+let GimbalAzimuthDvalue = Cesium.Math.toRadians(1); // 方位差
+let GimbalPitchAngleDvalue = Cesium.Math.toRadians(1); // 俯仰差
 let GimbalDistanceDvalue = 100; // 距离差
 let DistanceAddTime;//距离增加定时器
 let DistanceSubTime;//距离减少定时器
@@ -962,7 +962,7 @@ const documentReady = async () => {
                     Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    (Math.PI / 180) * (90 - vm.ereconArr.find(
+                    Cesium.Math.toRadians(90 - vm.ereconArr.find(
                       (i) => i.targetId === info.id,
                     ).targetAngle + 1.5),
                     Math.PI / 2, 5000.0,
@@ -979,7 +979,7 @@ const documentReady = async () => {
                     Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    (Math.PI / 180) * (90 - vm.ereconArr.find(
+                    Cesium.Math.toRadians(90 - vm.ereconArr.find(
                       (i) => i.targetId === info.id,
                     ).targetAngle - 1.5),
                     Math.PI / 2, 5000.0,
@@ -1031,7 +1031,7 @@ const documentReady = async () => {
                     Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    (Math.PI / 180) * (90 - vm.crackerArr.find(
+                    Cesium.Math.toRadians(90 - vm.crackerArr.find(
                       (i) => i.targetId === info.id,
                     ).targetAngle + 1.5),
                     Math.PI / 2, 5000.0,
@@ -1048,7 +1048,7 @@ const documentReady = async () => {
                     Cesium.Cartesian3.fromDegrees(...POSITION_STATION_TWO),
                   ),
                   new Cesium.Cartesian3.fromSpherical(new Cesium.Spherical(
-                    (Math.PI / 180) * (90 - vm.crackerArr.find(
+                    Cesium.Math.toRadians(90 - vm.crackerArr.find(
                       (i) => i.targetId === info.id,
                     ).targetAngle - 1.5),
                     Math.PI / 2, 5000.0,
