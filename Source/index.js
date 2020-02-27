@@ -5,6 +5,7 @@ var vm = new Vue({
   data: {
 	//控制按钮切换
 	controlButton:4,
+	rorateTime:'',
     // 雷达信息
     radarArr: [],
     // 雷达下标
@@ -69,13 +70,18 @@ var vm = new Vue({
 	mapReset(){
 		scene.camera.flyTo({
 		  destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
+		  orientation: {
+		          heading : 6.283185307179586,
+		          pitch : Cesium.Math.toRadians(-90),
+		          roll : 0
+		  }
 		});
 	},
 	rotateStart(){
-		
+		viewer.clock.onTick.addEventListener(onTickCallback);
 	},
 	rotateEnd(){
-		
+		viewer.clock.onTick.removeEventListener(onTickCallback);
 	},
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
@@ -138,6 +144,7 @@ let viewer;
 let scene;
 // 飞机坐标自定义延时
 const delay = 0;
+let onTickCallback;
 
 // 初始值
 var GimbalAzimuth = 0; // 方位角
@@ -202,7 +209,6 @@ function DistanceSubStart() {
 function DistanceSubEnd() {
   clearInterval(DistanceSubTime)
 }
-
 
 const documentReady = async () => {
   const partOfUrl = '/iserver/services/3D-hn1108/rest/realspace';
@@ -1086,6 +1092,17 @@ const documentReady = async () => {
   );
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
+  viewer.clock.multiplier = 100;//速度
+  viewer.clock.shouldAnimate = true;
+  var previousTime = viewer.clock.currentTime.secondsOfDay;
+  onTickCallback = function(){
+  	var spinRate = 1;
+  	var currentTime = viewer.clock.currentTime.secondsOfDay;
+  	var delta = (currentTime - previousTime) / 1000;
+  	previousTime = currentTime;
+  	scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -spinRate * delta);
+  }
+  
 };
 
 window.onload = documentReady;
