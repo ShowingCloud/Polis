@@ -837,20 +837,16 @@ const documentReady = async () => {
       });
     } else if (/.*\/RadarDevice\/.*/.test(msg.topic)) {
       const radarInfo = JSON.parse(msg.payloadString);
-      // console.log(radarInfo)
-
       const entities = vm.radarArr.filter((i) => i.id === radarInfo.id);
       if (entities.length) {
         entities.forEach((entity, i) => {
           // vm.radarArr[i] = radarInfo;
           // 深度监听对象数组
-          vm.$set(vm.radarArr, i, radarInfo);
+          vm.$set(entities, i, radarInfo);
         });
       } else {
         vm.radarArr.push(radarInfo);
       }
-
-      console.log(vm.radarArr);
     } else if (/.*\/RadarTargetOut\/.*/.test(msg.topic)) {
       const airId = JSON.parse(msg.payloadString);
 		
