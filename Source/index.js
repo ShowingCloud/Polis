@@ -64,13 +64,10 @@ var vm = new Vue({
     ],
   },
   methods: {
-    changeLog(id){
-
-      for(var i=0;i<vm.PlanArrPreset.length;i++){
-        if(vm.PlanArrPreset[i].id==id){
-          vm.PlanArr = vm.PlanArrPreset[i];
-        }
-      }
+    changeLog(id) {
+      vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
+        vm.PlanArr = entity;
+      });
     },
     alertWarn() {
       vm.alertFlag = !vm.alertFlag;
