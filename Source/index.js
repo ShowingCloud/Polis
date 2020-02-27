@@ -230,7 +230,7 @@ const documentReady = async () => {
     layer.refresh();
 
     // 设置相机位置、视角，便于观察场景
-    scene.camera.flyTo({
+    await scene.camera.flyTo({
       destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
     });
 
@@ -531,10 +531,10 @@ const documentReady = async () => {
       subscribe('/CC/MsgForAntiUAV/RadarTargetOut/#', 0);
       // 告警数量
       subscribe('/CC/MsgForAntiUAV/Warning/#', 0);
-	  //光电工作模式
-	  subscribe('/CC/MsgForAntiUAV/GuangDianWorkingMode/#', 0);
+      //光电工作模式
+      subscribe('/CC/MsgForAntiUAV/GuangDianWorkingMode/#', 0);
     }
-  }, (msg) => {
+  }, async (msg) => {
     console.log(msg);
     // 接收到飞机位置信息
     if (/.*\/RadarTarget\/.*/.test(msg.topic)) {
@@ -849,7 +849,14 @@ const documentReady = async () => {
       }
     } else if (/.*\/RadarTargetOut\/.*/.test(msg.topic)) {
       const airId = JSON.parse(msg.payloadString);
-		
+
+      if (viewer.trackedEntity === airArr.get(airId.id)) {
+        await scene.camera.flyTo({
+          destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
+        });
+        viewer.trackedEntity = undefined;
+      }
+
       if (airArr.get(airId.id) !== undefined) {
         viewer.entities.remove(airArr.get(airId.id));
         viewer.entities.remove(gzxArr.get(airId.id));
