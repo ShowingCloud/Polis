@@ -1,6 +1,6 @@
 
 // vue对象
-var vm = new Vue({
+const vm = new Vue({
   el: '#main',
   data: {
 	//控制按钮切换
@@ -69,11 +69,11 @@ var vm = new Vue({
     ],
   },
   methods: {
-	rorate(){
-		var center = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);//camera视野的中心点坐标
-		var heading = Cesium.Math.toRadians(vm.rotateAngle);
-		var pitch = Cesium.Math.toRadians(-20.0);
-		var range = 4000.0;
+	rorate() {
+		const center = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);//camera视野的中心点坐标
+		const heading = Cesium.Math.toRadians(vm.rotateAngle);
+		const pitch = Cesium.Math.toRadians(-20.0);
+		const range = 4000.0;
 		viewer.camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, range));
 		vm.rotateAngle += 1;
 		//scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
@@ -158,19 +158,19 @@ let scene;
 const delay = 0;
 
 // 初始值
-var GimbalAzimuth = 0; // 方位角
-var GimbalPitchAngle = 0; // 俯仰角
-var GimbalDistance = 4000; // 距离
-var GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
-var GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
-var GimbalDistanceDvalue = 100; // 距离差
-var DistanceAddTime;//距离增加定时器
-var DistanceSubTime;//距离减少定时器
-var GimbalRate = 400//变化速率，ms
-var IntervalTime = new Map();
+let GimbalAzimuth = 0; // 方位角
+let GimbalPitchAngle = 0; // 俯仰角
+let GimbalDistance = 4000; // 距离
+let GimbalAzimuthDvalue = Math.PI / 180 * 1; // 方位差
+let GimbalPitchAngleDvalue = Math.PI / 180 * 1; // 俯仰差
+let GimbalDistanceDvalue = 100; // 距离差
+let DistanceAddTime;//距离增加定时器
+let DistanceSubTime;//距离减少定时器
+let GimbalRate = 400//变化速率，ms
+let IntervalTime = new Map();
 
-function GimbalSendMsg(direction,step){
-	let msg = {
+function GimbalSendMsg(direction, step){
+	const msg = {
 		  direction:direction,
 		  step:step
 	}
@@ -262,12 +262,12 @@ const documentReady = async () => {
     // 设置相机位置、视角，便于观察场景
     await scene.camera.flyTo({
       destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
-	  complete:function(){
-		  setTimeout(function(){
-			  vm.rotateStart();
-		  },1000)
-	  }
-	});
+      complete: (() => {
+        setTimeout(() => {
+          vm.rotateStart();
+        }, 1000);
+      }),
+    });
     if (!scene.pickPositionSupported) {
       alert('不支持深度纹理,无法拾取位置！');
     }
@@ -667,7 +667,7 @@ const documentReady = async () => {
         }); */
 
         // 中心点
-        var tarPosition = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+        const tarPosition = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
         // 站1
         const tarPosition2 = Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE);
         // 站2
@@ -811,7 +811,7 @@ const documentReady = async () => {
       // 中心点坐标
       const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
       // 飞机坐标
-      var tarPosition = position2;
+      const tarPosition = position2;
       // msg.label.text = clock.currentTime.toString();
       const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
       // 中心点距离飞机距离
@@ -919,7 +919,7 @@ const documentReady = async () => {
         });
       }
     } else if (/.*\/GuangDianDevice\/.*/.test(msg.topic)) {
-      var info = JSON.parse(msg.payloadString);
+      const info = JSON.parse(msg.payloadString);
       // console.log(info)
       vm.gdInfo = info;
     } else if (/.*\/GuangDianTargetOut\/.*/.test(msg.topic)) {
@@ -932,7 +932,7 @@ const documentReady = async () => {
       GimbalDistance = info.distance;
       // }
     } else if (/.*\/GuangDianWorkingMode\/.*/.test(msg.topic)) {
-      let info = JSON.parse(msg.payloadString);
+      const info = JSON.parse(msg.payloadString);
 		
       if (info.work_mode === 'Auto') {
         vm.gdAuto = true;
