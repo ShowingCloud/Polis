@@ -859,6 +859,7 @@ const documentReady = async () => {
 
       if (airArr.get(airId.id) !== undefined) {
         viewer.entities.remove(airArr.get(airId.id));
+        radarViewer.entities.remove(airArr.get(airId.id));
         viewer.entities.remove(gzxArr.get(airId.id));
         gzxArr.delete(airId.id);
         viewer.entities.remove(gzxArr2.get(airId.id));
