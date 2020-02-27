@@ -25,59 +25,59 @@ var vm = new Vue({
     targetArr: [],
     // 告警数量
     WarnNum: {
-		blowNum:0,
-		disposeNum:0,
-		warnNum:0,
-		positionNum:0
-	},
+      blowNum:0,
+      disposeNum:0,
+      warnNum:0,
+      positionNum:0,
+    },
     // 光电自动跟踪
     gdAuto: false,
     //告警列表显示flag
     alertFlag:false,
-	//预案信息
-	PlanArr:{},
-	PlanArrPreset:[
-		{
-			id:1,
-			log:[
-				'处置001自动模式',
-				'08:01发现目标001，进入5km禁区，一级告警，高度300m，速度20km/s',
-				'大疆无人机',
-				'证据已经保留(点击查看)',
-				'08:01自动执行',
-				'预案，执行定向干扰打击(自动)，点击查看预案文档',
-				'08:05处置完毕，拦截失败',
-			]
-		},
-		{
-			id:2,
-			log:[
-				'处置002自动模式',
-				'08:03发现目标002，进入5km禁区，一级告警，高度500m，速度23km/s',
-				'未知飞行物',
-				'证据已经保留(点击查看)',
-				'08:06自动执行',
-				'预案，执行定向干扰打击(自动)，点击查看预案文档',
-				'08:09处置完毕，拦截失败',
-			]
-		}
-	],
+    //预案信息
+    PlanArr:{},
+    PlanArrPreset:[
+      {
+        id:1,
+        log:[
+          '处置001自动模式',
+          '08:01发现目标001，进入5km禁区，一级告警，高度300m，速度20km/s',
+          '大疆无人机',
+          '证据已经保留(点击查看)',
+          '08:01自动执行',
+          '预案，执行定向干扰打击(自动)，点击查看预案文档',
+          '08:05处置完毕，拦截失败',
+        ]
+      },
+      {
+        id:2,
+        log:[
+          '处置002自动模式',
+          '08:03发现目标002，进入5km禁区，一级告警，高度500m，速度23km/s',
+          '未知飞行物',
+          '证据已经保留(点击查看)',
+          '08:06自动执行',
+          '预案，执行定向干扰打击(自动)，点击查看预案文档',
+          '08:09处置完毕，拦截失败',
+        ]
+      }
+    ],
   },
   methods: {
-	changeLog(id){
-		
-		for(var i=0;i<vm.PlanArrPreset.length;i++){
-			if(vm.PlanArrPreset[i].id==id){
-				vm.PlanArr = vm.PlanArrPreset[i];
-			}
-		}
-	},
-	alertWarn() {
-	  	vm.alertFlag = !vm.alertFlag;
-	},
-		closeWarn() {
-	  	vm.alertFlag = false;
-	},
+    changeLog(id){
+
+      for(var i=0;i<vm.PlanArrPreset.length;i++){
+        if(vm.PlanArrPreset[i].id==id){
+          vm.PlanArr = vm.PlanArrPreset[i];
+        }
+      }
+    },
+    alertWarn() {
+      vm.alertFlag = !vm.alertFlag;
+    },
+    closeWarn() {
+      vm.alertFlag = false;
+    },
     radarIndexJian() {
       if (vm.radarIndex > 0) {
         vm.radarIndex--;
@@ -280,14 +280,14 @@ const documentReady = async () => {
 
   $('#radarCoverage').click((e) => {
     if ($(e.currentTarget).find(':button').attr('aria-pressed') === 'false') { /* Before toggled */
-      [0, 1, 2].forEach((i) => {
-        viewshed3D[i].distance = 5000;
-        viewshed3D[i].build();
+      viewshed3D.forEach((entity) => {
+        entity.distance = 5000;
+        entity.build();
       });
     } else {
-      [0, 1, 2].forEach((i) => {
-        viewshed3D[i].distance = 0.1;
-        viewshed3D[i].build();
+      viewshed3D.forEach((entity) => {
+        entity.distance = 0.1;
+        entity.build();
       });
     }
   });
@@ -469,16 +469,16 @@ const documentReady = async () => {
         const lat1 = Cesium.Math.toDegrees(cartographic1.latitude);
         const height1 = cartographic1.height;
 		
-		/* if(qflag){
-			console.log("lon:"+lon1);
-			console.log("lat:"+lat1);
-			console.log("height:"+height1);
-			
-			console.log("fw:"+fw);
-			console.log("fy:"+fy);
-			console.log("s:"+s);
-			qflag = false;
-		} */
+        /* if(qflag){
+      console.log("lon:"+lon1);
+      console.log("lat:"+lat1);
+      console.log("height:"+height1);
+
+      console.log("fw:"+fw);
+      console.log("fy:"+fy);
+      console.log("s:"+s);
+      qflag = false;
+    } */
         // 源坐标位置
         const tarpos = center;
         const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(tarpos);
@@ -543,14 +543,12 @@ const documentReady = async () => {
     if (/.*\/RadarTarget\/.*/.test(msg.topic)) {
       // 目标信息
       const airPosition = JSON.parse(msg.payloadString);
-      let targetFlag = true;
-      vm.targetArr.forEach((entity, i) => {
-        if (entity.id == airPosition.id) {
+      const entities = vm.targetArr.filter((i) => i.id === airPosition.id);
+      if (entities.length) {
+        entities.forEach((entity, i) => {
           vm.$set(vm.targetArr, i, airPosition);
-          targetFlag = !targetFlag;
-        }
-      });
-      if (targetFlag) {
+        });
+      } else {
         vm.targetArr.push(airPosition);
       }
 
@@ -732,34 +730,34 @@ const documentReady = async () => {
             }),
           },
         }));
-		// 添加6km绿色射线
-		gzxArr4.set(airPosition.id, viewer.entities.add({
-		  polyline: {
-		    // 时间回调获取位置
-		    positions: new Cesium.CallbackProperty(((time, result) => {
-		      // 目标坐标位置
-		      const sourpos = sourEntity.position.getValue(time);
-		      const cartographic1 = Cesium.Ellipsoid.WGS84.cartesianToCartographic(sourpos);
-		      const lon1 = Cesium.Math.toDegrees(cartographic1.longitude);
-		      const lat1 = Cesium.Math.toDegrees(cartographic1.latitude);
-		      const height1 = cartographic1.height;
-		      // 源坐标位置
-		      const tarpos = tarPosition3;
-		      const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(tarpos);
-		      const lon2 = Cesium.Math.toDegrees(cartographic.longitude);
-		      const lat2 = Cesium.Math.toDegrees(cartographic.latitude);
-		      const height2 = cartographic.height;
-		
-		      return Cesium.Cartesian3.fromDegreesArrayHeights([lon1, lat1, height1, lon2, lat2, height2], Cesium.Ellipsoid
-		        .WGS84, result);
-		    }), false), // 此处false表示isConstant为false,表示场景更新的每一帧中都获取该属性的数值，从而来更新三维场景中的物体
-		    width: 5,
-		    material: new Cesium.PolylineGlowMaterialProperty({
-		      glowPower: 0.3,
-		      color: Cesium.Color.GREEN.withAlpha(0.9),
-		    }),
-		  },
-		}));
+        // 添加6km绿色射线
+        gzxArr4.set(airPosition.id, viewer.entities.add({
+          polyline: {
+            // 时间回调获取位置
+            positions: new Cesium.CallbackProperty(((time, result) => {
+              // 目标坐标位置
+              const sourpos = sourEntity.position.getValue(time);
+              const cartographic1 = Cesium.Ellipsoid.WGS84.cartesianToCartographic(sourpos);
+              const lon1 = Cesium.Math.toDegrees(cartographic1.longitude);
+              const lat1 = Cesium.Math.toDegrees(cartographic1.latitude);
+              const height1 = cartographic1.height;
+              // 源坐标位置
+              const tarpos = tarPosition3;
+              const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(tarpos);
+              const lon2 = Cesium.Math.toDegrees(cartographic.longitude);
+              const lat2 = Cesium.Math.toDegrees(cartographic.latitude);
+              const height2 = cartographic.height;
+
+              return Cesium.Cartesian3.fromDegreesArrayHeights([lon1, lat1, height1, lon2, lat2, height2], Cesium.Ellipsoid
+                .WGS84, result);
+            }), false), // 此处false表示isConstant为false,表示场景更新的每一帧中都获取该属性的数值，从而来更新三维场景中的物体
+            width: 5,
+            material: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 0.3,
+              color: Cesium.Color.GREEN.withAlpha(0.9),
+            }),
+          },
+        }));
 
         // 射线初始隐藏
         gzxArr.get(airPosition.id)._show = false;
@@ -795,114 +793,112 @@ const documentReady = async () => {
       // 时间变化监听函数,动态显示信息
       viewer.clock.onTick.addEventListener((clock) => {
 
-		if(airArr.has(airPosition.id)){
-			// 中心点坐标
-			const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
-			// 飞机坐标
-			const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
-			// msg.label.text = clock.currentTime.toString();
-			const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
-			// 中心点距离飞机距离
-			const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
-			  (sourpos.z - tarPosition.z), 2,
-			));
-			// console.log(xb);
-			const jl = Math.sqrt(Math.pow((xb - height), 2));
-			
-			// 根据无人机距离中心点距离判断是否显示射线
-			if (jl <= 2000) {
-			  gzxArr.get(airPosition.id)._show = true;
-			  gzxArr2.get(airPosition.id)._show = false;
-			  gzxArr3.get(airPosition.id)._show = false;
-			  gzxArr4.get(airPosition.id)._show = false;
-			} else if (jl <= 4000) {
-			  gzxArr.get(airPosition.id)._show = false;
-			  gzxArr2.get(airPosition.id)._show = false;
-			  gzxArr3.get(airPosition.id)._show = false;
-			  gzxArr4.get(airPosition.id)._show = false;
-			} else if (jl <= 6000) {
-			  gzxArr.get(airPosition.id)._show = false;
-			  gzxArr2.get(airPosition.id)._show = false;
-			  gzxArr3.get(airPosition.id)._show = true;
-			  gzxArr4.get(airPosition.id)._show = true;
-			} else {
-			  gzxArr.get(airPosition.id)._show = false;
-			  gzxArr2.get(airPosition.id)._show = false;
-			  gzxArr3.get(airPosition.id)._show = false;
-			  gzxArr4.get(airPosition.id)._show = false;
-			}
-			
-			if (jl <= 5000) {
-			  $(`#mubiao${airPosition.id}`).show();
-			} else {
-			  $(`#mubiao${airPosition.id}`).hide();
-			}
-		}
+        if(airArr.has(airPosition.id)){
+          // 中心点坐标
+          const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+          // 飞机坐标
+          const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
+          // msg.label.text = clock.currentTime.toString();
+          const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
+          // 中心点距离飞机距离
+          const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
+            (sourpos.z - tarPosition.z), 2,
+          ));
+          // console.log(xb);
+          const jl = Math.sqrt(Math.pow((xb - height), 2));
+
+          // 根据无人机距离中心点距离判断是否显示射线
+          if (jl <= 2000) {
+            gzxArr.get(airPosition.id)._show = true;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+            gzxArr4.get(airPosition.id)._show = false;
+          } else if (jl <= 4000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+            gzxArr4.get(airPosition.id)._show = false;
+          } else if (jl <= 6000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = true;
+            gzxArr4.get(airPosition.id)._show = true;
+          } else {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+            gzxArr4.get(airPosition.id)._show = false;
+          }
+
+          if (jl <= 5000) {
+            $(`#mubiao${airPosition.id}`).show();
+          } else {
+            $(`#mubiao${airPosition.id}`).hide();
+          }
+        }
 
       });
     } else if (/.*\/RadarDevice\/.*/.test(msg.topic)) {
       const radarInfo = JSON.parse(msg.payloadString);
       // console.log(radarInfo)
-      var flag = true;
-      vm.radarArr.forEach((entity, i) => {
-        if (entity.id == radarInfo.id) {
+
+      const entities = vm.radarArr.filter((i) => i.id === radarInfo.id);
+      if (entities.length) {
+        entities.forEach((entity, i) => {
           // vm.radarArr[i] = radarInfo;
           // 深度监听对象数组
           vm.$set(vm.radarArr, i, radarInfo);
-          flag = false;
-        }
-      });
-      if (flag) {
+        });
+      } else {
         vm.radarArr.push(radarInfo);
       }
+
       console.log(vm.radarArr);
-    }else if (/.*\/RadarTargetOut\/.*/.test(msg.topic)) {
-        const airId = JSON.parse(msg.payloadString);
+    } else if (/.*\/RadarTargetOut\/.*/.test(msg.topic)) {
+      const airId = JSON.parse(msg.payloadString);
 		
-        if (airArr.get(airId.id) != undefined) {
-          viewer.entities.remove(airArr.get(airId.id));
-          viewer.entities.remove(gzxArr.get(airId.id));
-          gzxArr.delete(airId.id);
-          viewer.entities.remove(gzxArr2.get(airId.id));
-          gzxArr2.delete(airId.id);
-          viewer.entities.remove(gzxArr3.get(airId.id));
-          gzxArr3.delete(airId.id);
-		  viewer.entities.remove(gzxArr4.get(airId.id));
-		  gzxArr4.delete(airId.id);
-          airPositionArr.delete(airId.id);
-          airArr.delete(airId.id);
-		  
-		  if(airId.id==vm.PlanArr.id){
-			  vm.PlanArr = '';
-		  }
-          vm.targetArr.forEach((entity, i) => {
-            if (entity.id == airId.id) {
-              vm.targetArr.splice(i, 1);
-            }
-          });
+      if (airArr.get(airId.id) !== undefined) {
+        viewer.entities.remove(airArr.get(airId.id));
+        viewer.entities.remove(gzxArr.get(airId.id));
+        gzxArr.delete(airId.id);
+        viewer.entities.remove(gzxArr2.get(airId.id));
+        gzxArr2.delete(airId.id);
+        viewer.entities.remove(gzxArr3.get(airId.id));
+        gzxArr3.delete(airId.id);
+        viewer.entities.remove(gzxArr4.get(airId.id));
+        gzxArr4.delete(airId.id);
+        airPositionArr.delete(airId.id);
+        airArr.delete(airId.id);
+
+        if(airId.id === vm.PlanArr.id){
+          vm.PlanArr = '';
         }
+        vm.targetArr.filter((i) => i.id === airId).forEach((entity, i) => {
+          vm.targetArr.splice(i, 1);
+        });
+      }
     } else if (/.*\/GuangDianDevice\/.*/.test(msg.topic)) {
       var info = JSON.parse(msg.payloadString);
       // console.log(info)
       vm.gdInfo = info;
-    }else if(/.*\/GuangDianTargetOut\/.*/.test(msg.topic)){
-		vm.gdInfo = '';
-	}else if(/.*\/GuangDianTarget\/.*/.test(msg.topic)){
-		const info = JSON.parse(msg.payloadString);
-		// if(!vm.gdAuto){
-		GimbalAzimuth = info.azimuth;
-		GimbalPitchAngle = info.overlookAngle;
-		GimbalDistance = info.distance;
-		// }
-	}else if(/.*\/GuangDianWorkingMode\/.*/.test(msg.topic)){
-		let info = JSON.parse(msg.payloadString);
+    } else if (/.*\/GuangDianTargetOut\/.*/.test(msg.topic)) {
+      vm.gdInfo = '';
+    } else if (/.*\/GuangDianTarget\/.*/.test(msg.topic)) {
+      const info = JSON.parse(msg.payloadString);
+      // if(!vm.gdAuto){
+      GimbalAzimuth = info.azimuth;
+      GimbalPitchAngle = info.overlookAngle;
+      GimbalDistance = info.distance;
+      // }
+    } else if (/.*\/GuangDianWorkingMode\/.*/.test(msg.topic)) {
+      let info = JSON.parse(msg.payloadString);
 		
-		if (info.work_mode == 'Auto') {
-		  vm.gdAuto = true;
-		} else if (info.work_mode == 'Manual') {
-		  vm.gdAuto = false;
-		}
-	} else if (/.*\/DianZhenTarget\/.*/.test(msg.topic)) {
+      if (info.work_mode === 'Auto') {
+        vm.gdAuto = true;
+      } else if (info.work_mode === 'Manual') {
+        vm.gdAuto = false;
+      }
+    } else if (/.*\/DianZhenTarget\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
 
       const entity = vm.ereconArr.find((i) => i.targetId === info.id);
@@ -961,17 +957,17 @@ const documentReady = async () => {
           },
         }));
       }
-    }else if(/.*\/DianZhenTargetOut\/.*/.test(msg.topic)){
-		const info = JSON.parse(msg.payloadString);
-		vm.ereconArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
-		  viewer.entities.remove(entity);
-		  vm.ereconArr.splice(i, 1);
-		});
-		
-		if (vm.ereconIndex > vm.ereconArr.length - 1 && vm.ereconArr.length > 0) {
-		  vm.ereconIndex = vm.ereconArr.length - 1;
-		}
-	} else if (/.*\/ProtocolCrackTarget\/.*/.test(msg.topic)) {
+    } else if (/.*\/DianZhenTargetOut\/.*/.test(msg.topic)) {
+      const info = JSON.parse(msg.payloadString);
+      vm.ereconArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
+        viewer.entities.remove(entity);
+        vm.ereconArr.splice(i, 1);
+      });
+
+      if (vm.ereconIndex > vm.ereconArr.length - 1 && vm.ereconArr.length > 0) {
+        vm.ereconIndex = vm.ereconArr.length - 1;
+      }
+    } else if (/.*\/ProtocolCrackTarget\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
 
       const entity = vm.crackerArr.find((i) => i.targetId === info.id);
@@ -1030,35 +1026,35 @@ const documentReady = async () => {
           },
         }));
       }
-    }else if(/.*\/ProtocolCrackTargetOut\/.*/.test(msg.topic)){
-		const info = JSON.parse(msg.payloadString);
-		vm.crackerArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
-		  viewer.entities.remove(entity);
-		  vm.crackerArr.splice(i, 1);
-		});
-		
-		if (vm.crackerIndex > vm.crackerArr.length - 1 && vm.crackerArr.length > 0) {
-		  vm.crackerIndex = vm.crackerArr.length - 1;
-		}
-		
-		return;
-	} else if (/.*\/ADSBTarget\/.*/.test(msg.topic)) {
+    } else if (/.*\/ProtocolCrackTargetOut\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
-      let flag = true;
-      vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
-        vm.$set(vm.adsbArr, i, info);
-        flag = false;
+      vm.crackerArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
+        viewer.entities.remove(entity);
+        vm.crackerArr.splice(i, 1);
       });
-      if (flag) {
+
+      if (vm.crackerIndex > vm.crackerArr.length - 1 && vm.crackerArr.length > 0) {
+        vm.crackerIndex = vm.crackerArr.length - 1;
+      }
+
+      return;
+    } else if (/.*\/ADSBTarget\/.*/.test(msg.topic)) {
+      const info = JSON.parse(msg.payloadString);
+      const entities = vm.adsbArr.filter((i) => i.id === info.id);
+      if (entities.length) {
+        entities.forEach((entity, i) => {
+          vm.$set(vm.adsbArr, i, info);
+        });
+      } else {
         vm.adsbArr.push(info);
       }
-    }else if(/.*\/ADSBTargetOut\/.*/.test(msg.topic)){
-		const info = JSON.parse(msg.payloadString);
-		vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
-		  vm.adsbArr.splice(i, 1);
-		});
-		return;
-	} else if (msg.topic.indexOf('Warning') !== -1) {
+    } else if (/.*\/ADSBTargetOut\/.*/.test(msg.topic)) {
+      const info = JSON.parse(msg.payloadString);
+      vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
+        vm.adsbArr.splice(i, 1);
+      });
+      return;
+    } else if (msg.topic.indexOf('Warning') !== -1) {
       vm.WarnNum = JSON.parse(msg.payloadString);
     }
   });
