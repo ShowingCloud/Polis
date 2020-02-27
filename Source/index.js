@@ -543,7 +543,7 @@ const documentReady = async () => {
       const entities = vm.targetArr.filter((i) => i.id === airPosition.id);
       if (entities.length) {
         entities.forEach((entity, i) => {
-          vm.$set(vm.targetArr, i, airPosition);
+          vm.$set(entities, i, airPosition);
         });
       } else {
         vm.targetArr.push(airPosition);
@@ -1036,7 +1036,7 @@ const documentReady = async () => {
       const entities = vm.adsbArr.filter((i) => i.id === info.id);
       if (entities.length) {
         entities.forEach((entity, i) => {
-          vm.$set(vm.adsbArr, i, info);
+          vm.$set(entities, i, info);
         });
       } else {
         vm.adsbArr.push(info);
