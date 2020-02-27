@@ -65,6 +65,10 @@ a:active {
     color: inherit!important;
 }
 
+.myDisplay{
+	display: block;
+}
+
 .myHide{
     width: 1%!important;
 }
@@ -78,6 +82,11 @@ a:active {
 
 .brighter{
 	filter: brightness(2);
+}
+
+.mySelected{
+	background-color: rgb(125,191,215);
+	color: rgb(9,42,78);
 }
 
 body{
@@ -523,7 +532,7 @@ div{
     border: transparent;
 }
 
-#sbkz .ytkzBtn,.gpsBtn,.dxdjBtn{
+#sbkz .ytkzBtn,.gpsBtn,.dxdjBtn,.glareBtn,.mapjBtn{
     width: 70px;
     height: 29px;
     padding: 3px 3px;

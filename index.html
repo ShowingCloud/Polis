@@ -295,7 +295,7 @@
 								<h3 style="font-size: 16px!important;font-weight: 600;line-height: 40px;">目标</h3>
 							</div>
 							<div style="padding: 3% 3%!important;">
-								<table border="1" cellspacing="1" cellpadding="1">
+								<table border="1" cellspacing="1" cellpadding="1" id="targetTable">
 									<tr>
 										<th style="width: 55%;">编号</th>
 										<th style="width: 55%;">距离</th>
@@ -305,7 +305,7 @@
 										<th style="width: 55%;">高度</th>
 										<th style="width: 100%;">威胁等级</th>
 									</tr>
-									<tr v-for="t in targetArr" @click="changeLog(t.id)" style="cursor: pointer;">
+									<tr v-for="t in targetArr" @click="changeLog(t.id)" style="cursor: pointer;" class="target">
 										<td>{{t.id}}</td>
 										<td>{{t.distince}}</td>
 										<td>{{t.speed}}</td>
@@ -317,6 +317,7 @@
 									<tr v-if="targetArr.length==0">
 										<td colspan="7">暂无目标</td>
 									</tr>
+
 									
 								</table>
 							</div>
@@ -339,11 +340,12 @@
 						</div>
 						<div id="sbkz" style="pointer-events:auto;" oncontextmenu="return false;" ondragstart="return false;"
 						 onselectstart="return false;">
-							<div style="height: 15%;color: white;padding: 2px 15px!important;margin-top: 7px!important;">
+							<div style="height: 15%;color: white;padding: 2px 15px!important;margin-top: 7px!important;" id="controlButtons">
 								<button type="button" class="ytkzBtn xz">云台控制</button>
 								<button type="button" class="gpsBtn">GPS控制</button>
 								<button type="button" class="dxdjBtn">定向打击</button>
-								<button type="button" class="dxdjBtn">强光</button>
+								<button type="button" class="glareBtn">强光</button>
+								<button type="button" class="mapjBtn">地图</button>
 							</div>
 							<div style="height: 64%;width: 94%;margin-left: 3%!important;position: relative;">
 								<div style="width: 50%;height: 100%;margin-left: 30px!important;">

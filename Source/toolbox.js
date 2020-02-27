@@ -133,4 +133,15 @@ $(() => {
 	   		$(this).removeClass('brighter');  
 	   });
     });
+	
+	$("#targetTable .target").click(function(){
+		$(this).addClass("mySelected").siblings().removeClass("mySelected");
+		
+	});
+	
+	$("#controlButtons button").click(function(){
+		$(this).addClass("xz").siblings().removeClass("xz");
+		
+	});
+	
 });
