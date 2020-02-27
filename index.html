@@ -412,9 +412,9 @@
 							
 							<!-- 地图控制按钮 -->
 							<div v-if="controlButton===4" id="mapControl">
-								<button class="btn btn-success">复位</button>
-								<button class="btn btn-success">开始旋转</button>
-								<button class="btn btn-success">停止旋转</button>
+								<button class="btn btn-success" @click="mapReset()">复位</button>
+								<button class="btn btn-success" @click="rotateStart()">开始旋转</button>
+								<button class="btn btn-success" @click="rotateEnd()">停止旋转</button>
 							</div>
 						</div>
 					</div>

@@ -66,6 +66,17 @@ var vm = new Vue({
     ],
   },
   methods: {
+	mapReset(){
+		scene.camera.flyTo({
+		  destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
+		});
+	},
+	rotateStart(){
+		
+	},
+	rotateEnd(){
+		
+	},
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
         vm.PlanArr = entity;
