@@ -151,6 +151,7 @@ const vm = new Vue({
 
   },
 });
+
 // 地图相关
 let viewer;
 let scene;
@@ -221,7 +222,7 @@ function DistanceSubEnd() {
   clearInterval(DistanceSubTime)
 }
 
-const documentReady = async () => {
+const documentReady = async (Cesium) => {
   const partOfUrl = '/iserver/services/3D-hn1108/rest/realspace';
   // 加载三维地球场景
   viewer = new Cesium.Viewer('cesiumContainer', {
@@ -1109,4 +1110,4 @@ const documentReady = async () => {
   // viewer.trackedEntity = undefined;
 };
 
-window.onload = documentReady;
+window.onload = documentReady(window.Cesium);
