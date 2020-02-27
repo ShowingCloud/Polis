@@ -73,7 +73,7 @@ var vm = new Vue({
 		var center = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);//camera视野的中心点坐标
 		var heading = Cesium.Math.toRadians(vm.rotateAngle);
 		var pitch = Cesium.Math.toRadians(-20.0);
-		var range = 3000.0;
+		var range = 4000.0;
 		viewer.camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, range));
 		vm.rotateAngle += 1;
 		//scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
