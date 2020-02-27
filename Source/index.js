@@ -7,6 +7,7 @@ var vm = new Vue({
 	controlButton:4,
 	//旋转速度
 	rotateSpeed:0.01,
+	rotateAngle:1,
     // 雷达信息
     radarArr: [],
     // 雷达下标
@@ -69,7 +70,13 @@ var vm = new Vue({
   },
   methods: {
 	rorate(){
-		scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
+		var center = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);//camera视野的中心点坐标
+		var heading = Cesium.Math.toRadians(vm.rotateAngle);
+		var pitch = Cesium.Math.toRadians(-20.0);
+		var range = 5000.0;
+		viewer.camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, range));
+		vm.rotateAngle += 1;
+		//scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
 	},
 	mapReset(){
 		scene.camera.flyTo({
@@ -86,6 +93,7 @@ var vm = new Vue({
 	},
 	rotateEnd(){
 		viewer.clock.onTick.removeEventListener(vm.rorate);
+		viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
 	},
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
@@ -254,8 +262,12 @@ const documentReady = async () => {
     // 设置相机位置、视角，便于观察场景
     await scene.camera.flyTo({
       destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
-    });
-
+	  complete:function(){
+		  setTimeout(function(){
+			  vm.rotateStart();
+		  },1000)
+	  }
+	});
     if (!scene.pickPositionSupported) {
       alert('不支持深度纹理,无法拾取位置！');
     }
@@ -1095,7 +1107,6 @@ const documentReady = async () => {
   );
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
-  
 };
 
 window.onload = documentReady;
