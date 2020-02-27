@@ -5,7 +5,8 @@ var vm = new Vue({
   data: {
 	//控制按钮切换
 	controlButton:4,
-	rorateTime:'',
+	//旋转速度
+	rotateSpeed:0.01,
     // 雷达信息
     radarArr: [],
     // 雷达下标
@@ -67,6 +68,9 @@ var vm = new Vue({
     ],
   },
   methods: {
+	rorate(){
+		scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
+	},
 	mapReset(){
 		scene.camera.flyTo({
 		  destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
@@ -78,10 +82,10 @@ var vm = new Vue({
 		});
 	},
 	rotateStart(){
-		viewer.clock.onTick.addEventListener(onTickCallback);
+		viewer.clock.onTick.addEventListener(vm.rorate);
 	},
 	rotateEnd(){
-		viewer.clock.onTick.removeEventListener(onTickCallback);
+		viewer.clock.onTick.removeEventListener(vm.rorate);
 	},
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
@@ -144,7 +148,6 @@ let viewer;
 let scene;
 // 飞机坐标自定义延时
 const delay = 0;
-let onTickCallback;
 
 // 初始值
 var GimbalAzimuth = 0; // 方位角
@@ -1092,16 +1095,6 @@ const documentReady = async () => {
   );
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
-  viewer.clock.multiplier = 100;//速度
-  viewer.clock.shouldAnimate = true;
-  var previousTime = viewer.clock.currentTime.secondsOfDay;
-  onTickCallback = function(){
-  	var spinRate = 1;
-  	var currentTime = viewer.clock.currentTime.secondsOfDay;
-  	var delta = (currentTime - previousTime) / 1000;
-  	previousTime = currentTime;
-  	scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -spinRate * delta);
-  }
   
 };
 
