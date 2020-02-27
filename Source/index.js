@@ -250,6 +250,8 @@ const documentReady = async () => {
     viewer.scene.scanEffect.mode =Cesium.ScanEffectMode.CIRCLE;//Cesium.ScanEffectMode.LINE 为线型扫描模式
     console.log(viewer.scene.scanEffect) */
   } catch (e) {
+    alert(e);
+
     if (widget._showRenderLoopErrors) {
       const title = '渲染时发生错误，已停止渲染。';
       widget.showErrorPanel(title, undefined, e);
