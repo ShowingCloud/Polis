@@ -913,9 +913,7 @@ const documentReady = async (Cesium) => {
           vm.PlanArr = '';
         }
 
-        vm.targetArr.filter((i) => i.id === airId).forEach((entity, i) => {
-          vm.targetArr.splice(i, 1);
-        });
+        vm.targetArr = vm.targetArr.filter((i) => i.id !== airId);
       }
     } else if (/.*\/GuangDianDevice\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
@@ -999,10 +997,10 @@ const documentReady = async (Cesium) => {
       }
     } else if (/.*\/DianZhenTargetOut\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
-      vm.ereconArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
+      vm.ereconArr.filter((i) => i.targetId === info.id).forEach((entity) => {
         viewer.entities.remove(entity);
-        vm.ereconArr.splice(i, 1);
       });
+      vm.ereconArr = vm.ereconArr.filter((i) => i.targetId !== info.id);
 
       if (vm.ereconIndex > vm.ereconArr.length - 1 && vm.ereconArr.length > 0) {
         vm.ereconIndex = vm.ereconArr.length - 1;
@@ -1068,10 +1066,10 @@ const documentReady = async (Cesium) => {
       }
     } else if (/.*\/ProtocolCrackTargetOut\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
-      vm.crackerArr.filter((i) => i.targetId === info.id).forEach((entity, i) => {
+      vm.crackerArr.filter((i) => i.targetId === info.id).forEach((entity) => {
         viewer.entities.remove(entity);
-        vm.crackerArr.splice(i, 1);
       });
+      vm.crackerArr = vm.crackerArr.filter((i) => i.targetId !== info.id);
 
       if (vm.crackerIndex > vm.crackerArr.length - 1 && vm.crackerArr.length > 0) {
         vm.crackerIndex = vm.crackerArr.length - 1;
@@ -1090,9 +1088,7 @@ const documentReady = async (Cesium) => {
       }
     } else if (/.*\/ADSBTargetOut\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
-      vm.adsbArr.filter((i) => i.id === info.id).forEach((entity, i) => {
-        vm.adsbArr.splice(i, 1);
-      });
+      vm.adsbArr = vm.adsbArr.filter((i) => i.id !== info.id);
       return;
     } else if (msg.topic.indexOf('Warning') !== -1) {
       vm.WarnNum = JSON.parse(msg.payloadString);
