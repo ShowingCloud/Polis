@@ -101,6 +101,8 @@ const vm = new Vue({
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
         vm.PlanArr = entity;
+		console.log(vm.PlanArr)
+		
       });
     },
     alertWarn() {
