@@ -46,7 +46,7 @@ const vm = new Vue({
     PlanArr:{},
     PlanArrPreset:[
       {
-        id:1,
+        id:'1',
         log:[
           '处置001自动模式',
           '08:01发现目标001，进入5km禁区，一级告警，高度300m，速度20km/s',
@@ -58,7 +58,7 @@ const vm = new Vue({
         ]
       },
       {
-        id:2,
+        id:'2',
         log:[
           '处置002自动模式',
           '08:03发现目标002，进入5km禁区，一级告警，高度500m，速度23km/s',
@@ -101,8 +101,6 @@ const vm = new Vue({
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
         vm.PlanArr = entity;
-		console.log(vm.PlanArr)
-		
       });
     },
     alertWarn() {

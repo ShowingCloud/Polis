@@ -305,7 +305,7 @@
 										<th style="width: 55%;">高度</th>
 										<th style="width: 100%;">威胁等级</th>
 									</tr>
-									<tr v-for="t in targetArr" @click="changeLog(t.id);" style="cursor: pointer;" class="target">
+									<tr v-for="t in targetArr" @click="changeLog(t.id);" style="cursor: pointer;" class="target" onclick="$(this).addClass('mySelected').siblings().removeClass('mySelected');">
 										<td>{{t.id}}</td>
 										<td>{{t.distince}}</td>
 										<td>{{t.speed}}</td>
