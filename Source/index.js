@@ -92,9 +92,22 @@ const vm = new Vue({
       });
     },
     rotateStart(){
-      viewer.clock.onTick.addEventListener(vm.rorate);
+	  scene.camera.flyTo({
+	    destination: new Cesium.Cartesian3.fromDegrees(108.89854530935382, 19.4268, 1430),
+	    orientation: {
+	      heading : 0.0,
+	  		  pitch : -0.3496550394737836,
+	      roll : 0
+	    },
+		complete: (() => {
+		  setTimeout(() => {
+		    viewer.clock.onTick.addEventListener(vm.rorate);
+		  }, 200);
+		}),
+	  });
     },
     rotateEnd(){
+	  vm.rotateAngle = 0;
       viewer.clock.onTick.removeEventListener(vm.rorate);
       viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
     },
@@ -267,7 +280,7 @@ const documentReady = async (Cesium) => {
       complete: (() => {
         setTimeout(() => {
           vm.rotateStart();
-        }, 1000);
+        }, 200);
       }),
     });
     if (!scene.pickPositionSupported) {
