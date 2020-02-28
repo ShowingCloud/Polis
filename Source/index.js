@@ -7,7 +7,10 @@ const vm = new Vue({
 	controlButton:0,
 	//旋转速度
 	rotateSpeed:0.01,
-	rotateAngle:0.5,
+	//初始角度
+	rotateAngle:0,
+	//角度变化速率
+	rotateAngleRate:0.1,
     // 雷达信息
     radarArr: [],
     // 雷达下标
@@ -75,7 +78,7 @@ const vm = new Vue({
       const pitch = Cesium.Math.toRadians(-20.0);
       const range = 4000.0;
       viewer.camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, range));
-      vm.rotateAngle += 0.5;
+      vm.rotateAngle += vm.rotateAngleRate;
       //scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
     },
     mapReset(){
