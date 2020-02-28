@@ -4,7 +4,7 @@ const vm = new Vue({
   el: '#main',
   data: {
 	//控制按钮切换
-	controlButton:4,
+	controlButton:0,
 	//旋转速度
 	rotateSpeed:0.01,
 	rotateAngle:1,
@@ -183,11 +183,9 @@ function GimbalControl(SetOrCancle,type,model,Dvalue){
 		IntervalTime.set(type,setInterval(function(){
 			GimbalSendMsg(model,Dvalue);
 		},GimbalRate));
-		console.log(IntervalTime);
 	}else{
 		clearInterval(IntervalTime.get(type));
 		IntervalTime.delete(type);
-		console.log(IntervalTime);
 	}
 }
 
