@@ -3,14 +3,16 @@
 const vm = new Vue({
   el: '#main',
   data: {
-	//控制按钮切换
-	controlButton:0,
-	//旋转速度
-	rotateSpeed:0.01,
-	//初始角度
-	rotateAngle:0,
-	//角度变化速率
-	rotateAngleRate:0.1,
+    //控制按钮切换
+    controlButton: 0,
+    //旋转速度
+    rotateSpeed: 0.01,
+    //初始角度
+    rotateAngle: 0,
+    //角度变化速率
+    rotateAngleRate: 0.1,
+    // Rotate Timer Event
+    rotateTimer: new Cesium.Event(),
     // 雷达信息
     radarArr: [],
     // 雷达下标
@@ -41,10 +43,10 @@ const vm = new Vue({
     // 光电自动跟踪
     gdAuto: false,
     //告警列表显示flag
-    alertFlag:false,
+    alertFlag: false,
     //预案信息
-    PlanArr:{},
-    PlanArrPreset:[
+    PlanArr: {},
+    PlanArrPreset: [
       {
         id:'1',
         log:[
@@ -72,7 +74,7 @@ const vm = new Vue({
     ],
   },
   methods: {
-    rorate() {
+    rotate() {
       const center = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);//camera视野的中心点坐标
       const heading = Cesium.Math.toRadians(vm.rotateAngle);
       const pitch = Cesium.Math.toRadians(-20.0);
@@ -81,7 +83,10 @@ const vm = new Vue({
       vm.rotateAngle += vm.rotateAngleRate;
       //scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
     },
-    mapReset(){
+    mapReset() {
+      viewer.trackedEntity = undefined;
+      vm.rotateTimer.removeEventListener(vm.rotate);
+
       scene.camera.flyTo({
         destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
         orientation: {
@@ -91,24 +96,37 @@ const vm = new Vue({
         }
       });
     },
-    rotateStart(){
-	  scene.camera.flyTo({
-	    destination: new Cesium.Cartesian3.fromDegrees(108.89854530935382, 19.4268, 1430),
-	    orientation: {
-	      heading : 0.0,
-	  		  pitch : -0.3496550394737836,
-	      roll : 0
-	    },
-		complete: (() => {
-		  setTimeout(() => {
-		    viewer.clock.onTick.addEventListener(vm.rorate);
-		  }, 200);
-		}),
-	  });
+    rotateStart() {
+      viewer.trackedEntity = undefined;
+
+      if (!vm.rotateTimer.removeEventListener(vm.rotate)) { // If we are not rotating
+       /*  await scene.camera.flyTo({
+          destination: new Cesium.Cartesian3.fromDegrees(108.89854530935382, 19.4268, 1430),
+          orientation: {
+            heading : 0.0,
+            pitch : -0.3496550394737836,
+            roll : 0
+          },
+        }); */
+        scene.camera.flyToBoundingSphere(
+          new Cesium.BoundingSphere(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)),
+          {
+            offset: new Cesium.HeadingPitchRange(
+              Cesium.Math.toRadians(vm.rotateAngle),
+              Cesium.Math.toRadians(-20.0),
+              4000.0),
+            complete: () => {
+              vm.rotateTimer.addEventListener(vm.rotate);
+            },
+          },
+        );
+      } else {
+        vm.rotateTimer.addEventListener(vm.rotate);
+      }
     },
-    rotateEnd(){
-	  vm.rotateAngle = 0;
-      viewer.clock.onTick.removeEventListener(vm.rorate);
+    rotateEnd() {
+      // vm.rotateAngle = 0;
+      vm.rotateTimer.removeEventListener(vm.rotate);
       viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
     },
     changeLog(id) {
@@ -275,14 +293,19 @@ const documentReady = async (Cesium) => {
     layer.refresh();
 
     // 设置相机位置、视角，便于观察场景
-    await scene.camera.flyTo({
-      destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
-      complete: (() => {
-        setTimeout(() => {
-          vm.rotateStart();
-        }, 200);
-      }),
-    });
+    scene.camera.flyToBoundingSphere(
+      new Cesium.BoundingSphere(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)),
+      {
+        offset: new Cesium.HeadingPitchRange(
+          Cesium.Math.toRadians(vm.rotateAngle),
+          Cesium.Math.toRadians(-20.0),
+          4000.0),
+        complete: () => {
+          vm.rotateTimer.addEventListener(vm.rotate);
+        },
+      },
+    );
+
     if (!scene.pickPositionSupported) {
       alert('不支持深度纹理,无法拾取位置！');
     }
@@ -305,6 +328,9 @@ const documentReady = async (Cesium) => {
   }
 
   $('#loadingbar').remove();
+  setInterval(() => {
+    vm.rotateTimer.raiseEvent();
+  }, 200);
 
 
   // 可视域分析,创建雷达扫描
@@ -366,6 +392,7 @@ const documentReady = async (Cesium) => {
   radarHandler.setInputAction(async (e) => {
     const pickedObject = radarScene.pick(e.position);
     if (Cesium.defined(pickedObject)) {
+      vm.rotateTimer.removeEventListener(vm.rotate);
       await viewer.flyTo(pickedObject.id, {
         offset: new Cesium.HeadingPitchRange(0.0, -0.5, 100.0),
       });
@@ -828,7 +855,7 @@ const documentReady = async (Cesium) => {
       const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
       // 飞机坐标
       const tarPosition = position2;
-      // msg.label.text = clock.currentTime.toString();
+      // msg.label.text = viewer.clock.currentTime.toString();
       const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
       // 中心点距离飞机距离
       const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
@@ -838,53 +865,53 @@ const documentReady = async (Cesium) => {
       const jl = Math.sqrt(Math.pow((xb - height), 2));
 
       // 时间变化监听函数,动态显示信息
-      viewer.clock.onTick.addEventListener((clock) => {
+      // viewer.clock.onTick.addEventListener((clock) => {
 
-        if(airArr.has(airPosition.id)){
-          // 中心点坐标
-          const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
-          // 飞机坐标
-          const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
-          // msg.label.text = clock.currentTime.toString();
-          const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
-          // 中心点距离飞机距离
-          const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
-            (sourpos.z - tarPosition.z), 2,
-          ));
-          // console.log(xb);
-          const jl = Math.sqrt(Math.pow((xb - height), 2));
+      if(airArr.has(airPosition.id)){
+        // 中心点坐标
+        const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+        // 飞机坐标
+        const tarPosition = airArr.get(airPosition.id).position.getValue(viewer.clock.currentTime);
+        // msg.label.text = viewer.clock.currentTime.toString();
+        const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
+        // 中心点距离飞机距离
+        const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
+          (sourpos.z - tarPosition.z), 2,
+        ));
+        // console.log(xb);
+        const jl = Math.sqrt(Math.pow((xb - height), 2));
 
-          // 根据无人机距离中心点距离判断是否显示射线
-          if (jl <= 2000) {
-            gzxArr.get(airPosition.id)._show = true;
-            gzxArr2.get(airPosition.id)._show = false;
-            gzxArr3.get(airPosition.id)._show = false;
-            gzxArr4.get(airPosition.id)._show = false;
-          } else if (jl <= 4000) {
-            gzxArr.get(airPosition.id)._show = false;
-            gzxArr2.get(airPosition.id)._show = false;
-            gzxArr3.get(airPosition.id)._show = false;
-            gzxArr4.get(airPosition.id)._show = false;
-          } else if (jl <= 6000) {
-            gzxArr.get(airPosition.id)._show = false;
-            gzxArr2.get(airPosition.id)._show = false;
-            gzxArr3.get(airPosition.id)._show = true;
-            gzxArr4.get(airPosition.id)._show = true;
-          } else {
-            gzxArr.get(airPosition.id)._show = false;
-            gzxArr2.get(airPosition.id)._show = false;
-            gzxArr3.get(airPosition.id)._show = false;
-            gzxArr4.get(airPosition.id)._show = false;
-          }
+        // 根据无人机距离中心点距离判断是否显示射线
+        if (jl <= 2000) {
+          gzxArr.get(airPosition.id)._show = true;
+          gzxArr2.get(airPosition.id)._show = false;
+          gzxArr3.get(airPosition.id)._show = false;
+          gzxArr4.get(airPosition.id)._show = false;
+        } else if (jl <= 4000) {
+          gzxArr.get(airPosition.id)._show = false;
+          gzxArr2.get(airPosition.id)._show = false;
+          gzxArr3.get(airPosition.id)._show = false;
+          gzxArr4.get(airPosition.id)._show = false;
+        } else if (jl <= 6000) {
+          gzxArr.get(airPosition.id)._show = false;
+          gzxArr2.get(airPosition.id)._show = false;
+          gzxArr3.get(airPosition.id)._show = true;
+          gzxArr4.get(airPosition.id)._show = true;
+        } else {
+          gzxArr.get(airPosition.id)._show = false;
+          gzxArr2.get(airPosition.id)._show = false;
+          gzxArr3.get(airPosition.id)._show = false;
+          gzxArr4.get(airPosition.id)._show = false;
+        }
 
-          if (jl <= 5000) {
-            $(`#mubiao${airPosition.id}`).show();
-          } else {
+        if (jl <= 5000) {
+          $(`#mubiao${airPosition.id}`).show();
+        } else {
             $(`#mubiao${airPosition.id}`).hide();
           }
         }
 
-      });
+      // });
     } else if (/.*\/RadarDevice\/.*/.test(msg.topic)) {
       const radarInfo = JSON.parse(msg.payloadString);
       const entities = vm.radarArr.filter((i) => i.id === radarInfo.id);
@@ -902,10 +929,8 @@ const documentReady = async (Cesium) => {
 
       if (airArr.get(airId.id)) {
         if (viewer.trackedEntity === airArr.get(airId.id)) {
-          await scene.camera.flyTo({
-            destination: new Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000),
-          });
           viewer.trackedEntity = undefined;
+          vm.rotateStart();
         }
 
         viewer.entities.remove(airArr.get(airId.id));
