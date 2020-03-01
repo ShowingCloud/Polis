@@ -619,38 +619,39 @@ const documentReady = async (Cesium) => {
         // 添加无人机
         const sourEntity = viewer.entities.add({
           name: 'Drone',
-          viewFrom: new Cesium.Cartesian3(0, 0, 100.0), // 跟踪飞机的时候视角偏移量
           availability: new Cesium.TimeIntervalCollection([
             new Cesium.TimeInterval({
               start,
               stop,
             }),
           ]),
+          // 飞机上标签
+          label: {
+            fillColor: Cesium.Color.WHITE,
+            font: '15px Helvetica',
+            outlineColor: Cesium.Color.RED,
+            pixelOffset: new Cesium.Cartesian2(0.0, -20),
+            showBackground: true,
+            text: `编号：${airPosition.id}`,
+
+          },
           model: {
             uri: 'Source/Models/CesiumDrone.gltf',
             minimumPixelSize: 16,
           },
-          // 飞机上标签
-          label: {
-            text: `编号：${airPosition.id}`,
-            font: '15px Helvetica',
-            showBackground: true,
-            fillColor: Cesium.Color.WHITE,
-            outlineColor: Cesium.Color.RED,
-            pixelOffset: new Cesium.Cartesian2(0.0, -20),
-
-          },
+          orientation: new Cesium.VelocityOrientationProperty(positionsArr.get(airPosition.id)),
           // 飞行路径
           path: {
-            resolution: 1,
+            leadTime: 0,
             material: new Cesium.PolylineGlowMaterialProperty({
               glowPower: 0.1,
               color: Cesium.Color.PINK,
             }),
+            resolution: 1,
             width: 1,
           },
           position: positionsArr.get(airPosition.id),
-          orientation: new Cesium.VelocityOrientationProperty(positionsArr.get(airPosition.id)),
+          viewFrom: new Cesium.Cartesian3(0.0, -100.0 * Math.cos(0.5), 100.0 * Math.sin(0.5)), // 跟踪飞机的时候视角偏移量
         });
         radarViewer.entities.add(sourEntity);
         airArr.set(airPosition.id, sourEntity);
