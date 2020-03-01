@@ -865,53 +865,53 @@ const documentReady = async (Cesium) => {
       const jl = Math.sqrt(Math.pow((xb - height), 2));
 
       // 时间变化监听函数,动态显示信息
-      // viewer.clock.onTick.addEventListener((clock) => {
+      viewer.clock.onTick.addEventListener((clock) => {
 
-      if(airArr.has(airPosition.id)){
-        // 中心点坐标
-        const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
-        // 飞机坐标
-        const tarPosition = airArr.get(airPosition.id).position.getValue(viewer.clock.currentTime);
-        // msg.label.text = viewer.clock.currentTime.toString();
-        const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
-        // 中心点距离飞机距离
-        const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
-          (sourpos.z - tarPosition.z), 2,
-        ));
-        // console.log(xb);
-        const jl = Math.sqrt(Math.pow((xb - height), 2));
+        if(airArr.has(airPosition.id)){
+          // 中心点坐标
+          const sourpos = Cesium.Cartesian3.fromDegrees(...POSITION_CENTER);
+          // 飞机坐标
+          const tarPosition = airArr.get(airPosition.id).position.getValue(clock.currentTime);
+          // msg.label.text = clock.currentTime.toString();
+          const { height } = viewer.scene.globe.ellipsoid.cartesianToCartographic(tarPosition);
+          // 中心点距离飞机距离
+          const xb = Math.sqrt(Math.pow((sourpos.x - tarPosition.x), 2) + Math.pow((sourpos.y - tarPosition.y), 2) + Math.pow(
+            (sourpos.z - tarPosition.z), 2,
+          ));
+          // console.log(xb);
+          const jl = Math.sqrt(Math.pow((xb - height), 2));
 
-        // 根据无人机距离中心点距离判断是否显示射线
-        if (jl <= 2000) {
-          gzxArr.get(airPosition.id)._show = true;
-          gzxArr2.get(airPosition.id)._show = false;
-          gzxArr3.get(airPosition.id)._show = false;
-          gzxArr4.get(airPosition.id)._show = false;
-        } else if (jl <= 4000) {
-          gzxArr.get(airPosition.id)._show = false;
-          gzxArr2.get(airPosition.id)._show = false;
-          gzxArr3.get(airPosition.id)._show = false;
-          gzxArr4.get(airPosition.id)._show = false;
-        } else if (jl <= 6000) {
-          gzxArr.get(airPosition.id)._show = false;
-          gzxArr2.get(airPosition.id)._show = false;
-          gzxArr3.get(airPosition.id)._show = true;
-          gzxArr4.get(airPosition.id)._show = true;
-        } else {
-          gzxArr.get(airPosition.id)._show = false;
-          gzxArr2.get(airPosition.id)._show = false;
-          gzxArr3.get(airPosition.id)._show = false;
-          gzxArr4.get(airPosition.id)._show = false;
-        }
+          // 根据无人机距离中心点距离判断是否显示射线
+          if (jl <= 2000) {
+            gzxArr.get(airPosition.id)._show = true;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+            gzxArr4.get(airPosition.id)._show = false;
+          } else if (jl <= 4000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+            gzxArr4.get(airPosition.id)._show = false;
+          } else if (jl <= 6000) {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = true;
+            gzxArr4.get(airPosition.id)._show = true;
+          } else {
+            gzxArr.get(airPosition.id)._show = false;
+            gzxArr2.get(airPosition.id)._show = false;
+            gzxArr3.get(airPosition.id)._show = false;
+            gzxArr4.get(airPosition.id)._show = false;
+          }
 
-        if (jl <= 5000) {
-          $(`#mubiao${airPosition.id}`).show();
-        } else {
+          if (jl <= 5000) {
+            $(`#mubiao${airPosition.id}`).show();
+          } else {
             $(`#mubiao${airPosition.id}`).hide();
           }
         }
 
-      // });
+      });
     } else if (/.*\/RadarDevice\/.*/.test(msg.topic)) {
       const radarInfo = JSON.parse(msg.payloadString);
       const entities = vm.radarArr.filter((i) => i.id === radarInfo.id);
