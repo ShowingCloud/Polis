@@ -123,7 +123,12 @@ $(() => {
 
 	$("#controlButtons button").click(function() {
 		$(this).addClass("xz").siblings().removeClass("xz");
-
+	});
+	
+	$("#radarChart").draggable();
+	
+	$("#radarClose").click(function() {
+		$("#radarChart").hide();
 	});
 
 });
