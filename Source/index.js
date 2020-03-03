@@ -609,6 +609,8 @@ const documentReady = async (Cesium) => {
       subscribe('/CC/MsgForAntiUAV/Warning/#', 0);
       //光电工作模式
       subscribe('/CC/MsgForAntiUAV/GuangDianWorkingMode/#', 0);
+	  //融合目标信息
+	  subscribe('/CC/MsgForAntiUAV/TargetIntersect/#', 0);
     }
   }, async (msg) => {
     console.log(msg);
@@ -1134,6 +1136,11 @@ const documentReady = async (Cesium) => {
       return;
     } else if (msg.topic.indexOf('Warning') !== -1) {
       vm.WarnNum = JSON.parse(msg.payloadString);
+    } else if (msg.topic.indexOf('TargetIntersect') !== -1) {
+      const info = JSON.parse(msg.payloadString);
+	  if(info.IsIntersect&&info.IsRadarTargetIn){
+		  airArr.get(info.TargetId).label.text += "\n"+info.DroneDesc;
+	  } 
     }
   });
   // 去除底部logo
