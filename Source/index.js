@@ -492,7 +492,7 @@ const documentReady = async (Cesium) => {
 
   // 当前时间为起始时间,终止时间为1小时
   const start = Cesium.JulianDate.now();
-  const stop = Cesium.JulianDate.addSeconds(start, 3600, new Cesium.JulianDate());
+  let stop = Cesium.JulianDate.addSeconds(start, 3600, new Cesium.JulianDate());
   // 校准时钟
   viewer.clock.startTime = start.clone();
   viewer.clock.stopTime = stop.clone();
@@ -1144,9 +1144,9 @@ const documentReady = async (Cesium) => {
       vm.WarnNum = JSON.parse(msg.payloadString);
     } else if (msg.topic.indexOf('TargetIntersect') !== -1) {
       const info = JSON.parse(msg.payloadString);
-	  if(info.IsIntersect&&info.IsRadarTargetIn){
-		  airArr.get(info.TargetId).label.text += "\n"+info.DroneDesc;
-	  } 
+      if (info.IsIntersect && info.IsRadarTargetIn) {
+        airArr.get(info.TargetId).label.text += "\n" + info.DroneDesc;
+      } 
     }
   });
   // 去除底部logo
@@ -1157,6 +1157,23 @@ const documentReady = async (Cesium) => {
   );
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
+
+  setInterval(() => {
+    stop = Cesium.JulianDate.addSeconds(Cesium.JulianDate.now(),
+      3600, new Cesium.JulianDate());
+
+    viewer.clock.stopTime = stop.clone();
+    radarViewer.clock.stopTime = stop.clone();
+
+    airArr.forEach((entity) => {
+      entity.availability = new Cesium.TimeIntervalCollection([
+        new Cesium.TimeInterval({
+          start,
+          stop,
+        }),
+      ]);
+    });
+  }, 1800000.0);
 };
 
 window.onload = documentReady(window.Cesium);
