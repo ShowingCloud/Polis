@@ -190,7 +190,7 @@ const vm = new Vue({
 let viewer;
 let scene;
 // 飞机坐标自定义延时
-const delay = 0;
+const delay = 1.0;
 
 // 初始值
 let GimbalAzimuth = 0; // 方位角
@@ -646,7 +646,7 @@ const documentReady = async (Cesium) => {
         positionsArr.get(airPosition.id).addSample(Cesium.JulianDate.addSeconds(Cesium.JulianDate.now(), delay, new Cesium
           .JulianDate()), position2);
         // 添加无人机
-        const sourEntity = viewer.entities.add({
+        const sourEntity = new Cesium.Entity({
           name: 'Drone',
           availability: new Cesium.TimeIntervalCollection([
             new Cesium.TimeInterval({
@@ -682,8 +682,12 @@ const documentReady = async (Cesium) => {
           position: positionsArr.get(airPosition.id),
           viewFrom: new Cesium.Cartesian3(0.0, -100.0 * Math.cos(0.5), 100.0 * Math.sin(0.5)), // 跟踪飞机的时候视角偏移量
         });
-        radarViewer.entities.add(sourEntity);
-        airArr.set(airPosition.id, sourEntity);
+
+        setTimeout(() => {
+          viewer.entities.add(sourEntity);
+          radarViewer.entities.add(sourEntity);
+          airArr.set(airPosition.id, sourEntity);
+        }, delay * 1000);
 
 
         // 闪烁
@@ -930,34 +934,36 @@ const documentReady = async (Cesium) => {
       const airId = JSON.parse(msg.payloadString);
 
       if (airArr.get(airId.id)) {
-        if (viewer.trackedEntity === airArr.get(airId.id)) {
-          viewer.trackedEntity = undefined;
-          vm.rotateStart();
-        }
+        setTimeout(() => {
+          if (viewer.trackedEntity === airArr.get(airId.id)) {
+            viewer.trackedEntity = undefined;
+            vm.rotateStart();
+          }
 
-        viewer.entities.remove(airArr.get(airId.id));
-        radarViewer.entities.remove(airArr.get(airId.id));
+          viewer.entities.remove(airArr.get(airId.id));
+          radarViewer.entities.remove(airArr.get(airId.id));
 
-        viewer.entities.remove(gzxArr.get(airId.id));
-        gzxArr.delete(airId.id);
+          viewer.entities.remove(gzxArr.get(airId.id));
+          gzxArr.delete(airId.id);
 
-        viewer.entities.remove(gzxArr2.get(airId.id));
-        gzxArr2.delete(airId.id);
+          viewer.entities.remove(gzxArr2.get(airId.id));
+          gzxArr2.delete(airId.id);
 
-        viewer.entities.remove(gzxArr3.get(airId.id));
-        gzxArr3.delete(airId.id);
+          viewer.entities.remove(gzxArr3.get(airId.id));
+          gzxArr3.delete(airId.id);
 
-        viewer.entities.remove(gzxArr4.get(airId.id));
-        gzxArr4.delete(airId.id);
+          viewer.entities.remove(gzxArr4.get(airId.id));
+          gzxArr4.delete(airId.id);
 
-        airPositionArr.delete(airId.id);
-        airArr.delete(airId.id);
+          airPositionArr.delete(airId.id);
+          airArr.delete(airId.id);
 
-        if(airId.id === vm.PlanArr.id){
-          vm.PlanArr = '';
-        }
+          if(airId.id === vm.PlanArr.id){
+            vm.PlanArr = '';
+          }
 
-        vm.targetArr = vm.targetArr.filter((i) => i.id !== airId);
+          vm.targetArr = vm.targetArr.filter((i) => i.id !== airId);
+        }, delay * 1000);
       }
     } else if (/.*\/GuangDianDevice\/.*/.test(msg.topic)) {
       const info = JSON.parse(msg.payloadString);
