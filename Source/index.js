@@ -266,7 +266,7 @@ const documentReady = async (Cesium) => {
 
   try {
     // 加载在线天地图
-    /* var imageryLayers = viewer.imageryLayers;
+    var imageryLayers = viewer.imageryLayers;
     imageryLayers.addImageryProvider(new Cesium.TiandituImageryProvider({
       credit: new Cesium.Credit('天地图全球影像服务     数据来源：国家地理信息公共服务平台 & 四川省测绘地理信息局'),
       token: '4a00a1dc5387b8ed8adba3374bd87e5e'
@@ -276,21 +276,21 @@ const documentReady = async (Cesium) => {
       mapStyle: Cesium.TiandituMapsStyle.CIA_C, //天地图全球中文注记服务（经纬度投影）
       token: '4a00a1dc5387b8ed8adba3374bd87e5e'
     });
-    imageryLayers.addImageryProvider(labelImagery); */
+    imageryLayers.addImageryProvider(labelImagery); 
 
     // 加载二维图层
-    const backgroundLayer = viewer.imageryLayers.addImageryProvider(await new Cesium.SuperMapImageryProvider({
+    /* const backgroundLayer = viewer.imageryLayers.addImageryProvider(await new Cesium.SuperMapImageryProvider({
       url: LAYER_IMAGERY_URL,
-    }));
+    })); */
 
     // 添加S3M图层服务
-    const layer = await scene.addS3MTilesLayerByScp(
+    /* const layer = await scene.addS3MTilesLayerByScp(
       LAYER_S3M_URL, {
         name: 'Config1',
       },
     );
     layer.style3D.bottomAltitude = 55;
-    layer.refresh();
+    layer.refresh(); */
 
     // 设置相机位置、视角，便于观察场景
     scene.camera.flyToBoundingSphere(
@@ -299,9 +299,10 @@ const documentReady = async (Cesium) => {
         offset: new Cesium.HeadingPitchRange(
           Cesium.Math.toRadians(vm.rotateAngle),
           Cesium.Math.toRadians(-20.0),
-          4000.0),
+          1000.0),
         complete: () => {
-          vm.rotateTimer.addEventListener(vm.rotate);
+          //vm.rotateTimer.addEventListener(vm.rotate);
+		  vm.mapReset();
         },
       },
     );
@@ -529,7 +530,7 @@ const documentReady = async (Cesium) => {
       // 时间回调获取位置
       positions: new Cesium.CallbackProperty(((time, result) => {
         const { ellipsoid } = viewer.scene.globe;
-        const center = Cesium.Cartesian3.fromDegrees(108.90047618, 19.46586216, 60);
+        const center = Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE);
         const transform = Cesium.Transforms.eastNorthUpToFixedFrame(center);
         // 目标坐标位置
         const x = Math.cos(GimbalPitchAngle) * GimbalDistance * Math.sin(GimbalAzimuth);
@@ -553,7 +554,7 @@ const documentReady = async (Cesium) => {
       qflag = false;
     } */
         // 源坐标位置
-        const tarpos = center;
+        const tarpos = Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE);
         const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(tarpos);
         const lon2 = Cesium.Math.toDegrees(cartographic.longitude);
         const lat2 = Cesium.Math.toDegrees(cartographic.latitude);
@@ -902,7 +903,7 @@ const documentReady = async (Cesium) => {
             gzxArr.get(airPosition.id)._show = false;
             gzxArr2.get(airPosition.id)._show = false;
             gzxArr3.get(airPosition.id)._show = true;
-            gzxArr4.get(airPosition.id)._show = true;
+            gzxArr4.get(airPosition.id)._show = false;
           } else {
             gzxArr.get(airPosition.id)._show = false;
             gzxArr2.get(airPosition.id)._show = false;
