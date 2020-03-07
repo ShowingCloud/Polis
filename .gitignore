@@ -5,4 +5,5 @@ node_modules/*
 *~
 package-lock.json
 Source/Secrets.js
+Source/Secrets2.js
 dist/*
