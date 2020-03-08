@@ -199,9 +199,9 @@ let GimbalDistance = 4000; // 距离
 let GimbalAzimuthDvalue = Cesium.Math.toRadians(1); // 方位差
 let GimbalPitchAngleDvalue = Cesium.Math.toRadians(1); // 俯仰差
 let GimbalDistanceDvalue = 100; // 距离差
-let DistanceAddTime;//距离增加定时器
-let DistanceSubTime;//距离减少定时器
-let GimbalRate = 400//变化速率，ms
+let DistanceAddTime; //距离增加定时器
+let DistanceSubTime; //距离减少定时器
+let GimbalRate = 400; //变化速率，ms
 let IntervalTime = new Map();
 
 function GimbalSendMsg(direction, step){
@@ -1155,8 +1155,36 @@ const documentReady = async (Cesium) => {
   viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
     Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
   );
+
   // 追踪目标与取消
   // viewer.trackedEntity = undefined;
+
+  var rotationInterval = setInterval(() => {
+      vm.rotateStart();
+    }, 30000);
+
+  const screenSpaceHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+
+  screenSpaceHandler.setInputAction(() => {
+    if (!viewer.trackedEntity) {
+      clearInterval(rotationInterval);
+      vm.rotateTimer.removeEventListener(vm.rotate);
+      rotationInterval = setInterval(() => {
+        vm.rotateStart();
+      }, 30000);
+    }
+  }, Cesium.ScreenSpaceEventType.WHEEL);
+
+  screenSpaceHandler.setInputAction(() => {
+    if (screenSpaceHandler._buttonDown !== undefined && !viewer.trackedEntity) {
+      clearInterval(rotationInterval);
+      vm.rotateTimer.removeEventListener(vm.rotate);
+      setInterval(() => {
+        vm.rotateStart();
+      }, 30000);
+    }
+  }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
 
   setInterval(() => {
     stop = Cesium.JulianDate.addSeconds(Cesium.JulianDate.now(),
