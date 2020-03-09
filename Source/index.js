@@ -975,6 +975,7 @@ const documentReady = async (Cesium) => {
       if (entity) {
         entity.targetAngle = info.azimuth;
         entity.json = info;
+        entity.name = info.status;
       } else {
         vm.ereconArr.push(viewer.entities.add({
           targetAngle: info.azimuth,
@@ -1045,6 +1046,7 @@ const documentReady = async (Cesium) => {
       if (entity) {
         entity.targetAngle = info.azimuth;
         entity.json = info;
+        entity.name = info.status;
       } else {
         vm.crackerArr.push(viewer.entities.add({
           targetAngle: info.azimuth,
