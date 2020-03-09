@@ -609,8 +609,8 @@ const documentReady = async (Cesium) => {
       subscribe('/CC/MsgForAntiUAV/Warning/#', 0);
       //光电工作模式
       subscribe('/CC/MsgForAntiUAV/GuangDianWorkingMode/#', 0);
-	  //融合目标信息
-	  subscribe('/CC/MsgForAntiUAV/TargetIntersect/#', 0);
+      //融合目标信息
+      subscribe('/CC/MsgForAntiUAV/TargetIntersect/#', 0);
     }
   }, async (msg) => {
     console.log(msg);
@@ -997,6 +997,7 @@ const documentReady = async (Cesium) => {
           targetAngle: info.azimuth,
           targetId: info.id,
           json: info,
+          name: info.status,
           polygon: {
             hierarchy: new Cesium.CallbackProperty(() => [
               // The Apex
@@ -1066,6 +1067,7 @@ const documentReady = async (Cesium) => {
           targetAngle: info.azimuth,
           targetId: info.id,
           json: info,
+          name: info.status,
           polygon: {
             hierarchy: new Cesium.CallbackProperty(() => [
               // The Apex
