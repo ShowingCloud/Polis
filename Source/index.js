@@ -448,7 +448,7 @@ const documentReady = async (Cesium) => {
   // 画圆
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'Red ellipse on surface within 1000 km with outline',
+    name: 'Red ellipse on surface within 2000 km with outline',
     ellipse: {
       fill: false,
       height: 30,
@@ -462,7 +462,7 @@ const documentReady = async (Cesium) => {
   });
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'YELLOW ellipse on surface within 3000 km with outline',
+    name: 'YELLOW ellipse on surface within 5000 km with outline',
     ellipse: {
       fill: false,
       height: 30,
@@ -470,13 +470,13 @@ const documentReady = async (Cesium) => {
       outline: true,
       outlineColor: Cesium.Color.YELLOW,
       outlineWidth: 10,
-      semiMajorAxis: 4000.0,
-      semiMinorAxis: 4000.0,
+      semiMajorAxis: 5000.0,
+      semiMinorAxis: 5000.0,
     },
   });
   viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(...POSITION_CENTER),
-    name: 'GREEN ellipse on surface within 5000 km with outline',
+    name: 'GREEN ellipse on surface within 7000 km with outline',
     ellipse: {
       fill: false,
       height: 30,
@@ -484,8 +484,8 @@ const documentReady = async (Cesium) => {
       outline: true,
       outlineColor: Cesium.Color.GREEN,
       outlineWidth: 10,
-      semiMajorAxis: 6000.0,
-      semiMinorAxis: 6000.0,
+      semiMajorAxis: 7000.0,
+      semiMinorAxis: 7000.0,
     },
   });
 
@@ -515,11 +515,11 @@ const documentReady = async (Cesium) => {
   const airArr = new Map();
   // 指向2km内无人机红线集合
   const gzxArr = new Map();
-  // 指向3km内无人机黄线集合
-  const gzxArr2 = new Map();
-  // 指向4km内无人机绿线集合
+  // 指向5km内无人机黄线集合
+  // const gzxArr2 = new Map();
+  // 指向7km内无人机绿线集合
   const gzxArr3 = new Map();
-  // 指向4km内无人机绿线集合
+  // 指向7km内无人机绿线集合
   const gzxArr4 = new Map();
 
 
@@ -754,7 +754,7 @@ const documentReady = async (Cesium) => {
             }),
           },
         }));
-        // 添加4km黄色射线
+        /* // 添加5km黄色射线
         gzxArr2.set(airPosition.id, viewer.entities.add({
           polyline: {
             // 时间回调获取位置
@@ -781,8 +781,8 @@ const documentReady = async (Cesium) => {
               color: Cesium.Color.YELLOW.withAlpha(0.9),
             }),
           },
-        }));
-        // 添加6km绿色射线
+        })); */
+        // 添加7km绿色射线
         gzxArr3.set(airPosition.id, viewer.entities.add({
           polyline: {
             // 时间回调获取位置
@@ -810,7 +810,7 @@ const documentReady = async (Cesium) => {
             }),
           },
         }));
-        // 添加6km绿色射线
+        // 添加7km绿色射线
         gzxArr4.set(airPosition.id, viewer.entities.add({
           polyline: {
             // 时间回调获取位置
@@ -841,7 +841,7 @@ const documentReady = async (Cesium) => {
 
         // 射线初始隐藏
         gzxArr.get(airPosition.id)._show = false;
-        gzxArr2.get(airPosition.id)._show = false;
+        // gzxArr2.get(airPosition.id)._show = false;
         gzxArr3.get(airPosition.id)._show = false;
       } else {
         // 已有目标则更新坐标
@@ -860,22 +860,22 @@ const documentReady = async (Cesium) => {
 	  // 根据无人机距离中心点距离判断是否显示射线
 	  if (flag === '3') {
 	    gzxArr.get(airPosition.id)._show = true;
-	    gzxArr2.get(airPosition.id)._show = false;
+	    // gzxArr2.get(airPosition.id)._show = false;
 	    gzxArr3.get(airPosition.id)._show = false;
 	    gzxArr4.get(airPosition.id)._show = false;
 	  } else if (flag === '2') {
 	    gzxArr.get(airPosition.id)._show = false;
-	    gzxArr2.get(airPosition.id)._show = false;
+	    // gzxArr2.get(airPosition.id)._show = false;
 	    gzxArr3.get(airPosition.id)._show = false;
 	    gzxArr4.get(airPosition.id)._show = false;
 	  } else if (flag === '1') {
 	    gzxArr.get(airPosition.id)._show = false;
-	    gzxArr2.get(airPosition.id)._show = false;
+	    // gzxArr2.get(airPosition.id)._show = false;
 	    gzxArr3.get(airPosition.id)._show = true;
 	    gzxArr4.get(airPosition.id)._show = true;
 	  } else {
 	    gzxArr.get(airPosition.id)._show = false;
-	    gzxArr2.get(airPosition.id)._show = false;
+	    // gzxArr2.get(airPosition.id)._show = false;
 	    gzxArr3.get(airPosition.id)._show = false;
 	    gzxArr4.get(airPosition.id)._show = false;
 	  }
@@ -943,8 +943,10 @@ const documentReady = async (Cesium) => {
           viewer.entities.remove(gzxArr.get(airId.id));
           gzxArr.delete(airId.id);
 
+          /*
           viewer.entities.remove(gzxArr2.get(airId.id));
           gzxArr2.delete(airId.id);
+          */
 
           viewer.entities.remove(gzxArr3.get(airId.id));
           gzxArr3.delete(airId.id);
