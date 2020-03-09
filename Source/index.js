@@ -999,6 +999,7 @@ const documentReady = async (Cesium) => {
           targetAngle: info.azimuth,
           targetId: info.id,
           json: info,
+          name: info.status,
           polygon: {
             hierarchy: new Cesium.CallbackProperty(() => [
               // The Apex
@@ -1068,6 +1069,7 @@ const documentReady = async (Cesium) => {
           targetAngle: info.azimuth,
           targetId: info.id,
           json: info,
+          name: info.status,
           polygon: {
             hierarchy: new Cesium.CallbackProperty(() => [
               // The Apex
