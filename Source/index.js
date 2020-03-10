@@ -975,13 +975,20 @@ const documentReady = async (Cesium) => {
       if (entity) {
         entity.targetAngle = info.azimuth;
         entity.json = info;
-        entity.name = info.status;
+        entity.label.text = info.status;
       } else {
         vm.ereconArr.push(viewer.entities.add({
           targetAngle: info.azimuth,
           targetId: info.id,
           json: info,
-          name: info.status,
+          label: {
+            fillColor: Cesium.Color.WHITE,
+            font: '15px Helvetica',
+            outlineColor: Cesium.Color.RED,
+            pixelOffset: new Cesium.Cartesian2(0.0, -20),
+            showBackground: true,
+            text: info.status,
+          },
           polygon: {
             hierarchy: new Cesium.CallbackProperty(() => [
               // The Apex
@@ -1046,13 +1053,20 @@ const documentReady = async (Cesium) => {
       if (entity) {
         entity.targetAngle = info.azimuth;
         entity.json = info;
-        entity.name = info.status;
+        entity.label.text = info.status;
       } else {
         vm.crackerArr.push(viewer.entities.add({
           targetAngle: info.azimuth,
           targetId: info.id,
           json: info,
-          name: info.status,
+          label: {
+            fillColor: Cesium.Color.WHITE,
+            font: '15px Helvetica',
+            outlineColor: Cesium.Color.RED,
+            pixelOffset: new Cesium.Cartesian2(0.0, -20),
+            showBackground: true,
+            text: info.status,
+          },
           polygon: {
             hierarchy: new Cesium.CallbackProperty(() => [
               // The Apex
