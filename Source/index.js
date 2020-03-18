@@ -529,7 +529,7 @@ const documentReady = async (Cesium) => {
       // 时间回调获取位置
       positions: new Cesium.CallbackProperty(((time, result) => {
         const { ellipsoid } = viewer.scene.globe;
-        const center = Cesium.Cartesian3.fromDegrees(108.90047618, 19.46586216, 60);
+        const center = Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE);
         const transform = Cesium.Transforms.eastNorthUpToFixedFrame(center);
         // 目标坐标位置
         const x = Math.cos(GimbalPitchAngle) * GimbalDistance * Math.sin(GimbalAzimuth);
@@ -1201,6 +1201,42 @@ const documentReady = async (Cesium) => {
       }, 30000);
     }
   }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+
+  screenSpaceHandler.setInputAction(
+    (e) => {
+      try {
+        const {
+          longitude, latitude, height, ...others
+        } = Cesium.Cartographic.fromCartesian(scene.pickPosition(e.position));
+        const [lon, lat] = [longitude, latitude].map((n) => Cesium.Math.toDegrees(n));
+        const hei = height < 0 ? 0 : height;
+
+        const relative = Cesium.Matrix4.multiplyByPointAsVector(
+          Cesium.Matrix4.inverse(
+            Cesium.Transforms.eastNorthUpToFixedFrame(
+              Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE)
+            ), new Cesium.Matrix4(),
+          ),
+          Cesium.Cartesian3.subtract(
+            Cesium.Cartesian3.fromDegrees(...POSITION_STATION_ONE),
+            Cesium.Cartesian3.fromDegrees(lon, lat, hei),
+            new Cesium.Cartesian3(),
+          ),
+          new Cesium.Cartesian3(),
+        );
+
+        const spherical = Cesium.Spherical.fromCartesian3(relative, new Cesium.Spherical());
+        GimbalAzimuth = Math.PI * 3 / 2 - spherical.clock;
+        GimbalPitchAngle = spherical.cone - Math.PI / 2;
+        GimbalDistance = spherical.magnitude;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    Cesium.ScreenSpaceEventType.LEFT_CLICK,
+    Cesium.KeyboardEventModifier.CTRL,
+  );
 
 
   setInterval(() => {
