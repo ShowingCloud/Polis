@@ -1193,7 +1193,7 @@ const documentReady = async (Cesium) => {
   }, Cesium.ScreenSpaceEventType.WHEEL);
 
   screenSpaceHandler.setInputAction(() => {
-    if (screenSpaceHandler._buttonDown !== undefined && !viewer.trackedEntity) {
+    if (!viewer.trackedEntity) {
       clearInterval(rotationInterval);
       vm.rotateTimer.removeEventListener(vm.rotate);
       setInterval(() => {
