@@ -84,7 +84,7 @@ const vm = new Vue({
       //scene.camera.rotate(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER.slice(0, 2), 5000), -1 * vm.rotateSpeed);
     },
     mapReset() {
-      viewer.trackedEntity = undefined;
+      /* viewer.trackedEntity = undefined;
       vm.rotateTimer.removeEventListener(vm.rotate);
 
       scene.camera.flyTo({
@@ -94,20 +94,12 @@ const vm = new Vue({
           pitch : Cesium.Math.toRadians(-90),
           roll : 0
         }
-      });
+      }); */
     },
     rotateStart() {
-      viewer.trackedEntity = undefined;
+      /* viewer.trackedEntity = undefined;
 
       if (!vm.rotateTimer.removeEventListener(vm.rotate)) { // If we are not rotating
-       /*  await scene.camera.flyTo({
-          destination: new Cesium.Cartesian3.fromDegrees(108.89854530935382, 19.4268, 1430),
-          orientation: {
-            heading : 0.0,
-            pitch : -0.3496550394737836,
-            roll : 0
-          },
-        }); */
         scene.camera.flyToBoundingSphere(
           new Cesium.BoundingSphere(Cesium.Cartesian3.fromDegrees(...POSITION_CENTER)),
           {
@@ -122,12 +114,12 @@ const vm = new Vue({
         );
       } else {
         vm.rotateTimer.addEventListener(vm.rotate);
-      }
+      } */
     },
     rotateEnd() {
       // vm.rotateAngle = 0;
-      vm.rotateTimer.removeEventListener(vm.rotate);
-      viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
+      /* vm.rotateTimer.removeEventListener(vm.rotate);
+      viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY) */
     },
     changeLog(id) {
       vm.PlanArrPreset.filter((i) => i.id === id).forEach((entity) => {
@@ -213,14 +205,14 @@ function GimbalSendMsg(direction, step){
 }
 
 function GimbalControl(SetOrCancle,type,model,Dvalue){
-	if(SetOrCancle){
+	/* if(SetOrCancle){
 		IntervalTime.set(type,setInterval(function(){
 			GimbalSendMsg(model,Dvalue);
 		},GimbalRate));
 	}else{
 		clearInterval(IntervalTime.get(type));
 		IntervalTime.delete(type);
-	}
+	} */
 }
 
 function GimbalReset() {
@@ -266,7 +258,7 @@ const documentReady = async (Cesium) => {
 
   try {
     // 加载在线天地图
-    /* var imageryLayers = viewer.imageryLayers;
+    var imageryLayers = viewer.imageryLayers;
     imageryLayers.addImageryProvider(new Cesium.TiandituImageryProvider({
       credit: new Cesium.Credit('天地图全球影像服务     数据来源：国家地理信息公共服务平台 & 四川省测绘地理信息局'),
       token: '4a00a1dc5387b8ed8adba3374bd87e5e'
@@ -276,7 +268,7 @@ const documentReady = async (Cesium) => {
       mapStyle: Cesium.TiandituMapsStyle.CIA_C, //天地图全球中文注记服务（经纬度投影）
       token: '4a00a1dc5387b8ed8adba3374bd87e5e'
     });
-    imageryLayers.addImageryProvider(labelImagery); */
+    imageryLayers.addImageryProvider(labelImagery);
 
     // 加载二维图层
     const backgroundLayer = viewer.imageryLayers.addImageryProvider(await new Cesium.SuperMapImageryProvider({
