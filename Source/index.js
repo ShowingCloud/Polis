@@ -273,7 +273,7 @@ const documentReady = async (Cesium) => {
 
     // 加载二维图层
     const backgroundLayer = viewer.imageryLayers.addImageryProvider(await new Cesium.SuperMapImageryProvider({
-      url: 'basemap',
+      url: 'http://www.51kongkong.com:9780/Upstream/basemap',
     }));
 
     // 添加S3M图层服务
