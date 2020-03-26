@@ -257,7 +257,8 @@ const documentReady = async (Cesium) => {
   const widget = viewer.cesiumWidget;
 
   try {
-    // 加载在线天地图
+	  
+    // 加载在线天地图 
     var imageryLayers = viewer.imageryLayers;
     imageryLayers.addImageryProvider(new Cesium.TiandituImageryProvider({
       credit: new Cesium.Credit('天地图全球影像服务     数据来源：国家地理信息公共服务平台 & 四川省测绘地理信息局'),
