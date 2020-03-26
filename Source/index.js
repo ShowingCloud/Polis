@@ -278,7 +278,7 @@ const documentReady = async (Cesium) => {
 
     // 添加S3M图层服务
     const layer = await scene.addS3MTilesLayerByScp(
-      LAYER_S3M_URL, {
+      's3m/Config1.scp', {
         name: 'Config1',
       },
     );
